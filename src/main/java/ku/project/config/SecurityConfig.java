@@ -1,6 +1,6 @@
-package ku.kinkao.config;
+package ku.project.config;
 
-import ku.kinkao.service.UserDetailsServiceImp;
+import ku.project.service.UserDetailsServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,6 @@
-package ku.kinkao.repository;
+package ku.project.repository;
 
-import ku.kinkao.model.Member;
+import ku.project.model.Member;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

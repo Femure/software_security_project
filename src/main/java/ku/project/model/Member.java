@@ -1,4 +1,4 @@
-package ku.kinkao.model;
+package ku.project.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

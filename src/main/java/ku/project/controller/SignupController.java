@@ -1,7 +1,7 @@
-package ku.kinkao.controller;
+package ku.project.controller;
 
-import ku.kinkao.model.Member;
-import ku.kinkao.service.SignupService;
+import ku.project.model.Member;
+import ku.project.service.SignupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

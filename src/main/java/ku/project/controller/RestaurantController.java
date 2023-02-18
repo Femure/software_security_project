@@ -1,7 +1,7 @@
-package ku.kinkao.controller;
+package ku.project.controller;
 
-import ku.kinkao.model.Restaurant;
-import ku.kinkao.repository.RestaurantRepository;
+import ku.project.model.Restaurant;
+import ku.project.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

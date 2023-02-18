@@ -1,7 +1,7 @@
-package ku.kinkao.service;
+package ku.project.service;
 
-import ku.kinkao.model.Member;
-import ku.kinkao.repository.MemberRepository;
+import ku.project.model.Member;
+import ku.project.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
