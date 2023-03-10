@@ -9,7 +9,7 @@ public class HomeController {
 
    @RequestMapping("/home")
    public String getHomePage(Model model) {
-       model.addAttribute("greeting", "Welcome to Kinkao Website");
+       model.addAttribute("greeting", "Welcome to project Website");
        return "home";  // name of a html template: home.html
    }
 }
