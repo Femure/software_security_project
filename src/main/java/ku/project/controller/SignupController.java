@@ -7,11 +7,9 @@ import me.legrange.haveibeenpwned.HaveIBeenPwndException;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -41,9 +39,7 @@ public class SignupController implements WebMvcConfigurer {
         }
 
         // Compare if the confirmation password and the password are the same
-        System.out.printf("%s\n", member.getConfirmationPassword());
-
-        if (member.getConfirmationPassword() != member.getPassword()) {
+        if (!member.getPassword().equals(member.getConfirmationPassword())) {
             passwordError = "Your confirmation password is not identical to your password";
         }
 
