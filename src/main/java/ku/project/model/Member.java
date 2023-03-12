@@ -8,54 +8,63 @@ import javax.persistence.Id;
 @Entity
 public class Member {
 
-   @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
-   private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-   private String username;
-   private String password;
-   private String firstName;
-   private String lastName;
+    private String firstName;
+    private String lastName;
+    private String username;
+    private String password;
+    private String confirmationPassword;
 
-   // .... generate getter/setter for all attributes
+    // .... generate getter/setter for all attributes
 
-   public int getId() {
-       return id;
-   }
+    public int getId() {
+        return id;
+    }
 
-   public void setId(int id) {
-       this.id = id;
-   }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-   public String getUsername() {
-       return username;
-   }
+    public String getFirstName() {
+        return firstName;
+    }
 
-   public void setUsername(String username) {
-       this.username = username;
-   }
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-   public String getPassword() {
-       return password;
-   }
+    public String getLastName() {
+        return lastName;
+    }
 
-   public void setPassword(String password) {
-       this.password = password;
-   }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-   public String getFirstName() {
-       return firstName;
-   }
+    public String getUsername() {
+        return username;
+    }
 
-   public void setFirstName(String firstName) {
-       this.firstName = firstName;
-   }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-   public String getLastName() {
-       return lastName;
-   }
+    public String getPassword() {
+        return password;
+    }
 
-   public void setLastName(String lastName) {
-       this.lastName = lastName;
-   }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getConfirmationPassword() {
+        return confirmationPassword;
+    }
+
+    public void setConfirmationPassword(String confirmationPassword) {
+        this.confirmationPassword = confirmationPassword;
+    }
 }
