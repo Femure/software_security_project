@@ -5,6 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import ku.project.validation.ValidPassword;
+
 @Entity
 public class Member {
 
@@ -15,7 +17,10 @@ public class Member {
     private String firstName;
     private String lastName;
     private String username;
+    
+    @ValidPassword
     private String password;
+    
     private String confirmationPassword;
 
     // .... generate getter/setter for all attributes
