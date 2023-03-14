@@ -1,77 +1,56 @@
 package ku.project.controller;
 
-import ku.project.model.Member;
+import ku.project.dto.SignupDto;
 import ku.project.service.SignupService;
-import me.legrange.haveibeenpwned.HaveIBeenPwndApi;
-import me.legrange.haveibeenpwned.HaveIBeenPwndException;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.validation.Valid;
+
+
+
+import me.legrange.haveibeenpwned.HaveIBeenPwndApi;
+import me.legrange.haveibeenpwned.HaveIBeenPwndException;
 
 @Controller
-public class SignupController implements WebMvcConfigurer {
+public class SignupController {
 
-    @Autowired
-    private SignupService signupService;
+   @Autowired
+   private SignupService signupService;
 
-    @GetMapping("/signup")
-    public String getSignupPage() {
-        return "signup"; // return signup.html
-    }
+   @GetMapping("/signup")
+   public String getSignupPage(SignupDto user) {
+       return "signup"; // return signup.html
+   }
 
-    @PostMapping("/signup")
-    public String signupMember(@ModelAttribute Member member, Model model) throws HaveIBeenPwndException {
-        String signupError = null;
-        String passwordError = null;
-        int signupSuccess = 0;
+   @PostMapping("/signup")
+   public String signupUser(@Valid SignupDto user, BindingResult result,
+                            Model model) {
+       if (result.hasErrors())
+           return "signup";
 
-        // Try if the password select by the user appeared in password data breach
-        HaveIBeenPwndApi hibp = me.legrange.haveibeenpwned.HaveIBeenPwndBuilder.create("Restaurant").build();
+       String signupError = null;
 
-        boolean pwned = hibp.isPlainPasswordPwned(member.getPassword());
-        if (pwned) {
-            passwordError = "Your password has previously appeared in a data breach. Change to a stronger password";
-        }
+       if (!signupService.isUsernameAvailable(user.getUsername())) {
+           signupError = "The username already exists.";
+       }
 
-        // Compare if the confirmation password and the password are the same
-        if (!member.getPassword().equals(member.getConfirmationPassword())) {
-            passwordError = "Your confirmation password is not identical to your password";
-        }
+       if (signupError == null) {
+           signupService.createMember(user);
+           model.addAttribute("signupSuccess", true);
+       } else {
+           model.addAttribute("signupError", signupError);
+       }
 
-        if (member.getPassword().length() < 12) {
-            passwordError = "Your password need to contain at least 12 characters";
-        }
-
-        if (!signupService.isUsernameAvailable(member.getUsername())) {
-            signupError = "The username already exists.";
-            
-        }
-
-        if (signupError == null) {
-            signupSuccess += 1;
-        } else {
-            model.addAttribute("signupError", signupError);
-        }
-
-        if (passwordError == null) {
-            signupSuccess += 1;
-        } else {
-            model.addAttribute("passwordError", passwordError);
-        }
-
-        if (signupSuccess == 2) {
-            model.addAttribute("signupSuccess", true);
-            int rowsAdded = signupService.createMember(member);
-            if (rowsAdded < 0) {
-                signupError = "There was an error signing you up. Please try again.";
-            }
-        } 
-
-        return "signup";
-    }
+       model.addAttribute("signupDto", new SignupDto());
+       return "signup";
+   }
 }
+
+
+

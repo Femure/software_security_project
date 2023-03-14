@@ -1,7 +1,7 @@
 package ku.project.controller;
 
-import ku.project.model.Restaurant;
-import ku.project.repository.RestaurantRepository;
+import ku.project.dto.RestaurantDto;
+import ku.project.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class RestaurantController {
 
     @Autowired
-    private RestaurantRepository repository;
+    private RestaurantService restaurantService;
 
     @GetMapping("/restaurant")
     public String getRestaurantPage(Model model) {
-        model.addAttribute("restaurants", repository.findAll());
+        model.addAttribute("restaurants", restaurantService.getRestaurants());
         return "restaurant"; // return restaurant.html
     }
 
@@ -28,9 +28,9 @@ public class RestaurantController {
     }
 
     @PostMapping("/restaurant/add")
-    public String addRestaurant(@ModelAttribute Restaurant restaurant,
+    public String addRestaurant(@ModelAttribute RestaurantDto restaurant,
             Model model) {
-        repository.save(restaurant);
+        restaurantService.create(restaurant);
         return "redirect:/restaurant";
     }
 

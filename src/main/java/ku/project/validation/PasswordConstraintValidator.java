@@ -1,51 +1,52 @@
 package ku.project.validation;
 
-
-import java.util.Arrays;
+import org.passay.*;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.Arrays;
+import java.util.List;
 
-import org.passay.AlphabeticalSequenceRule;
-import org.passay.DigitCharacterRule;
-import org.passay.LengthRule;
-import org.passay.NumericalSequenceRule;
-import org.passay.PasswordData;
-import org.passay.PasswordValidator;
-import org.passay.QwertySequenceRule;
-import org.passay.RuleResult;
-import org.passay.SpecialCharacterRule;
-import org.passay.UppercaseCharacterRule;
-import org.passay.WhitespaceRule;
-
-import com.google.common.base.Joiner;
+import me.legrange.haveibeenpwned.HaveIBeenPwndApi;
+import me.legrange.haveibeenpwned.HaveIBeenPwndException;
 
 public class PasswordConstraintValidator implements ConstraintValidator<ValidPassword, String> {
 
     @Override
-    public void initialize(final ValidPassword arg0) {
-
+    public void initialize(ValidPassword constraintAnnotation) {
     }
 
     @Override
-    public boolean isValid(final String password, final ConstraintValidatorContext context) {
-        // @formatter:off
-        final PasswordValidator validator = new PasswordValidator(Arrays.asList(
-            new LengthRule(8, 30), 
-            new UppercaseCharacterRule(1), 
-            new DigitCharacterRule(1), 
-            new SpecialCharacterRule(1), 
-            new NumericalSequenceRule(3,false),
-            new AlphabeticalSequenceRule(3,false),
-            new QwertySequenceRule(3,false),
-            new WhitespaceRule()));
-        final RuleResult result = validator.validate(new PasswordData(password));
+    public boolean isValid(String password, ConstraintValidatorContext context) {
+
+        PasswordValidator validator = new PasswordValidator(Arrays.asList(
+                new LengthRule(12, 128),
+                new UppercaseCharacterRule(1),
+                new DigitCharacterRule(1),
+                new SpecialCharacterRule(1),
+                new NumericalSequenceRule(3, false),
+                new AlphabeticalSequenceRule(3, false),
+                new QwertySequenceRule(3, false),
+                new WhitespaceRule()));
+
+        // Try if the password select by the member appeared in password data breach
+        HaveIBeenPwndApi hibp = me.legrange.haveibeenpwned.HaveIBeenPwndBuilder.create("Project").build();
+
+        boolean pwned = hibp.isPlainPasswordPwned(password);
+        if (pwned) {
+        }
+
+        RuleResult result = validator.validate(new PasswordData(password));
         if (result.isValid()) {
             return true;
         }
-        context.disableDefaultConstraintViolation();
-        context.buildConstraintViolationWithTemplate(Joiner.on(",").join(validator.getMessages(result))).addConstraintViolation();
+        List<String> messages = validator.getMessages(result);
+        String messageTemplate = String.join(" ", messages);
+
+        context.buildConstraintViolationWithTemplate(messageTemplate)
+                .addConstraintViolation()
+                .disableDefaultConstraintViolation();
+
         return false;
     }
-
 }
