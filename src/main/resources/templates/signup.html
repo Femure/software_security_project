@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/bootstrap.min.css}">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <title>Sign Up</title>
 </head>
 
@@ -11,7 +12,7 @@
     <div class="container w-50 p-3">
         <h1 class="display-5">Sign Up</h1>
 
-        <form action="#" th:action="@{/signup}" th:object="${signupDto}" method="POST">
+        <form action="#" th:action="@{/signup}" modelAttribute="lastUser" th:object="${signupDto}" method="POST">
 
             <div id="success-msg" th:if="${signupSuccess}" class="alert alert-success">
                 You successfully signed up! Please continue to the <a th:href="@{/login}">login</a> page.
@@ -49,7 +50,18 @@
             <div class="mb-3">
                 <label for="inputConfirmPassword">Confirmation password</label>
                 <input id="inputConfirmPassword" type="password" th:field="*{confirmPassword}" class="form-control">
-                <div class="alert alert-warning" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+                <div class="alert alert-warning" th:if="${#fields.hasErrors('confirmPassword')}"
+                    th:errors="*{confirmPassword}"></div>
+            </div>
+
+            <div class="card-footer bg-info text-black">
+                <span th:text="${errorCaptcha}"></span>
+            </div>
+            <div class="row">
+                <div class="col-2"> Validate reCAPTCHA</div>
+                <div class="col-4">
+                    <div class="g-recaptcha" data-sitekey="6LdIBPokAAAAACJ33-2hOr2RvRSWAURE9iPnCBZ8"></div>
+                </div>
             </div>
 
             <button id="submit-button" type="submit" class="btn btn-primary">Sign Up</button>

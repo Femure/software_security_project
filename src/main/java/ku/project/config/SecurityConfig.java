@@ -20,9 +20,6 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 public class SecurityConfig {
 
         @Autowired
-        private UserDetailsServiceImp userDetailsService;
-
-        @Autowired
         private OidcUserService oidcUserService;
 
         @Autowired
@@ -70,12 +67,6 @@ public class SecurityConfig {
         @Bean
         public PasswordEncoder encoder() {
                 return new BCryptPasswordEncoder(12);
-        }
-
-        public void configure(WebSecurity web) throws Exception {
-                web
-                                .ignoring()
-                                .antMatchers("/h2-console/**");
         }
 
 }

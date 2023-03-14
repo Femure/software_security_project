@@ -2,49 +2,64 @@ package ku.project.controller;
 
 import ku.project.dto.SignupDto;
 import ku.project.service.SignupService;
+import ku.project.validation.CaptchaValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
 @Controller
 public class SignupController {
 
-   @Autowired
-   private SignupService signupService;
+    @Autowired
+    private SignupService signupService;
 
-   @GetMapping("/signup")
-   public String getSignupPage(SignupDto user) {
-       return "signup"; // return signup.html
-   }
+    @Autowired
+    private CaptchaValidator validator;
 
-   @PostMapping("/signup")
-   public String signupUser(@Valid SignupDto user, BindingResult result,
-                            Model model) {
-       if (result.hasErrors())
-           return "signup";
+    @GetMapping("/signup")
+    public String getSignupPage(SignupDto user, Model model) {
+        if (!model.containsAttribute("createAccountModel")) {
+            model.addAttribute("createAccountModel", new SignupDto());
+        }
+        return "signup"; // return signup.html
+    }
 
-       String signupError = null;
+    @PostMapping("/signup")
+    public String signupUser(@Valid SignupDto user, BindingResult result,
+            @RequestParam("g-recaptcha-response") String captcha, RedirectAttributes redirectAttributes,
+            Model model) {
+        if (result.hasErrors()) {
+            //To keep the input field after error
+            redirectAttributes.addFlashAttribute("createAccountModel", user);
+            return "signup";
+        }
 
-       if (!signupService.isUsernameAvailable(user.getUsername())) {
-           signupError = "The username already exists.";
-       }
+        String signupError = null;
 
-       if (signupError == null) {
-           signupService.createMember(user);
-           model.addAttribute("signupSuccess", true);
-       } else {
-           model.addAttribute("signupError", signupError);
-       }
+        if (!signupService.isUsernameAvailable(user.getUsername())) {
+            signupError = "The username already exists.";
+        }
 
-       model.addAttribute("signupDto", new SignupDto());
-       return "signup";
-   }
+        if (validator.isValidCaptcha(captcha)) {
+            if (signupError == null) {
+                signupService.createMember(user);
+                model.addAttribute("signupSuccess", true);
+            } else {
+                model.addAttribute("signupError", signupError);
+            }
+        } else {
+            model.addAttribute("errorCaptcha", "Please validate captcha first");
+        }
+
+        model.addAttribute("signupDto", new SignupDto());
+        return "signup";
+
+    }
 }
-
-
-
