@@ -24,8 +24,7 @@ public class CaptchaConstraintValidator implements ConstraintValidator<ValidCapt
                 .getPropertyValue(captcha);
         Object hiddenCaptchaValue = new BeanWrapperImpl(value)
                 .getPropertyValue(hiddenCaptcha);
-
-        System.out.printf("captcha= %s and hidden = %s\n", captchaValue, hiddenCaptchaValue);
+                
         boolean isValid = false;
         if (captchaValue != null) {
             isValid = captchaValue.equals(hiddenCaptchaValue);
