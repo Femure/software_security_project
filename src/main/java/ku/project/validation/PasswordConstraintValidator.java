@@ -17,7 +17,7 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
     }
 
     @Override
-    public boolean isValid(String password, ConstraintValidatorContext context) {
+    public boolean isValid(String password, ConstraintValidatorContext context){
 
         PasswordValidator validator = new PasswordValidator(Arrays.asList(
                 new LengthRule(12, 128),
@@ -32,16 +32,27 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
         // Try if the password select by the member appeared in password data breach
         HaveIBeenPwndApi hibp = me.legrange.haveibeenpwned.HaveIBeenPwndBuilder.create("Project").build();
 
-        boolean pwned = hibp.isPlainPasswordPwned(password);
-        if (pwned) {
+        RuleResult result = validator.validate(new PasswordData(password));
+
+        boolean pwned = true;
+        String inDataBreach = "";
+        // System.out.printf("%s\n", password);
+        try {
+            pwned = hibp.isPlainPasswordPwned(password);
+            if (pwned) {
+                inDataBreach = "Your password appeared in password data breach. Try to change it";
+            }
+        } catch (HaveIBeenPwndException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
 
-        RuleResult result = validator.validate(new PasswordData(password));
-        if (result.isValid()) {
+        if (result.isValid() && !pwned) {
             return true;
         }
         List<String> messages = validator.getMessages(result);
         String messageTemplate = String.join(" ", messages);
+        messageTemplate += inDataBreach;
 
         context.buildConstraintViolationWithTemplate(messageTemplate)
                 .addConstraintViolation()

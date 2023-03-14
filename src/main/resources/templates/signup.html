@@ -46,6 +46,11 @@
                 <input id="inputPassword" type="password" th:field="*{password}" class="form-control">
                 <div class="alert alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
             </div>
+            <div class="mb-3">
+                <label for="inputConfirmPassword">Confirmation password</label>
+                <input id="inputConfirmPassword" type="password" th:field="*{confirmPassword}" class="form-control">
+                <div class="alert alert-warning" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+            </div>
 
             <button id="submit-button" type="submit" class="btn btn-primary">Sign Up</button>
         </form>

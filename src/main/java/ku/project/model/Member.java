@@ -18,10 +18,11 @@ public class Member {
    @GeneratedValue
    private UUID id;
 
-   private String username;
-   private String password;
+   private Instant createdAt;
    private String firstName;
    private String lastName;
+   private String username;
    private String email;
-   private Instant createdAt;
+   private String password;
+   private String confirmPassword;
 }
