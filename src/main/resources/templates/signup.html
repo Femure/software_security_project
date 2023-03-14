@@ -49,7 +49,28 @@
             <div class="mb-3">
                 <label for="inputConfirmPassword">Confirmation password</label>
                 <input id="inputConfirmPassword" type="password" th:field="*{confirmPassword}" class="form-control">
-                <div class="alert alert-warning" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+                <div class="alert alert-warning" th:if="${#fields.hasErrors('confirmPassword')}"
+                    th:errors="*{confirmPassword}"></div>
+            </div>
+            <div class="alert alert-warning" th:if="${#fields.hasErrors('captcha')}"
+                th:errors="*{captcha}"></div>
+            <div class="row">
+                <div class="col-2">
+                    <label>CAPTCHA</label>
+                </div>
+                <div class="col-4">
+                    <img th:src="*{'data:realCaptcha/jpg;base64,'+ realCaptcha}" />
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-2">
+                    <label>ENTER CAPTCHA</label>
+                </div>
+                <div class="col-4">
+                    <input type="hidden" th:field="*{hiddenCaptcha}" />
+                    <input type="text" th:field="*{captcha}" class="form-control" />
+                </div>
             </div>
 
             <button id="submit-button" type="submit" class="btn btn-primary">Sign Up</button>

@@ -2,12 +2,14 @@ package ku.project.dto;
 
 import lombok.*;
 
+import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import ku.project.validation.PasswordValueMatch;
+import ku.project.validation.ValidCaptcha;
 import ku.project.validation.ValidPassword;
 
 @PasswordValueMatch.List({
@@ -15,6 +17,14 @@ import ku.project.validation.ValidPassword;
                 field = "password",
                 fieldMatch = "confirmPassword",
                 message = "Passwords do not match!"
+        )
+})
+
+@ValidCaptcha.List({
+        @ValidCaptcha(
+                captcha = "captcha",
+                hiddenCaptcha = "hiddenCaptcha",
+                message = "Invalide Captcha!"
         )
 })
 
@@ -42,4 +52,13 @@ public class SignupDto {
 
         @NotBlank(message = "Confirm Password is required")
         private String confirmPassword;
+
+        @Transient
+	private String captcha;
+	
+	@Transient
+	private String hiddenCaptcha;
+	
+	@Transient
+	private String realCaptcha;
 }
