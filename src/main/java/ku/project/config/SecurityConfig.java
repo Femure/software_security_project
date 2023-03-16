@@ -28,7 +28,7 @@ public class SecurityConfig {
 
                 http
                                 .authorizeRequests()
-                                .antMatchers("/home", "/signup",
+                                .antMatchers("/home", "/signup", "/verify",
                                                 "/css/**", "/js/**")
                                 .permitAll()
                                 .anyRequest().authenticated()

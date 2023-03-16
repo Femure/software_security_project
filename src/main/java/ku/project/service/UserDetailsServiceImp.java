@@ -13,21 +13,32 @@ import java.util.ArrayList;
 @Service
 public class UserDetailsServiceImp implements UserDetailsService {
 
-   @Autowired
-   private MemberRepository memberRepository;
+    private Member member;
 
-   @Override
-   public UserDetails loadUserByUsername(String username)
-                                          throws UsernameNotFoundException {
+    public void CustomUserDetails(Member member) {
+        this.member = member;
+    }
 
-       Member member = memberRepository.findByUsername(username);
+    public boolean isEnabled() {
+        return member.isEnabled();
+    }
 
-       if (member == null) {
-           throw new UsernameNotFoundException("Could not find user");
-       }
+    @Autowired
+    private MemberRepository memberRepository;
 
-       return new org.springframework.security.core.userdetails.User(
-               member.getUsername(), member.getPassword(),
-               new ArrayList<>());
-   }
+    @Override
+    public UserDetails loadUserByUsername(String username)
+            throws UsernameNotFoundException {
+
+        Member member = memberRepository.findByUsername(username);
+
+        if (member == null) {
+            throw new UsernameNotFoundException("Could not find user");
+        }
+
+        return new org.springframework.security.core.userdetails.User(
+                member.getUsername(), member.getPassword(),
+                new ArrayList<>());
+    }
+
 }

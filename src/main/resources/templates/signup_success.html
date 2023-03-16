@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>Signup_success</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+
+<body>
+
+    <div th:insert="fragments/header :: header"></div>
+
+<div class="container text-center">
+    <h3>You have signed up successfully!</h3>
+    <p>Please check your email to verify your account.</p>     
+    <h4><a th:href="@{/login}">Click here to Login</a></h4>
+</div>
