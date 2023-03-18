@@ -3,9 +3,14 @@ package ku.project.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -15,7 +20,10 @@ import java.util.UUID;
 public class Member {
 
    @Id
-   @GeneratedValue
+   @GeneratedValue(generator = "UUID")
+   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+   @Column(name = "id", updatable = false, nullable = false)
+   @Type(type = "org.hibernate.type.UUIDCharType")
    private UUID id;
 
    private Instant createdAt;
