@@ -32,7 +32,6 @@ public class Member {
    private String username;
    private String email;
    private String password;
-   private String confirmPassword;
 
    private String verificationCode;
    private boolean enabled;

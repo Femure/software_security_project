@@ -7,11 +7,11 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface MemberRepository extends JpaRepository<Member,UUID> {
+public interface MemberRepository extends JpaRepository<Member, UUID> {
 
-   // SELECT * FROM Member WHERE username = ‘username’
    Member findByUsername(String username);
 
-   // SELECT * FROM Mmmber WHERE verificationCode = 'code'
+   Member findByEmail(String email);
+
    Member findByVerificationCode(String code);
 }

@@ -30,8 +30,8 @@ public class SignupController {
 
     @GetMapping("/signup")
     public String getSignupPage(SignupDto user, Model model) {
-        if (!model.containsAttribute("createAccountModel")) {
-            model.addAttribute("createAccountModel", new SignupDto());
+        if (!model.containsAttribute("lastUser")) {
+            model.addAttribute("lastUser", new SignupDto());
         }
         return "signup"; // return signup.html
     }
@@ -42,20 +42,24 @@ public class SignupController {
             Model model) throws UnsupportedEncodingException, MessagingException {
         if (result.hasErrors()) {
             // To keep the input field after error
-            redirectAttributes.addFlashAttribute("createAccountModel", user);
+            redirectAttributes.addFlashAttribute("lastUser", user);
             return "signup";
         }
 
         String signupError = null;
-
         if (!signupService.isUsernameAvailable(user.getUsername())) {
             signupError = "The username already exists.";
         }
 
+        // if (!signupService.isEmailAvailable(user.getEmail())) {
+        //     signupError = "The email adress already exists.";
+        // }
+
         if (validator.isValidCaptcha(captcha)) {
             if (signupError == null) {
-                model.addAttribute("signupSuccess", true);
                 signupService.createMember(user, getSiteURL(request));
+                redirectAttributes.addFlashAttribute("lastUser", "");
+                model.addAttribute("signupEmail", true);
                 return "signup_success";
             } else {
                 model.addAttribute("signupError", signupError);
@@ -63,11 +67,19 @@ public class SignupController {
         } else {
             model.addAttribute("errorCaptcha", "Please validate captcha first");
         }
-
-        model.addAttribute("signupDto", new SignupDto());
         return "signup";
 
     }
+
+    // @GetMapping("/resendValidationEmail")
+    // public String resendValidationEmail(SignupDto user, Model model)
+    //         throws UnsupportedEncodingException, MessagingException {
+    //     String signupSuccess = "Validation email resent";
+    //     model.addAttribute("signupSuccess", signupSuccess);
+    //     signupService.resendVerificationEmail(user.getEmail(), "http://localhost");
+    //     model.addAttribute("signupEmail", true);
+    //     return "signup";
+    // }
 
     @GetMapping("/verify")
     public String verifyMember(@Param("code") String code) {

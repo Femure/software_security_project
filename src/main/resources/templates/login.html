@@ -14,20 +14,20 @@
     <div class="container w-50 p-3">
         <h1 class="display-5">Login to Kin Kao</h1>
 
-        <form th:action="@{/login}" method="POST">
-            <div id="error-msg" th:if="${param.error}" class="alert alert-danger">
-                Invalid username or password
+        <form th:action="@{/login}" method="POST" modelAttribute="lastUser" th:object="${signupDto}">
+
+            <div id="error-msg" th:if="${loginError}" class="alert alert-danger">
+                <span th:text="${loginError}"></span>
             </div>
             <div id="logout-msg" th:if="${param.logout}" class="alert alert-success">
                 You have been logged out
             </div>
-            <div class="mb-3">
-                <label for="inputUsername">Username</label>
-                <input type="text" name="username" id="inputUsername" class="form-control" required>
-            </div>
+            <label for="inputUsername">Username</label>
+            <input type="text" th:field="*{username}" id="inputUsername" class="form-control" required>
+
             <div class="mb-3">
                 <label for="inputPassword">Password</label>
-                <input type="password" name="password" id="inputPassword" class="form-control" required>
+                <input type="password" th:field="*{password}" id="inputPassword" class="form-control" required>
             </div>
             <button id="submit-button" type="submit" class="btn btn-primary">Login</button>
         </form>

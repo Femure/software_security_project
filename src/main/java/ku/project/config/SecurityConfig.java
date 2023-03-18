@@ -4,11 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.server.authentication.AnonymousAuthenticationWebFilter;
+
+import net.bytebuddy.implementation.bind.MethodDelegationBinder.ParameterBinding.Anonymous;
+
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 
@@ -28,7 +33,7 @@ public class SecurityConfig {
 
                 http
                                 .authorizeRequests()
-                                .antMatchers("/home", "/signup", "/verify",
+                                .antMatchers("/home", "/signup", "/verify", 
                                                 "/css/**", "/js/**")
                                 .permitAll()
                                 .anyRequest().authenticated()
@@ -37,6 +42,8 @@ public class SecurityConfig {
                                 .formLogin()
                                 .loginPage("/login")
                                 .defaultSuccessUrl("/restaurant", true)
+                                .loginProcessingUrl("/login")
+                                .failureForwardUrl("/login")
                                 .permitAll()
 
                                 .and()

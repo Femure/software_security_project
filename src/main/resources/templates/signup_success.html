@@ -11,8 +11,11 @@
 
     <div th:insert="fragments/header :: header"></div>
 
-<div class="container text-center">
-    <h3>You have signed up successfully!</h3>
-    <p>Please check your email to verify your account.</p>     
-    <h4><a th:href="@{/login}">Click here to Login</a></h4>
-</div>
+    <div class="container text-center">
+        <h3>One last step before successfully complete your account!</h3>
+        <p>Please check your email to verify your account. If you don't receive the validation email
+            verify you spam, otherwise click on the link below to receive another validation email.
+        </p>
+        <!-- <a th:href="@{/resendValidationEmail}">Resend a validation email</a> -->
+    </div>
+</body>

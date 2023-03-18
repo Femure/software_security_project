@@ -15,9 +15,6 @@
 
         <form action="#" th:action="@{/signup}" modelAttribute="lastUser" th:object="${signupDto}" method="POST">
 
-            <div id="success-msg" th:if="${signupSuccess}" class="alert alert-success">
-                Please wait a minute you will received a confirmation code in you inbox mail to sign up successfuly!
-            </div>
             <div id="error-msg" th:if="${signupError}" class="alert alert-danger">
                 <span th:text="${signupError}"></span>
             </div>
@@ -52,7 +49,8 @@
                 <label for="inputConfirmPassword">Confirmation password</label>
                 <input id="inputConfirmPassword" type="password" th:field="*{confirmPassword}" class="form-control">
                 <div class="alert alert-warning" th:if="${#fields.hasErrors('confirmPassword')}"
-                    th:errors="*{confirmPassword}"></div>
+                    th:errors="*{confirmPassword}">
+                </div>
             </div>
 
             <div class="card-footer bg-info text-black">

@@ -37,6 +37,10 @@ public class SignupService {
         return repository.findByUsername(username) == null;
     }
 
+    public boolean isEmailAvailable(String email) {
+        return repository.findByEmail(email) == null;
+    }
+
     public int createMember(SignupDto member, String siteURL) throws UnsupportedEncodingException, MessagingException {
         Member newMember = modelMapper.map(member, Member.class);
         newMember.setCreatedAt(Instant.now());
@@ -52,7 +56,7 @@ public class SignupService {
 
         sendVerificationEmail(newMember, siteURL);
         repository.save(newMember);
-    
+
         return 1;
     }
 
@@ -90,10 +94,21 @@ public class SignupService {
 
     }
 
+    // public void resendVerificationEmail(String mail, String siteURL) throws MessagingException, UnsupportedEncodingException  {
+    //     Member member = repository.findByEmail(mail);
+    //     String randomCode = RandomString.make(64);
+
+    //     member.setVerificationCode(randomCode);
+    //     member.setEnabled(false);
+
+    //     sendVerificationEmail(member, siteURL);
+    //     repository.save(member);
+    // }
+
     public boolean verify(String verificationCode) {
         Member member = repository.findByVerificationCode(verificationCode);
 
-        if (member == null || member.isEnabled()) {
+        if (member == null) {
             return false;
         } else {
             member.setVerificationCode(null);
