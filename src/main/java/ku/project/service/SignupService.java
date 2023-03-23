@@ -7,8 +7,7 @@ import net.bytebuddy.utility.RandomString;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,6 @@ import java.io.UnsupportedEncodingException;
 import java.time.Instant;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 
 @Service
 public class SignupService {
@@ -31,7 +29,7 @@ public class SignupService {
     private ModelMapper modelMapper;
 
     @Autowired
-    private JavaMailSender mailSender;
+    private EmailService emailService;
 
     public boolean isUsernameAvailable(String username) {
         return repository.findByUsername(username) == null;
@@ -54,7 +52,7 @@ public class SignupService {
         newMember.setVerificationCode(randomCode);
         newMember.setEnabled(false);
 
-        sendVerificationEmail(newMember, siteURL);
+        emailService.sendVerificationEmail(newMember, siteURL);
         repository.save(newMember);
 
         return 1;
@@ -64,45 +62,16 @@ public class SignupService {
         return repository.findByUsername(username);
     }
 
-    private void sendVerificationEmail(Member member, String siteURL)
-            throws MessagingException, UnsupportedEncodingException {
-        String toAddress = member.getEmail();
-        String fromAddress = "maxime.f@ku.th";
-        String senderName = "NFTop Compagny";
-        String subject = "Please verify your registration";
-        String content = "Dear [[name]],<br>"
-                + "Please click the link below to verify your registration:<br>"
-                + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
-                + "Thank you,<br>"
-                + "NFTop Compagny";
+    // public void resendVerificationEmail(String mail, String siteURL) throws
+    // MessagingException, UnsupportedEncodingException {
+    // Member member = repository.findByEmail(mail);
+    // String randomCode = RandomString.make(64);
 
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
+    // member.setVerificationCode(randomCode);
+    // member.setEnabled(false);
 
-        helper.setFrom(fromAddress, senderName);
-        helper.setTo(toAddress);
-        helper.setSubject(subject);
-
-        content = content.replace("[[name]]", member.getUsername());
-        String verifyURL = siteURL + "/verify?code=" + member.getVerificationCode();
-
-        content = content.replace("[[URL]]", verifyURL);
-
-        helper.setText(content, true);
-
-        mailSender.send(message);
-
-    }
-
-    // public void resendVerificationEmail(String mail, String siteURL) throws MessagingException, UnsupportedEncodingException  {
-    //     Member member = repository.findByEmail(mail);
-    //     String randomCode = RandomString.make(64);
-
-    //     member.setVerificationCode(randomCode);
-    //     member.setEnabled(false);
-
-    //     sendVerificationEmail(member, siteURL);
-    //     repository.save(member);
+    // sendVerificationEmail(member, siteURL);
+    // repository.save(member);
     // }
 
     public boolean verify(String verificationCode) {

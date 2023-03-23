@@ -4,7 +4,10 @@ import ku.project.dto.SignupDto;
 import ku.project.model.Member;
 import ku.project.repository.MemberRepository;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
+
+import javax.mail.MessagingException;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +21,13 @@ public class AuthService {
 
     @Autowired
     private ModelMapper modelMapper;
+    
+    @Autowired
+    private EmailService emailService;
 
     public static final int MAX_FAILED_ATTEMPTS = 3;
 
-    private static final long LOCK_TIME_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+    private static final long LOCK_TIME_DURATION = 15 * 60 * 1000; // 24 hours
 
     public SignupDto getMember(String username) {
         Member member = repository.findByUsername(username);
@@ -45,11 +51,17 @@ public class AuthService {
         repository.save(member);
     }
 
-    public void lock(String username) {
+    public void lock(String username){
         Member member = repository.findByUsername(username);
         member.setAccountNonLocked(true);
         member.setLockTime(new Date());
         repository.save(member);
+        
+        try {
+            emailService.sendAccountLocked(member);
+        } catch (UnsupportedEncodingException | MessagingException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean unlockWhenTimeExpired(String username) {
