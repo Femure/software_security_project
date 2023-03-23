@@ -7,6 +7,8 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import java.util.Date;
+
 import ku.project.validation.PasswordValueMatch;
 import ku.project.validation.ValidPassword;
 
@@ -22,28 +24,36 @@ import ku.project.validation.ValidPassword;
 public class SignupDto {    
         
         @NotBlank(message = "First name is required")
+        @Size(max = 100)
         @Pattern(regexp = "^[a-zA-Z]+$", message = "First name can only contain letters")
         private String firstName;
 
         @NotBlank(message = "Last name is required")
+        @Size(max = 100)
         private String lastName;
 
         @NotBlank(message = "Username is required")
-        @Size(min = 4, message = "Username must have at least 4 characters")
+        @Size(min = 4, max = 100, message = "Username must have at least 4 characters")
         private String username;
 
         @Email
+        @Size(max = 100)
         @NotBlank(message = "Email is required")
         private String email;
 
         @NotBlank(message = "Password is required")
+        @Size(max = 128)
         @ValidPassword
         private String password;
 
         @NotBlank(message = "Confirm Password is required")
+        @Size(max = 128)
         private String confirmPassword;
 
-        
         private String verificationCode;     
         private boolean enabled;
+
+        private boolean accountNonLocked;
+        private int failedAttempt;
+        private Date lockTime;
 }

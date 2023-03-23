@@ -41,4 +41,8 @@ public class UserDetailsServiceImp implements UserDetailsService {
                 new ArrayList<>());
     }
 
+    public boolean isAccountNonLocked() {
+        return member.isAccountNonLocked();
+    }
+
 }

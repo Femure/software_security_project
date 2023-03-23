@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
+import java.util.Date;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -35,4 +36,8 @@ public class Member {
 
    private String verificationCode;
    private boolean enabled;
+
+   private boolean accountNonLocked;
+   private int failedAttempt;
+   private Date lockTime;
 }

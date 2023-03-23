@@ -2,7 +2,8 @@ package ku.project.config;
 
 import ku.project.component.authentification.CustomAuthenticationDetailsSource;
 import ku.project.component.authentification.CustomAuthenticationProvider;
-import ku.project.component.handler.LoginAuthenticationFailureHandler;
+import ku.project.component.handler.CustomLoginSuccessHandler;
+import ku.project.component.handler.CustomLoginFailureHandler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -28,11 +29,14 @@ public class SecurityConfig {
         @Autowired
         private ApplicationContext context;
 
-        @Autowired
-        private CustomAuthenticationDetailsSource customAuthenticationDetailsSource;
+        // @Autowired
+        // private CustomAuthenticationDetailsSource customAuthenticationDetailsSource;
 
         @Autowired
-        private LoginAuthenticationFailureHandler failureHandler;
+        private CustomLoginFailureHandler loginFailureHandler;
+
+        @Autowired
+        private CustomLoginSuccessHandler loginSuccessHandler;
 
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -47,11 +51,10 @@ public class SecurityConfig {
                                 .and()
                                 .formLogin()
                                 .loginPage("/login")
-                                .defaultSuccessUrl("/restaurant", true)
-                                .failureHandler(failureHandler)
-                                .authenticationDetailsSource(customAuthenticationDetailsSource)
-                                // .loginProcessingUrl("/login")
-                                // .failureForwardUrl("/login")
+                                .failureHandler(loginFailureHandler)
+                                .successHandler(loginSuccessHandler)
+
+                                // .authenticationDetailsSource(customAuthenticationDetailsSource)
                                 .permitAll()
 
                                 .and()
@@ -78,11 +81,12 @@ public class SecurityConfig {
                 return http.build();
         }
 
-        @Bean
-        public DaoAuthenticationProvider authenticationProvider(@Autowired UserDetailsService userDetailsService,
-                        @Autowired PasswordEncoder passwordEncoder) {
-                return new CustomAuthenticationProvider(userDetailsService, passwordEncoder);
-        }
+        // @Bean
+        // public DaoAuthenticationProvider authenticationProvider(@Autowired
+        // UserDetailsService userDetailsService,
+        // @Autowired PasswordEncoder passwordEncoder) {
+        // return new CustomAuthenticationProvider(userDetailsService, passwordEncoder);
+        // }
 
         @Bean
         public PasswordEncoder encoder() {
@@ -91,4 +95,4 @@ public class SecurityConfig {
 
 }
 
-//PASSWORD ENCODER CIRCULAR CYCLE
+// PASSWORD ENCODER CIRCULAR CYCLE
