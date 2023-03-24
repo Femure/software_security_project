@@ -13,16 +13,12 @@ import ku.project.validation.PasswordValueMatch;
 import ku.project.validation.ValidPassword;
 
 @PasswordValueMatch.List({
-        @PasswordValueMatch(
-                field = "password",
-                fieldMatch = "confirmPassword",
-                message = "Passwords do not match!"
-        )
+                @PasswordValueMatch(field = "password", fieldMatch = "confirmPassword", message = "Passwords do not match!")
 })
 
 @Data
-public class SignupDto {    
-        
+public class SignupDto {
+
         @NotBlank(message = "First name is required")
         @Size(max = 100)
         @Pattern(regexp = "^[a-zA-Z]+$", message = "First name can only contain letters")
@@ -41,6 +37,10 @@ public class SignupDto {
         @NotBlank(message = "Email is required")
         private String email;
 
+        @NotBlank
+        @Pattern(regexp = "^(ROLE_ADMIN|ROLE_USER)$", message = "Role is in an incorrect format.")
+        private String role;
+
         @NotBlank(message = "Password is required")
         @Size(max = 128)
         @ValidPassword
@@ -50,7 +50,7 @@ public class SignupDto {
         @Size(max = 128)
         private String confirmPassword;
 
-        private String verificationCode;     
+        private String verificationCode;
         private boolean enabled;
 
         private boolean accountNonLocked;

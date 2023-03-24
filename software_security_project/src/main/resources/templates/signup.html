@@ -41,6 +41,14 @@
                 <div class="alert alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
             </div>
             <div class="mb-3">
+                <label for="inputRole">Role</label>
+                <select id="inputRole" name="role" class="form-select">
+                    <option value="ROLE_USER" selected>User</option>
+                    <option value="ROLE_ADMIN">Admin</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
                 <label for="inputPassword">Password</label>
                 <input id="inputPassword" type="password" th:field="*{password}" class="form-control">
                 <div class="alert alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
@@ -53,7 +61,7 @@
                 </div>
             </div>
 
-            <div class="card-footer bg-info text-black">
+            <div class="alert alert-warning">
                 <span th:text="${errorCaptcha}"></span>
             </div>
             <div class="row">
