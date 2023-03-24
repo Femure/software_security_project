@@ -1,6 +1,7 @@
 package ku.project.service;
 
-import ku.project.dto.RestaurantDto;
+import ku.project.dto.RestaurantRequest;
+import ku.project.dto.RestaurantResponse;
 import ku.project.model.Restaurant;
 import ku.project.repository.RestaurantRepository;
 import org.modelmapper.ModelMapper;
@@ -9,36 +10,42 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class RestaurantService {
 
-   @Autowired
-   private RestaurantRepository repository;
+    @Autowired
+    private RestaurantRepository repository;
 
-   @Autowired
-   private ModelMapper modelMapper;
+    @Autowired
+    private ModelMapper modelMapper;
 
-   //   ----> we are mapping DAO → DTO
-   public List<RestaurantDto> getRestaurants() {
-       List<Restaurant> restaurants = repository.findAll();
+    public RestaurantResponse getRestaurantById(UUID restaurantId) {
+        Restaurant restaurant = repository.findById(restaurantId).get();
+        return modelMapper.map(restaurant, RestaurantResponse.class);
+    } 
 
-       List<RestaurantDto> dtos = restaurants
-               .stream()
-               .map(restaurant -> modelMapper.map(restaurant, 
-                                                  RestaurantDto.class))
-               .collect(Collectors.toList());
+    // ----> we are mapping DAO → DTO
+    public List<RestaurantResponse> getRestaurants() {
+        List<Restaurant> restaurants = repository.findAll();
 
-       return dtos;
-   }
+        List<RestaurantResponse> dtos = restaurants
+                .stream()
+                .map(restaurant -> modelMapper.map(restaurant,
+                        RestaurantResponse.class))
+                .collect(Collectors.toList());
 
+        return dtos;
+    }
 
-   //   ----> we are mapping DTO → DAO
-   public void create(RestaurantDto restaurantDto) {
-       Restaurant restaurant = modelMapper.map(restaurantDto, 
-                                               Restaurant.class);
-       restaurant.setCreatedAt(Instant.now());
-       repository.save(restaurant);
-   }
+    // ----> we are mapping DTO → DAO
+    public void create(RestaurantRequest restaurantDto) {
+        Restaurant restaurant = modelMapper.map(restaurantDto,
+                Restaurant.class);
+        restaurant.setCreatedAt(Instant.now());
+        repository.save(restaurant);
+    }
+
 }
