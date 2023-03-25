@@ -1,13 +1,13 @@
-package ku.review.service;
+package ku.project.service;
 
-import ku.review.dto.SignupRequest;
-import ku.review.model.Member;
-import ku.review.repository.MemberRepository;
+import ku.project.dto.SignupRequest;
+import ku.project.model.Member;
+import ku.project.repository.MemberRepository;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
-import jakarta.mail.MessagingException;
+import javax.mail.MessagingException;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
