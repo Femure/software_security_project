@@ -2,50 +2,69 @@ package ku.project.service;
 
 import ku.project.dto.RestaurantRequest;
 import ku.project.dto.RestaurantResponse;
-import ku.project.model.Restaurant;
-import ku.project.repository.RestaurantRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class RestaurantService {
 
     @Autowired
-    private RestaurantRepository repository;
+    private RestTemplate restTemplate;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private JwtAccessTokenService tokenService;
+
+    public RestaurantRequest create(RestaurantRequest restaurant) {
+
+        String token = tokenService.requestAccessToken();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("authorization", "Bearer " + token);
+        headers.add("Content-Type", MediaType.APPLICATION_JSON.toString());
+        HttpEntity entity = new HttpEntity(restaurant, headers);
+
+        String url = "http://localhost:8091/api/restaurant";
+
+        ResponseEntity<RestaurantRequest> response = restTemplate.exchange(url, HttpMethod.POST,
+                entity, RestaurantRequest.class);
+
+        return response.getBody();
+    }
+
+    public List<RestaurantResponse> getRestaurants() {
+
+        String token = tokenService.requestAccessToken();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("authorization", "Bearer " + token);
+        HttpEntity entity = new HttpEntity(headers);
+
+        String url = "http://localhost:8091/api/restaurant";
+
+        ResponseEntity<RestaurantResponse[]> response = restTemplate.exchange(url, HttpMethod.GET,
+                entity, RestaurantResponse[].class);
+
+        RestaurantResponse[] restaurants = response.getBody();
+        return Arrays.asList(restaurants);
+    }
 
     public RestaurantResponse getRestaurantById(UUID restaurantId) {
-        Restaurant restaurant = repository.findById(restaurantId).get();
-        return modelMapper.map(restaurant, RestaurantResponse.class);
-    } 
+        String token = tokenService.requestAccessToken();
 
-    // ----> we are mapping DAO → DTO
-    public List<RestaurantResponse> getRestaurants() {
-        List<Restaurant> restaurants = repository.findAll();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("authorization", "Bearer " + token);
+        HttpEntity entity = new HttpEntity(headers);
 
-        List<RestaurantResponse> dtos = restaurants
-                .stream()
-                .map(restaurant -> modelMapper.map(restaurant,
-                        RestaurantResponse.class))
-                .collect(Collectors.toList());
+        String url = "http://localhost:8091/api/restaurant/" + restaurantId;
+        ResponseEntity<RestaurantResponse> response = restTemplate.exchange(url, HttpMethod.GET,
+                entity, RestaurantResponse.class);
 
-        return dtos;
+        return response.getBody();
     }
-
-    // ----> we are mapping DTO → DAO
-    public void create(RestaurantRequest restaurantDto) {
-        Restaurant restaurant = modelMapper.map(restaurantDto,
-                Restaurant.class);
-        restaurant.setCreatedAt(Instant.now());
-        repository.save(restaurant);
-    }
-
 }

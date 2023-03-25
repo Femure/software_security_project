@@ -1,13 +1,13 @@
-package ku.project.service;
+package ku.review.service;
 
-import ku.project.dto.SignupDto;
-import ku.project.model.Member;
-import ku.project.repository.MemberRepository;
+import ku.review.dto.SignupRequest;
+import ku.review.model.Member;
+import ku.review.repository.MemberRepository;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +29,11 @@ public class AuthService {
 
     private static final long LOCK_TIME_DURATION = 15 * 60 * 1000; // 24 hours
 
-    public SignupDto getMember(String username) {
+    public SignupRequest getMember(String username) {
         Member member = repository.findByUsername(username);
-        SignupDto user = null;
+        SignupRequest user = null;
         if (member != null) {
-            user = modelMapper.map(member, SignupDto.class);
+            user = modelMapper.map(member, SignupRequest.class);
         }
         return user;
     }

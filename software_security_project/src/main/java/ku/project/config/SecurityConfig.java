@@ -43,13 +43,13 @@ public class SecurityConfig {
 
                 http
                                 .authorizeRequests()
-                                .antMatchers("/home", "/signup", "/verify", "/login*",
+                                .antMatchers("/home", "/signup", "/verify", "/login",
                                                 "/css/**", "/js/**")
                                 .permitAll()
-                                .antMatchers("/restaurant/add")
-                                .access("hasRole('ROLE_ADMIN')")
-                                .antMatchers("/restaurant", "/review", "/review/**")
-                                .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+                                // .antMatchers("/restaurant/add")
+                                // .access("hasRole('ROLE_ADMIN')")
+                                // .antMatchers("/restaurant", "/review", "/review/**")
+                                // .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
 
                                 .anyRequest().authenticated()
 

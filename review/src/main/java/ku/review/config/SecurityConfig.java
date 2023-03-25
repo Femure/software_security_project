@@ -26,9 +26,9 @@ public class SecurityConfig {
    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
        http
                .authorizeRequests()
-               .requestMatchers(HttpMethod.GET, "/api/review")
+               .requestMatchers(HttpMethod.GET, "/api/review","/api/restaurant")
                    .hasAuthority("SCOPE_read:reviews")
-               .requestMatchers(HttpMethod.POST, "/api/review")
+               .requestMatchers(HttpMethod.POST, "/api/review","/api/restaurant")
                    .hasAuthority("SCOPE_create:reviews")
                .anyRequest()
                .authenticated()

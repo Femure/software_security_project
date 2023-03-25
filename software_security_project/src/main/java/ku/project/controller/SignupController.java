@@ -1,6 +1,6 @@
 package ku.project.controller;
 
-import ku.project.dto.SignupDto;
+import ku.project.dto.SignupRequest;
 import ku.project.service.SignupService;
 import ku.project.validation.CaptchaValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +29,15 @@ public class SignupController {
     private CaptchaValidator validator;
 
     @GetMapping("/signup")
-    public String getSignupPage(SignupDto user, Model model) {
+    public String getSignupPage(SignupRequest user, Model model) {
         if (!model.containsAttribute("lastUser")) {
-            model.addAttribute("lastUser", new SignupDto());
+            model.addAttribute("lastUser", new SignupRequest());
         }
         return "signup"; // return signup.html
     }
 
     @PostMapping("/signup")
-    public String signupUser(@Valid SignupDto user, BindingResult result, HttpServletRequest request,
+    public String signupUser(@Valid SignupRequest user, BindingResult result, HttpServletRequest request,
             @RequestParam("g-recaptcha-response") String captcha, RedirectAttributes redirectAttributes,
             Model model) throws UnsupportedEncodingException, MessagingException {
         if (result.hasErrors()) {
@@ -57,7 +57,7 @@ public class SignupController {
 
         if (validator.isValidCaptcha(captcha)) {
             if (signupError == null) {
-                signupService.createMember(user, getSiteURL(request));
+                signupService.createMember(user);
                 redirectAttributes.addFlashAttribute("lastUser", "");
                 model.addAttribute("signupEmail", true);
                 return "signup_success";

@@ -1,14 +1,14 @@
-package ku.project.service;
+package ku.review.service;
 
-import ku.project.model.Member;
+import ku.review.model.Member;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
 
 @Service
@@ -17,9 +17,9 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendVerificationEmail(Member member, String siteURL)
+    public void sendVerificationEmail(Member member)
             throws MessagingException, UnsupportedEncodingException {
-
+        String siteURL = "http://localhost:8090";
         String subject = "Please verify your registration";
         String content = "Dear [[username]],<br>"
                 + "Please click the link below to verify your registration:<br>"

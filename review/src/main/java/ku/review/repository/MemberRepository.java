@@ -1,6 +1,6 @@
-package ku.project.repository;
+package ku.review.repository;
 
-import ku.project.model.Member;
+import ku.review.model.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

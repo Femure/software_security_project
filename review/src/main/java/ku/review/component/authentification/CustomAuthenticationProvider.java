@@ -1,7 +1,7 @@
-package ku.project.component.authentification;
+package ku.review.component.authentification;
 
-import ku.project.dto.SignupRequest;
-import ku.project.service.AuthService;
+import ku.review.dto.SignupRequest;
+import ku.review.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;

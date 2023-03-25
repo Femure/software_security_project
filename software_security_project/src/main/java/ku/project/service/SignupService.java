@@ -1,92 +1,54 @@
 package ku.project.service;
 
-import ku.project.dto.SignupDto;
-import ku.project.model.Member;
-import ku.project.repository.MemberRepository;
-import net.bytebuddy.utility.RandomString;
-
-import org.modelmapper.ModelMapper;
+import ku.project.dto.SignupRequest;
+import ku.project.dto.SignupResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.UnsupportedEncodingException;
-import java.time.Instant;
-
-import javax.mail.MessagingException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class SignupService {
 
     @Autowired
-    private MemberRepository repository;
+    private RestTemplate restTemplate;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private JwtAccessTokenService tokenService;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    public SignupRequest createMember(SignupRequest signup) {
 
-    @Autowired
-    private EmailService emailService;
+        String token = tokenService.requestAccessToken();
 
-    public boolean isUsernameAvailable(String username) {
-        return repository.findByUsername(username) == null;
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("authorization", "Bearer " + token);
+        headers.add("Content-Type", MediaType.APPLICATION_JSON.toString());
+        HttpEntity entity = new HttpEntity(signup, headers);
+
+        String url = "http://localhost:8091/api/signup";
+
+        ResponseEntity<SignupRequest> response = restTemplate.exchange(url, HttpMethod.POST,
+                entity, SignupRequest.class);
+
+        return response.getBody();
     }
 
-    public boolean isEmailAvailable(String email) {
-        return repository.findByEmail(email) == null;
-    }
+    public SignupResponse getMember(String username) {
+        String token = tokenService.requestAccessToken();
 
-    public int createMember(SignupDto member, String siteURL) throws UnsupportedEncodingException, MessagingException {
-        Member newMember = modelMapper.map(member, Member.class);
-        newMember.setCreatedAt(Instant.now());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("authorization", "Bearer " + token);
+        HttpEntity entity = new HttpEntity(headers);
 
-        String hashedPassword = passwordEncoder.encode(member.getPassword());
+        String url = "http://localhost:8091/api/signup/" + username;
+        ResponseEntity<SignupResponse> response = restTemplate.exchange(url, HttpMethod.GET,
+                entity, SignupResponse.class);
 
-        newMember.setPassword(hashedPassword);
-
-        String randomCode = RandomString.make(64);
-
-        newMember.setVerificationCode(randomCode);
-        newMember.setEnabled(false);
-
-        emailService.sendVerificationEmail(newMember, siteURL);
-        repository.save(newMember);
-
-        return 1;
-    }
-
-    public Member getMember(String username) {
-        return repository.findByUsername(username);
-    }
-
-    // public void resendVerificationEmail(String mail, String siteURL) throws
-    // MessagingException, UnsupportedEncodingException {
-    // Member member = repository.findByEmail(mail);
-    // String randomCode = RandomString.make(64);
-
-    // member.setVerificationCode(randomCode);
-    // member.setEnabled(false);
-
-    // sendVerificationEmail(member, siteURL);
-    // repository.save(member);
-    // }
-
-    public boolean verify(String verificationCode) {
-        Member member = repository.findByVerificationCode(verificationCode);
-
-        if (member == null) {
-            return false;
-        } else {
-            member.setVerificationCode(null);
-            member.setEnabled(true);
-            repository.save(member);
-
-            return true;
-        }
-
+        return response.getBody();
     }
 
 }

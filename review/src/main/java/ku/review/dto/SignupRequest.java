@@ -1,23 +1,23 @@
-package ku.project.dto;
+package ku.review.dto;
 
 import lombok.*;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.util.Date;
 
-import ku.project.validation.PasswordValueMatch;
-import ku.project.validation.ValidPassword;
+import ku.review.validation.PasswordValueMatch;
+import ku.review.validation.ValidPassword;
 
 @PasswordValueMatch.List({
                 @PasswordValueMatch(field = "password", fieldMatch = "confirmPassword", message = "Passwords do not match!")
 })
 
 @Data
-public class SignupDto {
+public class SignupRequest {
 
         @NotBlank(message = "First name is required")
         @Size(max = 100)

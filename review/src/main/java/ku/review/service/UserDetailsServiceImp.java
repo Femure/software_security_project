@@ -1,7 +1,7 @@
-package ku.project.service;
+package ku.review.service;
 
-import ku.project.model.Member;
-import ku.project.repository.MemberRepository;
+import ku.review.model.Member;
+import ku.review.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
