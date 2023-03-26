@@ -36,14 +36,12 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
 
         boolean pwned = true;
         String inDataBreach = "";
-        // System.out.printf("%s\n", password);
         try {
             pwned = hibp.isPlainPasswordPwned(password);
             if (pwned) {
                 inDataBreach = "Your password appeared in password data breach. Try to change it";
             }
         } catch (HaveIBeenPwndException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

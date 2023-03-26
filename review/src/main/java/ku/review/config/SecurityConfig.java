@@ -16,54 +16,45 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-   @Value("${auth0.audience}")
-   private String audience;
+        @Value("${auth0.audience}")
+        private String audience;
 
-   @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
-   private String issuer;
+        @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+        private String issuer;
 
-   @Bean
-   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-       http
-               .authorizeRequests()
-               .requestMatchers(HttpMethod.GET, "/api/review","/api/restaurant")
-                   .hasAuthority("SCOPE_read:reviews")
-               .requestMatchers(HttpMethod.POST, "/api/review","/api/restaurant")
-                   .hasAuthority("SCOPE_create:reviews")
-               .anyRequest()
-               .authenticated()
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                http
+                                .authorizeHttpRequests()
+                                .requestMatchers(HttpMethod.GET, "/api/review", "/api/restaurant")
+                                .hasAuthority("SCOPE_read:reviews")
+                                .requestMatchers(HttpMethod.POST, "/api/review", "/api/restaurant")
+                                .hasAuthority("SCOPE_create:reviews")
+                                .anyRequest()
+                                .authenticated()
+                                
+                                .and()
+                                .sessionManagement(management -> management
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .oauth2ResourceServer(server -> server
+                                                .jwt()
+                                                .decoder(jwtDecoder()));
 
+                return http.build();
+        }
 
-       .and()
-               .sessionManagement()
-               .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        private JwtDecoder jwtDecoder() {
+                OAuth2TokenValidator<Jwt> withAudience = new AudienceValidator(audience);
 
-               // use oauth as a resource server to do jwt validation
-       .and()
-               .oauth2ResourceServer()
-               .jwt()
-               .decoder(jwtDecoder());
+                OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(issuer);
 
-       return http.build();
-   }
+                OAuth2TokenValidator<Jwt> validator = new DelegatingOAuth2TokenValidator<>(withAudience, withIssuer);
 
-   private JwtDecoder jwtDecoder() {
-       OAuth2TokenValidator<Jwt> withAudience =
-               new AudienceValidator(audience);
+                NimbusJwtDecoder jwtDecoder = (NimbusJwtDecoder) JwtDecoders.fromOidcIssuerLocation(issuer);
 
-       OAuth2TokenValidator<Jwt> withIssuer =
-               JwtValidators.createDefaultWithIssuer(issuer);
+                jwtDecoder.setJwtValidator(validator);
 
-       OAuth2TokenValidator<Jwt> validator =
-               new DelegatingOAuth2TokenValidator<>(withAudience, withIssuer);
-
-       NimbusJwtDecoder jwtDecoder = (NimbusJwtDecoder)
-               JwtDecoders.fromOidcIssuerLocation(issuer);
-
-       jwtDecoder.setJwtValidator(validator);
-
-       return jwtDecoder;
-   }
+                return jwtDecoder;
+        }
 
 }
-

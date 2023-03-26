@@ -89,9 +89,4 @@ public class SignupController {
             return "verify_fail";
         }
     }
-
-    private String getSiteURL(HttpServletRequest request) {
-        String siteURL = request.getRequestURL().toString();
-        return siteURL.replace(request.getServletPath(), "");
-    }
 }
