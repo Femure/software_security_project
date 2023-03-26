@@ -19,8 +19,8 @@ public class Restaurant {
    @Id
    @GeneratedValue(generator = "UUID")
    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-   @Column(name = "restaurantId", updatable = false, nullable = false)
-   @JdbcTypeCode(java.sql.Types.VARCHAR)
+   @Column(name = "id", updatable = false, nullable = false)
+   @JdbcTypeCode(java.sql.Types.NVARCHAR)
    private UUID id;
 
    private String name;

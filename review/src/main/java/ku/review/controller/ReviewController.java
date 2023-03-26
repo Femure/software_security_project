@@ -31,7 +31,7 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity create(@Valid @RequestBody ReviewRequest review,
+    public ResponseEntity<?> create(@Valid @RequestBody ReviewRequest review,
             BindingResult result) {
 
         if (result.hasErrors())

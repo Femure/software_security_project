@@ -1,6 +1,6 @@
 package ku.project.component.authentification;
 
-import ku.project.dto.SignupRequest;
+import ku.project.dto.SignupDto;
 import ku.project.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -29,7 +29,7 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        SignupRequest user = authService.getMember(authentication.getName());
+        SignupDto user = authService.getMember(authentication.getName());
         String password = (String) authentication.getCredentials();
 
         System.out.print("Before\n");

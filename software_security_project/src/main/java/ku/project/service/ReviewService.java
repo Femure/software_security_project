@@ -27,7 +27,7 @@ public class ReviewService {
        HttpHeaders headers = new HttpHeaders();
        headers.add("authorization", "Bearer " + token);
        headers.add("Content-Type", MediaType.APPLICATION_JSON.toString());
-       HttpEntity entity = new HttpEntity(review,headers);
+       HttpEntity<ReviewRequest> entity = new HttpEntity<>(review,headers);
 
        String url = "http://localhost:8091/api/review";
 
@@ -44,7 +44,7 @@ public class ReviewService {
 
        HttpHeaders headers = new HttpHeaders();
        headers.add("authorization", "Bearer " + token);
-       HttpEntity entity = new HttpEntity(headers);
+       HttpEntity<String> entity = new HttpEntity<>(headers);
 
        String url = "http://localhost:8091/api/review/" + restaurantId;
 

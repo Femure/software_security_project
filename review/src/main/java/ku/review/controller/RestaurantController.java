@@ -25,12 +25,12 @@ public class RestaurantController {
     }
 
     @GetMapping("/{id}")
-    public RestaurantResponse getRestaurantById(@PathVariable UUID restaurantId) {
-        return service.getRestaurantById(restaurantId);
+    public RestaurantResponse getRestaurantById(@PathVariable UUID id) {
+        return service.getRestaurantById(id);
     }
 
     @PostMapping
-    public ResponseEntity create(@Valid @RequestBody RestaurantRequest restaurant,
+    public ResponseEntity<?> create(@Valid @RequestBody RestaurantRequest restaurant,
             BindingResult result) {
 
         if (result.hasErrors())

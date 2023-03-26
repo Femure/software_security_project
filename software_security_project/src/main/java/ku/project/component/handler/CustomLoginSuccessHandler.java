@@ -13,7 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import ku.project.dto.SignupRequest;
+import ku.project.dto.SignupDto;
 import ku.project.service.AuthService;
 
 @Component
@@ -27,7 +27,7 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
             Authentication authentication) throws IOException, ServletException {
 
         String username = authentication.getName();
-        SignupRequest user = authService.getMember(username);
+        SignupDto user = authService.getMember(username);
         if (user.isAccountNonLocked()) {
             authentication.setAuthenticated(false);
             throw new LockedException("");

@@ -8,7 +8,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
-import ku.project.dto.SignupRequest;
+import ku.project.dto.SignupDto;
 import ku.project.service.AuthService;
 
 import javax.servlet.ServletException;
@@ -28,7 +28,7 @@ public class CustomLoginFailureHandler extends SimpleUrlAuthenticationFailureHan
             AuthenticationException exception)
             throws IOException, ServletException {
 
-        SignupRequest user = authService.getMember(request.getParameter("username"));
+        SignupDto user = authService.getMember(request.getParameter("username"));
         String username = request.getParameter("username");
 
         exception = new BadCredentialsException("Invalid username or password");

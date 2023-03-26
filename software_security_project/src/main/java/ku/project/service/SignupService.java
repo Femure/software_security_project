@@ -1,7 +1,7 @@
 package ku.project.service;
 
 import ku.project.repository.MemberRepository;
-import ku.project.dto.SignupRequest;
+import ku.project.dto.SignupDto;
 import ku.project.model.Member;
 import net.bytebuddy.utility.RandomString;
 
@@ -43,7 +43,7 @@ public class SignupService {
         return repository.findByUsername(username);
     }
 
-    public int createMember(SignupRequest member) throws UnsupportedEncodingException, MessagingException {
+    public int createMember(SignupDto member) throws UnsupportedEncodingException, MessagingException {
         Member newMember = modelMapper.map(member, Member.class);
         newMember.setCreatedAt(Instant.now());
 

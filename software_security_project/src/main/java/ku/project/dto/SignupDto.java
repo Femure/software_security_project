@@ -17,7 +17,7 @@ import ku.project.validation.ValidPassword;
 })
 
 @Data
-public class SignupRequest {
+public class SignupDto {
 
         @NotBlank(message = "First name is required")
         @Size(max = 100)

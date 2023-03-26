@@ -1,6 +1,6 @@
 package ku.project.service;
 
-import ku.project.dto.SignupRequest;
+import ku.project.dto.SignupDto;
 import ku.project.model.Member;
 import ku.project.repository.MemberRepository;
 
@@ -29,11 +29,11 @@ public class AuthService {
 
     private static final long LOCK_TIME_DURATION = 15 * 60 * 1000; // 24 hours
 
-    public SignupRequest getMember(String username) {
+    public SignupDto getMember(String username) {
         Member member = repository.findByUsername(username);
-        SignupRequest user = null;
+        SignupDto user = null;
         if (member != null) {
-            user = modelMapper.map(member, SignupRequest.class);
+            user = modelMapper.map(member, SignupDto.class);
         }
         return user;
     }

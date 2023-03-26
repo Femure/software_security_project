@@ -45,7 +45,7 @@ public class JwtAccessTokenService {
         requestBody.add("client_secret", clientSecret);
         requestBody.add("audience", audience);
 
-        HttpEntity entity = new HttpEntity(requestBody, headers);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(requestBody, headers);
 
         ResponseEntity<JwtResponse> response = restTemplate.exchange(issuer + "oauth/token",
                 HttpMethod.POST,

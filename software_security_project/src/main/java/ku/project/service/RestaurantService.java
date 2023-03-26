@@ -27,7 +27,7 @@ public class RestaurantService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("authorization", "Bearer " + token);
         headers.add("Content-Type", MediaType.APPLICATION_JSON.toString());
-        HttpEntity entity = new HttpEntity(restaurant, headers);
+        HttpEntity<RestaurantRequest> entity = new HttpEntity<>(restaurant, headers);
 
         String url = "http://localhost:8091/api/restaurant";
 
@@ -43,7 +43,7 @@ public class RestaurantService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("authorization", "Bearer " + token);
-        HttpEntity entity = new HttpEntity(headers);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
 
         String url = "http://localhost:8091/api/restaurant";
 
@@ -59,7 +59,7 @@ public class RestaurantService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("authorization", "Bearer " + token);
-        HttpEntity entity = new HttpEntity(headers);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
 
         String url = "http://localhost:8091/api/restaurant/" + restaurantId;
         ResponseEntity<RestaurantResponse> response = restTemplate.exchange(url, HttpMethod.GET,
