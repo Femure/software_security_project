@@ -55,6 +55,7 @@ public class SignupService {
 
         newMember.setVerificationCode(randomCode);
         newMember.setEnabled(false);
+        newMember.setRole("ROLE_USER");
 
         emailService.sendVerificationEmail(newMember);
         repository.save(newMember);

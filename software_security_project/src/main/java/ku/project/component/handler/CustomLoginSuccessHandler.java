@@ -30,15 +30,14 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         SignupDto user = authService.getMember(username);
         if (user.isAccountNonLocked()) {
             authentication.setAuthenticated(false);
-            throw new LockedException("");
+            throw new LockedException("Locked");
 
         } else {
             if (!user.isEnabled()) {
                 authentication.setAuthenticated(false);
-                throw new DisabledException("");
+                throw new DisabledException("Disabled");
             } else {
                 if (user.getFailedAttempt() > 0) {
-                    authentication.setAuthenticated(true);
                     authService.resetFailedAttempts(username);
                 }
             }

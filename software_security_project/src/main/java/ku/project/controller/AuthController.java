@@ -2,17 +2,48 @@
 package ku.project.controller;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @Controller
 public class AuthController {
 
     @GetMapping("/login")
-    public String loginView() {
+    public String loginView(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession(false);
+        String loginError = null;
+        if (session != null) {
+            AuthenticationException exception = (AuthenticationException) session
+                    .getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+            if (exception != null) {
+                switch (exception.getMessage()) {
+                    case "BadCredentials":
+                        loginError = "Invalid username or password";
+                        break;
+                    case "Locked":
+                        loginError = "Your account has been locked due to 3 failed attempts. It will be unlocked after 24 hours.";
+                        break;
+                    case "Disabled":
+                        loginError = "The account is not verify. Please check your email to validate your account";
+                        break;
+                    case "Unlocked":
+                        loginError = "Your account has been unlocked. Please try to login again.";
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            model.addAttribute("loginError", loginError);
+        }
         return "login";
     }
 

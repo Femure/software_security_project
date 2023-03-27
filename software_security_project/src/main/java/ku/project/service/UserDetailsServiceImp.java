@@ -15,6 +15,9 @@ import java.util.List;
 @Service
 public class UserDetailsServiceImp implements UserDetailsService {
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     private Member member;
 
     public void CustomUserDetails(Member member) {
@@ -25,29 +28,24 @@ public class UserDetailsServiceImp implements UserDetailsService {
         return member.isEnabled();
     }
 
-    @Autowired
-    private MemberRepository memberRepository;
+    public boolean isAccountNonLocked() {
+        return member.isAccountNonLocked();
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
+        Member user = memberRepository.findByUsername(username);
 
-        Member member = memberRepository.findByUsername(username);
-
-        if (member == null) {
+        if (user == null) {
             throw new UsernameNotFoundException("Could not find user");
         }
 
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(member.getRole()));
+        authorities.add(new SimpleGrantedAuthority(user.getRole()));
 
         return new org.springframework.security.core.userdetails.User(
-                member.getUsername(), member.getPassword(), authorities);
-
-    }
-
-    public boolean isAccountNonLocked() {
-        return member.isAccountNonLocked();
+                user.getUsername(), user.getPassword(), authorities);
     }
 
 }

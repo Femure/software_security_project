@@ -42,10 +42,10 @@ public class SecurityConfig {
                                 .antMatchers("/home", "/signup", "/verify", "/login",
                                                 "/css/**", "/js/**")
                                 .permitAll()
+                                // .antMatchers("/restaurant", "/restaurant/**", "/review", "/review/**")
+                                // .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
                                 // .antMatchers("/restaurant/add")
                                 // .access("hasRole('ROLE_ADMIN')")
-                                // .antMatchers("/restaurant", "/review", "/review/**")
-                                // .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
 
                                 .anyRequest().authenticated()
 
@@ -54,7 +54,6 @@ public class SecurityConfig {
                                 .loginPage("/login")
                                 .failureHandler(loginFailureHandler)
                                 .successHandler(loginSuccessHandler)
-
                                 // .authenticationDetailsSource(customAuthenticationDetailsSource)
                                 .permitAll()
 
@@ -68,7 +67,28 @@ public class SecurityConfig {
                                 .clearAuthentication(true)
                                 .invalidateHttpSession(true)
                                 .deleteCookies("JSESSIONID", "remember-me")
-                                .permitAll();
+                                .permitAll()
+
+                                //headers options
+                                // config CSP against XSS
+                                .and()
+                                .headers()
+                                .xssProtection()
+                                .and()
+                                .frameOptions()
+			        .deny()
+                                .and()
+                                .headers()
+                                .httpStrictTransportSecurity()
+                                .includeSubDomains(true)
+                                .maxAgeInSeconds(31536000)
+                                .and()
+                                .contentTypeOptions()
+                                .and()
+                                .cacheControl()
+                                .and()
+                                .contentSecurityPolicy(
+                                                "default-src 'none'; frame-src https://www.google.com/; script-src 'self'; script-src-elem https://www.google.com/recaptcha/api.js https://www.gstatic.com/recaptcha/releases/vpEprwpCoBMgy-fvZET0Mz6L/recaptcha__fr.js; connect-src 'self'; img-src 'self'; style-src 'self'; frame-ancestors 'self'; form-action 'self';");
 
                 ClientRegistrationRepository repository = context.getBean(ClientRegistrationRepository.class);
 

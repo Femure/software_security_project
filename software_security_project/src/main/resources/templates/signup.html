@@ -54,7 +54,7 @@
                 </div>
             </div>
 
-            <div class="alert alert-warning">
+            <div id="error-msg" th:if="${errorCaptcha}" class="alert alert-danger">
                 <span th:text="${errorCaptcha}"></span>
             </div>
             <div class="row">

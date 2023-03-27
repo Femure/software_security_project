@@ -41,44 +41,45 @@ public class SignupController {
             @RequestParam("g-recaptcha-response") String captcha, RedirectAttributes redirectAttributes,
             Model model) throws UnsupportedEncodingException, MessagingException {
         if (result.hasErrors()) {
+
+            String signupError = null;
+            if (!signupService.isUsernameAvailable(user.getUsername())) {
+                signupError = "The username already exists.";
+                model.addAttribute("signupError", signupError);
+            }
+
+            // if (!signupService.isEmailAvailable(user.getEmail())) {
+            // signupError = "The email adress already exists.";
+            // model.addAttribute("signupError", signupError);
+            // }
+
+            if (validator.isValidCaptcha(captcha)) {
+                if (signupError == null) {
+                    signupService.createMember(user);
+                    redirectAttributes.addFlashAttribute("lastUser", "");
+                    model.addAttribute("signupEmail", true);
+                    return "signup_success";
+                }
+            } else {
+                model.addAttribute("errorCaptcha", "Please validate reCaptcha");
+            }
             // To keep the input field after error
             redirectAttributes.addFlashAttribute("lastUser", user);
             return "signup";
         }
 
-        String signupError = null;
-        if (!signupService.isUsernameAvailable(user.getUsername())) {
-            signupError = "The username already exists.";
-        }
-
-        // if (!signupService.isEmailAvailable(user.getEmail())) {
-        //     signupError = "The email adress already exists.";
-        // }
-
-        if (validator.isValidCaptcha(captcha)) {
-            if (signupError == null) {
-                signupService.createMember(user);
-                redirectAttributes.addFlashAttribute("lastUser", "");
-                model.addAttribute("signupEmail", true);
-                return "signup_success";
-            } else {
-                model.addAttribute("signupError", signupError);
-            }
-        } else {
-            model.addAttribute("errorCaptcha", "Please validate captcha first");
-        }
         return "signup";
 
     }
 
     // @GetMapping("/resendValidationEmail")
     // public String resendValidationEmail(SignupDto user, Model model)
-    //         throws UnsupportedEncodingException, MessagingException {
-    //     String signupSuccess = "Validation email resent";
-    //     model.addAttribute("signupSuccess", signupSuccess);
-    //     signupService.resendVerificationEmail(user.getEmail(), "http://localhost");
-    //     model.addAttribute("signupEmail", true);
-    //     return "signup";
+    // throws UnsupportedEncodingException, MessagingException {
+    // String signupSuccess = "Validation email resent";
+    // model.addAttribute("signupSuccess", signupSuccess);
+    // signupService.resendVerificationEmail(user.getEmail(), "http://localhost");
+    // model.addAttribute("signupEmail", true);
+    // return "signup";
     // }
 
     @GetMapping("/verify")

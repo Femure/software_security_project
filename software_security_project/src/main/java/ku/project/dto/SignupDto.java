@@ -29,7 +29,7 @@ public class SignupDto {
         private String lastName;
 
         @NotBlank(message = "Username is required")
-        @Size(min = 4, max = 100, message = "Username must have at least 4 characters")
+        @Size(min = 4, max = 30, message = "Username must have at least 4 characters and at most 30")
         private String username;
 
         @Email
