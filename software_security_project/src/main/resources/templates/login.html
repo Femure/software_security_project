@@ -11,7 +11,7 @@
 
     <div th:insert="fragments/header :: header"></div>
 
-    <div class="container w-50 p-3">
+    <div class="container w-50 p-3 pt-5 h-100">
         <h1 class="display-5">Login to Kin Kao</h1>
 
         <form th:action="@{/login}" method="POST">
@@ -23,7 +23,8 @@
                 You have been logged out
             </div>
             <label for="inputUsername">Username</label>
-            <input type="text" name="username" id="inputUsername" class="form-control" minlength="4" maxlength="30" required>
+            <input type="text" name="username" id="inputUsername" class="form-control" minlength="4" maxlength="30"
+                required>
 
             <div class="mb-3">
                 <label for="inputPassword">Password</label>
@@ -41,7 +42,6 @@
                 <a th:href="@{/oauth2/authorization/google}">Google</a>
             </li>
         </ul>
-
     </div>
 </body>
 
