@@ -55,10 +55,9 @@ public class SignupController {
 
             if (validator.isValidCaptcha(captcha)) {
                 if (signupError == null) {
-                    signupService.createMember(user);
-                    redirectAttributes.addFlashAttribute("lastUser", "");
+                    String code = signupService.createMember(user);
                     model.addAttribute("signupEmail", true);
-                    return "signup_success";
+                    return "redirect:/signup_success?code=" + code;
                 }
             } else {
                 model.addAttribute("errorCaptcha", "Please validate reCaptcha");
@@ -72,15 +71,21 @@ public class SignupController {
 
     }
 
-    // @GetMapping("/resendValidationEmail")
-    // public String resendValidationEmail(SignupDto user, Model model)
-    // throws UnsupportedEncodingException, MessagingException {
-    // String signupSuccess = "Validation email resent";
-    // model.addAttribute("signupSuccess", signupSuccess);
-    // signupService.resendVerificationEmail(user.getEmail(), "http://localhost");
-    // model.addAttribute("signupEmail", true);
-    // return "signup";
-    // }
+    @GetMapping("/signup_success")
+    public String signupSuccessPage()
+    {
+        return "signup_success";
+    }
+
+    @GetMapping("/resendValidationEmail")
+    public String resendValidationEmail(@Param("code") String code, Model model)
+            throws UnsupportedEncodingException, MessagingException {
+        // String signupSuccess = "Validation email resent";
+        // model.addAttribute("signupSuccess", signupSuccess);
+        // model.addAttribute("signupEmail", true);
+        String newCode = signupService.resendVerificationEmail(code);
+        return "redirect:/signup_success?code=" + newCode;
+    }
 
     @GetMapping("/verify")
     public String verifyMember(@Param("code") String code) {

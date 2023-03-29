@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.time.Instant;
+import java.util.Date;
 
 import javax.mail.MessagingException;
 
@@ -31,6 +32,8 @@ public class SignupService {
     @Autowired
     private EmailService emailService;
 
+    private static final long VALIDATION_TIME_DURATION = 10 * 60 * 1000; // 10 min
+
     public boolean isUsernameAvailable(String username) {
         return repository.findByUsername(username) == null;
     }
@@ -43,7 +46,7 @@ public class SignupService {
         return repository.findByUsername(username);
     }
 
-    public int createMember(SignupDto member) throws UnsupportedEncodingException, MessagingException {
+    public String createMember(SignupDto member) throws UnsupportedEncodingException, MessagingException {
         Member newMember = modelMapper.map(member, Member.class);
         newMember.setCreatedAt(Instant.now());
 
@@ -55,25 +58,34 @@ public class SignupService {
 
         newMember.setVerificationCode(randomCode);
         newMember.setEnabled(false);
+        newMember.setValidationTime(new Date());
+
         newMember.setRole("ROLE_USER");
 
         emailService.sendVerificationEmail(newMember);
         repository.save(newMember);
 
-        return 1;
+        return randomCode;
     }
 
-    // public void resendVerificationEmail(String mail, String siteURL) throws
-    // MessagingException, UnsupportedEncodingException {
-    // Member member = repository.findByEmail(mail);
-    // String randomCode = RandomString.make(64);
+    public String resendVerificationEmail(String code)
+            throws MessagingException, UnsupportedEncodingException {
+        Member member = repository.findByVerificationCode(code);
+        if (member == null) {
+            return null;
+        } else {
+            String randomCode = RandomString.make(64);
 
-    // member.setVerificationCode(randomCode);
-    // member.setEnabled(false);
+            member.setVerificationCode(randomCode);
+            member.setEnabled(false);
+            member.setValidationTime(new Date());
 
-    // sendVerificationEmail(member, siteURL);
-    // repository.save(member);
-    // }
+            emailService.sendVerificationEmail(member);
+            repository.save(member);
+            return randomCode;
+        }
+
+    }
 
     public boolean verify(String verificationCode) {
         Member member = repository.findByVerificationCode(verificationCode);
@@ -81,11 +93,21 @@ public class SignupService {
         if (member == null) {
             return false;
         } else {
+            long validationTimeInMillis = member.getValidationTime().getTime();
+            long currentTimeInMillis = System.currentTimeMillis();
             member.setVerificationCode(null);
-            member.setEnabled(true);
-            repository.save(member);
 
-            return true;
+            if (validationTimeInMillis + VALIDATION_TIME_DURATION < currentTimeInMillis) {
+                member.setEnabled(true);
+                repository.save(member);
+                return true;
+            }
+            // if the message hasn't been validated after 5min it's invalidate
+            else {
+                repository.save(member);
+                return false;
+            }
+
         }
 
     }

@@ -19,13 +19,13 @@ import ku.project.validation.ValidPassword;
 @Data
 public class SignupDto {
 
-        @NotBlank(message = "First name is required")
-        @Size(max = 100)
-        @Pattern(regexp = "^[a-zA-Z]+$", message = "First name can only contain letters")
+        // @NotBlank(message = "First name is required")
+        // @Size(max = 100)
+        // @Pattern(regexp = "^[a-zA-Z]+$", message = "First name can only contain letters")
         private String firstName;
 
-        @NotBlank(message = "Last name is required")
-        @Size(max = 100)
+        // @NotBlank(message = "Last name is required")
+        // @Size(max = 100)
         private String lastName;
 
         @NotBlank(message = "Username is required")
@@ -41,17 +41,18 @@ public class SignupDto {
         @Pattern(regexp = "^(ROLE_ADMIN|ROLE_USER)$", message = "Role is in an incorrect format.")
         private String role;
 
-        @NotBlank(message = "Password is required")
-        @Size(max = 128)
-        @ValidPassword
+        // @NotBlank(message = "Password is required")
+        // @Size(max = 128)
+        // @ValidPassword
         private String password;
 
-        @NotBlank(message = "Confirm Password is required")
-        @Size(max = 128)
+        // @NotBlank(message = "Confirm Password is required")
+        // @Size(max = 128)
         private String confirmPassword;
 
         private String verificationCode;
         private boolean enabled;
+        private Date validationTime;
 
         private boolean accountNonLocked;
         private int failedAttempt;

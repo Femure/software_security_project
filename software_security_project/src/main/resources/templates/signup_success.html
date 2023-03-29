@@ -6,7 +6,6 @@
     <title>Signup_success</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
 </head>
-
 <body>
 
     <div th:insert="fragments/header :: header"></div>
@@ -16,6 +15,8 @@
         <p>Please check your email to verify your account. If you don't receive the validation email
             verify you spam, otherwise click on the link below to receive another validation email.
         </p>
-        <!-- <a th:href="@{/resendValidationEmail}">Resend a validation email</a> -->
+        <a th:href="@{/resendValidationEmail?code={code}(code=${param.code[0]})}">Resend a validation email</a>
     </div>
 </body>
+
+</html>

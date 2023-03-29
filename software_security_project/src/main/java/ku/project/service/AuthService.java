@@ -27,7 +27,7 @@ public class AuthService {
 
     public static final int MAX_FAILED_ATTEMPTS = 3;
 
-    private static final long LOCK_TIME_DURATION = 15 * 60 * 1000; // 24 hours
+    private static final long LOCK_TIME_DURATION = 15 * 60 * 1000; // 15 min
 
     public SignupDto getMember(String username) {
         Member member = repository.findByUsername(username);

@@ -40,6 +40,7 @@ public class SecurityConfig {
                 http
                                 .authorizeRequests()
                                 .antMatchers("/home", "/signup", "/verify", "/login", "/policy*",
+                                                "/resendValidationEmail*", "/signup_success*",
                                                 "/css/**", "/js/**")
                                 .permitAll()
                                 // .antMatchers("/restaurant", "/restaurant/**", "/review", "/review/**")
@@ -69,14 +70,14 @@ public class SecurityConfig {
                                 .deleteCookies("JSESSIONID", "remember-me")
                                 .permitAll()
 
-                                //headers options
+                                // headers options
                                 // config CSP against XSS
                                 .and()
                                 .headers()
                                 .xssProtection()
                                 .and()
                                 .frameOptions()
-			        .deny()
+                                .deny()
                                 .and()
                                 .headers()
                                 .httpStrictTransportSecurity()
