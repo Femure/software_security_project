@@ -32,7 +32,8 @@ public class SignupService {
     @Autowired
     private EmailService emailService;
 
-    private static final long VALIDATION_TIME_DURATION = 10 * 60 * 1000; // 10 min
+    private static final long EXPIRATION_TIME_DURATION = 10 * 60 * 1000; // 10 min
+    private static final long COOLDOWN_RESEND_TIME_DURATION = 2 * 60 * 1000; // 2min
 
     public boolean isUsernameAvailable(String username) {
         return repository.findByUsername(username) == null;
@@ -46,45 +47,47 @@ public class SignupService {
         return repository.findByUsername(username);
     }
 
-    public String createMember(SignupDto member) throws UnsupportedEncodingException, MessagingException {
-        Member newMember = modelMapper.map(member, Member.class);
+    public String createMember(SignupDto user) throws UnsupportedEncodingException, MessagingException {
+        Member newMember = modelMapper.map(user, Member.class);
         newMember.setCreatedAt(Instant.now());
 
-        String hashedPassword = passwordEncoder.encode(member.getPassword());
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
 
         newMember.setPassword(hashedPassword);
-
-        String randomCode = RandomString.make(64);
-
-        newMember.setVerificationCode(randomCode);
-        newMember.setEnabled(false);
-        newMember.setValidationTime(new Date());
-
         newMember.setRole("ROLE_USER");
-
-        emailService.sendVerificationEmail(newMember);
-        repository.save(newMember);
-
-        return randomCode;
+        newMember = setValidationEmailAttributes(newMember);
+        return newMember.getVerificationCode();
     }
 
     public String resendVerificationEmail(String code)
             throws MessagingException, UnsupportedEncodingException {
         Member member = repository.findByVerificationCode(code);
-        if (member == null) {
-            return null;
-        } else {
-            String randomCode = RandomString.make(64);
-
-            member.setVerificationCode(randomCode);
-            member.setEnabled(false);
-            member.setValidationTime(new Date());
-
-            emailService.sendVerificationEmail(member);
-            repository.save(member);
-            return randomCode;
+        if (member != null && !member.isEnabled()) {
+            if (member.getEmailResentCooldown() == null) {
+                member = setValidationEmailAttributes(member);
+                return member.getVerificationCode();
+            } else {
+                long resendCoolDownTimeInMillis = member.getEmailResentCooldown().getTime();
+                long currentTimeInMillis = System.currentTimeMillis();
+                if (resendCoolDownTimeInMillis + COOLDOWN_RESEND_TIME_DURATION < currentTimeInMillis) {
+                    setValidationEmailAttributes(member);
+                    return member.getVerificationCode();
+                }
+            }
         }
+        return code;
+    }
 
+    private Member setValidationEmailAttributes(Member member) throws MessagingException, UnsupportedEncodingException {
+        String randomCode = RandomString.make(64);
+        member.setVerificationCode(randomCode);
+        member.setEnabled(false);
+        member.setExpirationTime(new Date());
+        member.setEmailResentCooldown(new Date());
+
+        emailService.sendVerificationEmail(member);
+        repository.save(member);
+        return member;
     }
 
     public boolean verify(String verificationCode) {
@@ -93,11 +96,11 @@ public class SignupService {
         if (member == null) {
             return false;
         } else {
-            long validationTimeInMillis = member.getValidationTime().getTime();
+            long expirationTimeInMillis = member.getExpirationTime().getTime();
             long currentTimeInMillis = System.currentTimeMillis();
             member.setVerificationCode(null);
 
-            if (validationTimeInMillis + VALIDATION_TIME_DURATION < currentTimeInMillis) {
+            if (expirationTimeInMillis + EXPIRATION_TIME_DURATION > currentTimeInMillis) {
                 member.setEnabled(true);
                 repository.save(member);
                 return true;

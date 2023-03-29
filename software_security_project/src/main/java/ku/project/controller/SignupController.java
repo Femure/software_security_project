@@ -3,6 +3,7 @@ package ku.project.controller;
 import ku.project.dto.SignupDto;
 import ku.project.service.SignupService;
 import ku.project.validation.CaptchaValidator;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -72,17 +73,25 @@ public class SignupController {
     }
 
     @GetMapping("/signup_success")
-    public String signupSuccessPage()
-    {
+    public String signupSuccessPage(@Param("code") String code, HttpServletRequest request, Model model) {
+        String referer = request.getHeader("Referer");
+        if (referer.length() > 42) {
+            String previousCode = referer.substring(42, referer.length());
+            if (previousCode.matches(code)) {
+                String cooldownResendEmail = "Wait 2 minutes before resend another email";
+                model.addAttribute("cooldownResendEmail", cooldownResendEmail);
+            } else {
+                String emailResent = "Validation email resent";
+                model.addAttribute("emailResent", emailResent);
+            }
+        }
+
         return "signup_success";
     }
 
     @GetMapping("/resendValidationEmail")
-    public String resendValidationEmail(@Param("code") String code, Model model)
+    public String resendValidationEmail(@Param("code") String code)
             throws UnsupportedEncodingException, MessagingException {
-        // String signupSuccess = "Validation email resent";
-        // model.addAttribute("signupSuccess", signupSuccess);
-        // model.addAttribute("signupEmail", true);
         String newCode = signupService.resendVerificationEmail(code);
         return "redirect:/signup_success?code=" + newCode;
     }

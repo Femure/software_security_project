@@ -15,6 +15,12 @@
         <p>Please check your email to verify your account. If you don't receive the validation email
             verify you spam, otherwise click on the link below to receive another validation email.
         </p>
+        <div id="emailResent-msg" th:if="${emailResent}" class="alert alert-success">
+            <span th:text="${emailResent}"></span>
+        </div>
+        <div id="emailResentCooldown-msg" th:if="${cooldownResendEmail}" class="alert alert-warning">
+            <span th:text="${cooldownResendEmail}"></span>
+        </div>
         <a th:href="@{/resendValidationEmail?code={code}(code=${param.code[0]})}">Resend a validation email</a>
     </div>
 </body>
