@@ -3,10 +3,13 @@ package ku.project.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -35,10 +38,15 @@ public class Member {
    private String role;
    private String password;
 
-   private String verificationCode;
    private boolean enabled;
-   private Date emailResentCooldown;
-   private long expirationTime;
+
+   @OneToOne(cascade = CascadeType.ALL)
+   @JoinColumn(name = "id_verification_token")
+   VerificationToken verificationToken;
+
+   @OneToOne(cascade = CascadeType.ALL)
+   @JoinColumn(name = "id_password_reset_token")
+   PasswordResetToken passwordResetToken;
 
    private boolean accountNonLocked;
    private int failedAttempt;

@@ -33,7 +33,7 @@ public class EmailService {
                 + "Kin Kao Compagny";
 
         content = content.replace("[[username]]", member.getUsername());
-        String verifyURL = siteURL + "/verify?code=" + member.getVerificationCode();
+        String verifyURL = siteURL + "/verify?code=" + member.getVerificationToken().getVerificationCode();
         content = content.replace("[[URL]]", verifyURL);
 
         sendEmail(member.getEmail(), subject, content);

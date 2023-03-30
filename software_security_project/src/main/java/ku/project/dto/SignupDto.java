@@ -50,11 +50,7 @@ public class SignupDto {
         // @Size(max = 128)
         private String confirmPassword;
 
-        private String verificationCode;
         private boolean enabled;
-        private Date emailResentCooldown;
-        private Date expirationTime;
-
 
         private boolean accountNonLocked;
         private int failedAttempt;

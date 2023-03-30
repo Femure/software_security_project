@@ -3,6 +3,7 @@ package ku.project.service;
 import ku.project.repository.MemberRepository;
 import ku.project.dto.SignupDto;
 import ku.project.model.Member;
+import ku.project.model.VerificationToken;
 import net.bytebuddy.utility.RandomString;
 
 import org.modelmapper.ModelMapper;
@@ -59,23 +60,24 @@ public class SignupService {
         newMember = setValidationEmailAttributes(newMember);
         logger.info(user.getUsername() + " has successfully logged in at " + Instant.now());
 
-        return newMember.getVerificationCode();
+        return newMember.getVerificationToken().getVerificationCode();
     }
 
     public String resendVerificationEmail(String code) {
-        Member member = repository.findByVerificationCode(code);
+        Member member = repository.findByVerificationTokenVerificationCode(code);
         if (member != null && !member.isEnabled()) {
-            if (member.getEmailResentCooldown() == null) {
+            VerificationToken verificationToken = member.getVerificationToken();
+            if (verificationToken.getEmailResentCooldown() == null) {
                 logger.info("Resend email for user : " + member.getUsername() + " at " + Instant.now());
                 member = setValidationEmailAttributes(member);
-                return member.getVerificationCode();
+                return member.getVerificationToken().getVerificationCode();
             } else {
-                long resendCoolDownTimeInMillis = member.getEmailResentCooldown().getTime();
+                long resendCoolDownTimeInMillis = verificationToken.getEmailResentCooldown().getTime();
                 long currentTimeInMillis = System.currentTimeMillis();
                 if (resendCoolDownTimeInMillis + COOLDOWN_RESEND_TIME_DURATION < currentTimeInMillis) {
                     logger.info("Resend email for user : " + member.getUsername() + " at " + Instant.now());
-                    setValidationEmailAttributes(member);
-                    return member.getVerificationCode();
+                    member = setValidationEmailAttributes(member);
+                    return verificationToken.getVerificationCode();
                 }
             }
         }
@@ -84,24 +86,27 @@ public class SignupService {
 
     private Member setValidationEmailAttributes(Member member) {
         String randomCode = RandomString.make(64);
-        member.setVerificationCode(randomCode);
+        VerificationToken verificationToken = new VerificationToken();
+        verificationToken.setVerificationCode(randomCode);
         long currentTime = System.currentTimeMillis();
-        member.setExpirationTime(currentTime + EXPIRATION_TIME_DURATION);
-        member.setEmailResentCooldown(new Date());
+        verificationToken.setExpirationTime(currentTime + EXPIRATION_TIME_DURATION);
+        verificationToken.setEmailResentCooldown(new Date());
         member.setEnabled(false);
-
+        member.setVerificationToken(verificationToken);
         emailService.sendVerificationEmail(member);
         repository.save(member);
         return member;
     }
 
     public boolean verify(String verificationCode) {
-        Member member = repository.findByVerificationCode(verificationCode);
+        Member member = repository.findByVerificationTokenVerificationCode(verificationCode);
 
         if (member != null) {
-            long expirationTime = member.getExpirationTime();
+            VerificationToken verificationToken = member.getVerificationToken();
+            long expirationTime = verificationToken.getExpirationTime();
             long currentTime = System.currentTimeMillis();
-            member.setVerificationCode(null);
+            verificationToken.setVerificationCode(null);
+            member.setVerificationToken(verificationToken);
             // if the message has been validated before 5min
             if (expirationTime > currentTime) {
                 logger.info("Success verify user : " + member.getUsername() + " at " + Instant.now());
