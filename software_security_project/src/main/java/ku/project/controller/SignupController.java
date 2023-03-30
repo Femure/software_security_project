@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.UnsupportedEncodingException;
-
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -40,7 +37,7 @@ public class SignupController {
     @PostMapping("/signup")
     public String signupUser(@Valid SignupDto user, BindingResult result, HttpServletRequest request,
             @RequestParam("g-recaptcha-response") String captcha, RedirectAttributes redirectAttributes,
-            Model model) throws UnsupportedEncodingException, MessagingException {
+            Model model){
         if (result.hasErrors()) {
 
             String signupError = null;
@@ -75,23 +72,24 @@ public class SignupController {
     @GetMapping("/signup_success")
     public String signupSuccessPage(@Param("code") String code, HttpServletRequest request, Model model) {
         String referer = request.getHeader("Referer");
-        if (referer.length() > 42) {
-            String previousCode = referer.substring(42, referer.length());
-            if (previousCode.matches(code)) {
-                String cooldownResendEmail = "Wait 2 minutes before resend another email";
-                model.addAttribute("cooldownResendEmail", cooldownResendEmail);
-            } else {
-                String emailResent = "Validation email resent";
-                model.addAttribute("emailResent", emailResent);
+        if (referer != null) {
+            if (referer.length() > 42) {
+                String previousCode = referer.substring(42, referer.length());
+                if (previousCode.matches(code)) {
+                    String cooldownResendEmail = "Wait 2 minutes before resend another email";
+                    model.addAttribute("cooldownResendEmail", cooldownResendEmail);
+                } else {
+                    String emailResent = "Validation email resent";
+                    model.addAttribute("emailResent", emailResent);
+                }
             }
+            return "signup_success";
         }
-
-        return "signup_success";
+        return "redirect:/login";
     }
 
     @GetMapping("/resendValidationEmail")
-    public String resendValidationEmail(@Param("code") String code)
-            throws UnsupportedEncodingException, MessagingException {
+    public String resendValidationEmail(@Param("code") String code) {
         String newCode = signupService.resendVerificationEmail(code);
         return "redirect:/signup_success?code=" + newCode;
     }

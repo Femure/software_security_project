@@ -18,20 +18,6 @@ public class UserDetailsServiceImp implements UserDetailsService {
     @Autowired
     private MemberRepository memberRepository;
 
-    private Member member;
-
-    public void CustomUserDetails(Member member) {
-        this.member = member;
-    }
-
-    public boolean isEnabled() {
-        return member.isEnabled();
-    }
-
-    public boolean isAccountNonLocked() {
-        return member.isAccountNonLocked();
-    }
-
     @Override
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {

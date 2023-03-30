@@ -13,6 +13,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ku.project.dto.SignupDto;
 import ku.project.service.AuthService;
 
@@ -22,6 +26,8 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     @Autowired
     private AuthService authService;
 
+    Logger logger = LoggerFactory.getLogger(CustomLoginSuccessHandler.class);
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
@@ -30,11 +36,12 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         SignupDto user = authService.getMember(username);
         if (user.isAccountNonLocked()) {
             authentication.setAuthenticated(false);
+            logger.warn("Fail login attempt for user " + username + "  at " + Instant.now() + ". Reason : Locked");
             throw new LockedException("Locked");
-
         } else {
             if (!user.isEnabled()) {
                 authentication.setAuthenticated(false);
+                logger.warn("Fail login attempt for user " + username + "  at " + Instant.now() + ". Reason : Disabled");
                 throw new DisabledException("Disabled");
             } else {
                 if (user.getFailedAttempt() > 0) {
@@ -45,6 +52,7 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         }
 
         if (authentication.isAuthenticated()) {
+            logger.warn("Successfully login for user " + username + "  at " + Instant.now());
             super.setDefaultTargetUrl("/restaurant");
         }
 

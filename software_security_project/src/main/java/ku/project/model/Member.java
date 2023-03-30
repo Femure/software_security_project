@@ -38,7 +38,7 @@ public class Member {
    private String verificationCode;
    private boolean enabled;
    private Date emailResentCooldown;
-   private Date expirationTime;
+   private long expirationTime;
 
    private boolean accountNonLocked;
    private int failedAttempt;

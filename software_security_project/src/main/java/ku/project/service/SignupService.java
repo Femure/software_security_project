@@ -11,11 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
-import java.time.Instant;
 import java.util.Date;
-
-import javax.mail.MessagingException;
+import java.time.Instant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class SignupService {
@@ -32,6 +31,8 @@ public class SignupService {
     @Autowired
     private EmailService emailService;
 
+    Logger logger = LoggerFactory.getLogger(SignupService.class);
+
     private static final long EXPIRATION_TIME_DURATION = 10 * 60 * 1000; // 10 min
     private static final long COOLDOWN_RESEND_TIME_DURATION = 2 * 60 * 1000; // 2min
 
@@ -47,7 +48,7 @@ public class SignupService {
         return repository.findByUsername(username);
     }
 
-    public String createMember(SignupDto user) throws UnsupportedEncodingException, MessagingException {
+    public String createMember(SignupDto user) {
         Member newMember = modelMapper.map(user, Member.class);
         newMember.setCreatedAt(Instant.now());
 
@@ -56,20 +57,23 @@ public class SignupService {
         newMember.setPassword(hashedPassword);
         newMember.setRole("ROLE_USER");
         newMember = setValidationEmailAttributes(newMember);
+        logger.info(user.getUsername() + " has successfully logged in at " + Instant.now());
+
         return newMember.getVerificationCode();
     }
 
-    public String resendVerificationEmail(String code)
-            throws MessagingException, UnsupportedEncodingException {
+    public String resendVerificationEmail(String code) {
         Member member = repository.findByVerificationCode(code);
         if (member != null && !member.isEnabled()) {
             if (member.getEmailResentCooldown() == null) {
+                logger.info("Resend email for user : " + member.getUsername() + " at " + Instant.now());
                 member = setValidationEmailAttributes(member);
                 return member.getVerificationCode();
             } else {
                 long resendCoolDownTimeInMillis = member.getEmailResentCooldown().getTime();
                 long currentTimeInMillis = System.currentTimeMillis();
                 if (resendCoolDownTimeInMillis + COOLDOWN_RESEND_TIME_DURATION < currentTimeInMillis) {
+                    logger.info("Resend email for user : " + member.getUsername() + " at " + Instant.now());
                     setValidationEmailAttributes(member);
                     return member.getVerificationCode();
                 }
@@ -78,12 +82,13 @@ public class SignupService {
         return code;
     }
 
-    private Member setValidationEmailAttributes(Member member) throws MessagingException, UnsupportedEncodingException {
+    private Member setValidationEmailAttributes(Member member) {
         String randomCode = RandomString.make(64);
         member.setVerificationCode(randomCode);
-        member.setEnabled(false);
-        member.setExpirationTime(new Date());
+        long currentTime = System.currentTimeMillis();
+        member.setExpirationTime(currentTime + EXPIRATION_TIME_DURATION);
         member.setEmailResentCooldown(new Date());
+        member.setEnabled(false);
 
         emailService.sendVerificationEmail(member);
         repository.save(member);
@@ -93,26 +98,20 @@ public class SignupService {
     public boolean verify(String verificationCode) {
         Member member = repository.findByVerificationCode(verificationCode);
 
-        if (member == null) {
-            return false;
-        } else {
-            long expirationTimeInMillis = member.getExpirationTime().getTime();
-            long currentTimeInMillis = System.currentTimeMillis();
+        if (member != null) {
+            long expirationTime = member.getExpirationTime();
+            long currentTime = System.currentTimeMillis();
             member.setVerificationCode(null);
-
-            if (expirationTimeInMillis + EXPIRATION_TIME_DURATION > currentTimeInMillis) {
+            // if the message has been validated before 5min
+            if (expirationTime > currentTime) {
+                logger.info("Success verify user : " + member.getUsername() + " at " + Instant.now());
                 member.setEnabled(true);
                 repository.save(member);
                 return true;
             }
-            // if the message hasn't been validated after 5min it's invalidate
-            else {
-                repository.save(member);
-                return false;
-            }
-
+            repository.save(member);
         }
-
+        logger.info("Fail verify at " + Instant.now());
+        return false;
     }
-
 }

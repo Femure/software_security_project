@@ -89,7 +89,7 @@ public class SecurityConfig {
                                 .cacheControl()
                                 .and()
                                 .contentSecurityPolicy(
-                                                "default-src 'none'; frame-src https://www.google.com/; script-src 'self'; script-src-elem https://www.google.com/recaptcha/api.js https://www.gstatic.com/recaptcha/releases/vpEprwpCoBMgy-fvZET0Mz6L/recaptcha__fr.js http://localhost:8090/js/bootstrap.min.js; connect-src 'self'; img-src 'self'; style-src 'self'; frame-ancestors 'self'; form-action 'self';");
+                                                "default-src 'none'; frame-src https://www.google.com/; script-src 'self'; script-src-elem https://www.google.com/recaptcha/api.js https://www.gstatic.com/recaptcha/releases/ http://localhost:8090/js/bootstrap.min.js; connect-src 'self'; img-src 'self'; style-src 'self'; frame-ancestors 'self'; form-action 'self';");
 
                 ClientRegistrationRepository repository = context.getBean(ClientRegistrationRepository.class);
 
