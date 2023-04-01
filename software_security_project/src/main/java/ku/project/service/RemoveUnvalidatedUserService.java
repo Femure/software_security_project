@@ -23,11 +23,10 @@ public class RemoveUnvalidatedUserService {
     @Autowired
     private MemberRepository repository;
     
-    @Scheduled(cron = "@hourly")
+    @Scheduled(cron = "@hourly") //fixedDelay = 1000
     public void removeUnvalidatedUser() {
         logger.info("Remove all unvalidated user at " + Instant.now());
-        long currentTime = System.currentTimeMillis();
-        repository.deleteAllUnvalidatedUser(currentTime);
+        repository.deleteAllUnvalidatedUser();
     }
     
 }

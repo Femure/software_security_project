@@ -35,7 +35,7 @@ public class CustomLoginFailureHandler extends SimpleUrlAuthenticationFailureHan
             AuthenticationException exception)
             throws IOException, ServletException {
 
-        SignupDto user = authService.getMember(request.getParameter("username"));
+        SignupDto user = authService.getMemberUsername(request.getParameter("username"));
         String username = request.getParameter("username");
 
         exception = new BadCredentialsException("BadCredentials");

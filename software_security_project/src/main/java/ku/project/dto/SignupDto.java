@@ -32,7 +32,7 @@ public class SignupDto {
         @Size(min = 4, max = 30, message = "Username must have at least 4 characters and at most 30")
         private String username;
 
-        @Email
+        @Email(message = "Need to be a syntactically correct email address")
         @Size(max = 100)
         @NotBlank(message = "Email is required")
         private String email;

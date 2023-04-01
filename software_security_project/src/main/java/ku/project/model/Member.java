@@ -41,12 +41,8 @@ public class Member {
    private boolean enabled;
 
    @OneToOne(cascade = CascadeType.ALL)
-   @JoinColumn(name = "id_verification_token")
-   VerificationToken verificationToken;
-
-   @OneToOne(cascade = CascadeType.ALL)
-   @JoinColumn(name = "id_password_reset_token")
-   PasswordResetToken passwordResetToken;
+   @JoinColumn(name = "id_token")
+   Token token;
 
    private boolean accountNonLocked;
    private int failedAttempt;

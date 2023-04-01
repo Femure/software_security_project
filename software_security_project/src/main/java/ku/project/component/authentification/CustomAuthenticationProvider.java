@@ -29,7 +29,7 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        SignupDto user = authService.getMember(authentication.getName());
+        SignupDto user = authService.getMemberUsername(authentication.getName());
         String password = (String) authentication.getCredentials();
 
         System.out.print("Before\n");

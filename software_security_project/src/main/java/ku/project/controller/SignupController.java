@@ -5,7 +5,6 @@ import ku.project.service.SignupService;
 import ku.project.validation.CaptchaValidator;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -37,7 +36,7 @@ public class SignupController {
     @PostMapping("/signup")
     public String signupUser(@Valid SignupDto user, BindingResult result, HttpServletRequest request,
             @RequestParam("g-recaptcha-response") String captcha, RedirectAttributes redirectAttributes,
-            Model model){
+            Model model) {
         if (result.hasErrors()) {
 
             String signupError = null;
@@ -55,7 +54,7 @@ public class SignupController {
                 if (signupError == null) {
                     String code = signupService.createMember(user);
                     model.addAttribute("signupEmail", true);
-                    return "redirect:/signup_success?code=" + code;
+                    return "redirect:/signup-success?code=" + code;
                 }
             } else {
                 model.addAttribute("errorCaptcha", "Please validate reCaptcha");
@@ -69,37 +68,4 @@ public class SignupController {
 
     }
 
-    @GetMapping("/signup_success")
-    public String signupSuccessPage(@Param("code") String code, HttpServletRequest request, Model model) {
-        String referer = request.getHeader("Referer");
-        if (referer != null) {
-            if (referer.length() > 42) {
-                String previousCode = referer.substring(42, referer.length());
-                if (previousCode.matches(code)) {
-                    String cooldownResendEmail = "Wait 2 minutes before resend another email";
-                    model.addAttribute("cooldownResendEmail", cooldownResendEmail);
-                } else {
-                    String emailResent = "Validation email resent";
-                    model.addAttribute("emailResent", emailResent);
-                }
-            }
-            return "signup_success";
-        }
-        return "redirect:/login";
-    }
-
-    @GetMapping("/resendValidationEmail")
-    public String resendValidationEmail(@Param("code") String code) {
-        String newCode = signupService.resendVerificationEmail(code);
-        return "redirect:/signup_success?code=" + newCode;
-    }
-
-    @GetMapping("/verify")
-    public String verifyMember(@Param("code") String code) {
-        if (signupService.verify(code)) {
-            return "verify_success";
-        } else {
-            return "verify_fail";
-        }
-    }
 }

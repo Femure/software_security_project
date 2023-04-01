@@ -33,8 +33,25 @@ public class EmailService {
                 + "Kin Kao Compagny";
 
         content = content.replace("[[username]]", member.getUsername());
-        String verifyURL = siteURL + "/verify?code=" + member.getVerificationToken().getVerificationCode();
+        String verifyURL = siteURL + "/verify?code=" + member.getToken().getVerificationCode();
         content = content.replace("[[URL]]", verifyURL);
+
+        sendEmail(member.getEmail(), subject, content);
+
+    }
+
+    public void sendResetPasswordEmail(Member member){
+        String siteURL = "http://localhost:8090";
+        String subject = "Reset Password";
+        String content = "Dear [[username]],<br>"
+                + "Please click on the link below to complete the password reset process :<br>"
+                + "<h3><a href=\"[[URL]]\" target=\"_self\">RESET PASSWORDS</a></h3>"
+                + "Thank you,<br>"
+                + "Kin Kao Compagny";
+
+        content = content.replace("[[username]]", member.getUsername());
+        String resetPasswordURL = siteURL + "/verify?code=" + member.getToken().getVerificationCode();
+        content = content.replace("[[URL]]", resetPasswordURL);
 
         sendEmail(member.getEmail(), subject, content);
 

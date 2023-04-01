@@ -40,8 +40,8 @@ public class SecurityConfig {
                 http
                                 .authorizeRequests()
                                 .antMatchers("/home", "/signup", "/verify", "/login", "/policy*",
-                                                "/resendValidationEmail*", "/signup_success*",
-                                                "/css/**", "/js/**")
+                                                "/resendValidationEmail*", "/signup-success", "/forgot-password",
+                                                "/reset-password", "/css/**", "/js/**")
                                 .permitAll()
                                 // .antMatchers("/restaurant", "/restaurant/**", "/review", "/review/**")
                                 // .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")

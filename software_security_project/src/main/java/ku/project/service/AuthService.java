@@ -2,6 +2,7 @@ package ku.project.service;
 
 import ku.project.dto.SignupDto;
 import ku.project.model.Member;
+
 import ku.project.repository.MemberRepository;
 
 import java.util.Date;
@@ -26,7 +27,7 @@ public class AuthService {
 
     private static final long LOCK_TIME_DURATION = 15 * 60 * 1000; // 15 min
 
-    public SignupDto getMember(String username) {
+    public SignupDto getMemberUsername(String username) {
         Member member = repository.findByUsername(username);
         SignupDto user = null;
         if (member != null) {
@@ -69,4 +70,5 @@ public class AuthService {
         }
         return false;
     }
+
 }

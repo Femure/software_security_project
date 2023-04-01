@@ -33,7 +33,7 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
             Authentication authentication) throws IOException, ServletException {
 
         String username = authentication.getName();
-        SignupDto user = authService.getMember(username);
+        SignupDto user = authService.getMemberUsername(username);
         if (user.isAccountNonLocked()) {
             authentication.setAuthenticated(false);
             logger.warn("Fail login attempt for user " + username + "  at " + Instant.now() + ". Reason : Locked");

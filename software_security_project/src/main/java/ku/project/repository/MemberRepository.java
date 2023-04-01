@@ -14,9 +14,9 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
 
    Member findByEmail(String email);
 
-   Member findByVerificationTokenVerificationCode(String code);
+   Member findByTokenVerificationCode(String code);
 
    @Modifying
    @Query("DELETE FROM Member as m WHERE m.enabled = FALSE")
-   void  deleteAllUnvalidatedUser(long now);
+   void  deleteAllUnvalidatedUser();
 }
