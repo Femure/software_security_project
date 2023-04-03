@@ -50,7 +50,8 @@ public class SignupService {
 
         newMember.setPassword(hashedPassword);
         newMember.setRole("ROLE_USER");
-        newMember = tokenService.setValidationEmailAttributes(newMember, 0);
+        newMember.setEnabled(false);
+        newMember = tokenService.setTokenEmailAttributes(newMember, 0);
         logger.info(user.getUsername() + " has successfully logged in at " + Instant.now());
 
         return newMember.getToken().getVerificationCode();

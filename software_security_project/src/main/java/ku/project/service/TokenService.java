@@ -32,11 +32,11 @@ public class TokenService {
 
     Logger logger = LoggerFactory.getLogger(TokenService.class);
 
-    private static final long COOLDOWN_RESEND_TIME_DURATION = 2 * 60 * 1000; // 2min
+    private static final long COOLDOWN_RESEND_TIME_DURATION =  2 * 60 * 1000; // 2min
 
-    private static final long EXPIRATION_TIME_DURATION = 10 * 60 * 1000; // 10 min
+    private static final long EXPIRATION_TIME_DURATION = 5 * 60 * 1000; // 5 min
 
-    public Member setValidationEmailAttributes(Member member, int choice) {
+    public Member setTokenEmailAttributes(Member member, int choice) {
         String randomCode = RandomString.make(64);
         Token token;
         if (choice == 0) {
@@ -48,7 +48,7 @@ public class TokenService {
         long currentTime = System.currentTimeMillis();
         token.setExpirationTime(currentTime + EXPIRATION_TIME_DURATION);
         token.setEmailResentCooldown(new Date());
-        member.setEnabled(false);
+        token.setMember(member);
         member.setToken(token);
         if (choice == 0) {
             emailService.sendVerificationEmail(member);
@@ -59,34 +59,30 @@ public class TokenService {
         return member;
     }
 
-    public String resendTokenEmail(String code) {
-        Member member = repository.findByTokenVerificationCode(code);
-        if (member != null && !member.isEnabled()) {
-            Token verificationToken = member.getToken();
-            if (verificationToken.getEmailResentCooldown() == null) {
+    public String resendTokenEmail(String token, int choice) {
+        Member member = repository.findByTokenVerificationCode(token);
+        if (member != null) {
+            Token memberToken = member.getToken();
+            long resendCoolDownTimeInMillis = memberToken.getEmailResentCooldown().getTime();
+            long currentTimeInMillis = System.currentTimeMillis();
+            if (resendCoolDownTimeInMillis + COOLDOWN_RESEND_TIME_DURATION < currentTimeInMillis) {
                 logger.info("Resend email for user : " + member.getUsername() + " at " + Instant.now());
-                member = this.setValidationEmailAttributes(member, 0);
+                memberToken.setVerificationCode(null);
+                memberToken.setMember(null);
+                member = this.setTokenEmailAttributes(member, choice);
                 return member.getToken().getVerificationCode();
-            } else {
-                long resendCoolDownTimeInMillis = verificationToken.getEmailResentCooldown().getTime();
-                long currentTimeInMillis = System.currentTimeMillis();
-                if (resendCoolDownTimeInMillis + COOLDOWN_RESEND_TIME_DURATION < currentTimeInMillis) {
-                    logger.info("Resend email for user : " + member.getUsername() + " at " + Instant.now());
-                    member = this.setValidationEmailAttributes(member, 0);
-                    return verificationToken.getVerificationCode();
-                }
             }
         }
-        return code;
+        return token;
     }
 
-    public boolean forgotPassword(String email) {
+    public String forgotPassword(String email) {
         Member member = repository.findByEmail(email);
-        if (member != null) {
-            this.setValidationEmailAttributes(member, 1);
-            return true;
+        if (member != null && member.isEnabled()) {
+            this.setTokenEmailAttributes(member, 1);
+            return member.getToken().getVerificationCode();
         }
-        return false;
+        return null;
     }
 
     public int resetPassword(String password, String token) {
@@ -98,6 +94,7 @@ public class TokenService {
                 Token passwordResetToken = member.getToken();
                 passwordResetToken.setVerificationCode(null);
                 member.setToken(passwordResetToken);
+                passwordResetToken.setMember(member);
                 repository.save(member);
                 logger.info("Success reset password user : " + member.getUsername() + " at " + Instant.now());
                 return 2;
@@ -107,21 +104,22 @@ public class TokenService {
         return 0;
     }
 
-    public int verifyToken(String verificationCode) {
-        Member member = repository.findByTokenVerificationCode(verificationCode);
+    public int verifyToken(String token) {
+        Member member = repository.findByTokenVerificationCode(token);
 
         if (member != null) {
-            Token verificationToken = member.getToken();
-            long expirationTime = verificationToken.getExpirationTime();
+            Token memberToken = member.getToken();
+            long expirationTime = memberToken.getExpirationTime();
             long currentTime = System.currentTimeMillis();
             // if the message has been validated before 5min
             if (expirationTime > currentTime) {
                 logger.info("Success verify user : " + member.getUsername() + " at " + Instant.now());
-                if (verificationToken.getClass() == VerificationToken.class) {
+                if (memberToken.getClass() == VerificationToken.class) {
                     logger.info("Successful registration");
                     member.setEnabled(true);
-                    verificationToken.setVerificationCode(null);
-                    member.setToken(verificationToken);
+                    memberToken.setVerificationCode(null);
+                    member.setToken(memberToken);
+                    memberToken.setMember(member);
                     repository.save(member);
                     return 1;
                 } else {
@@ -130,7 +128,6 @@ public class TokenService {
                     return 2;
                 }
             }
-            repository.save(member);
         }
         logger.info("Fail verify at " + Instant.now());
         return 0;

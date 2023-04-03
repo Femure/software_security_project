@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Controller
@@ -34,34 +34,34 @@ public class SignupController {
     }
 
     @PostMapping("/signup")
-    public String signupUser(@Valid SignupDto user, BindingResult result, HttpServletRequest request,
+    public String signupUser(@Valid SignupDto user, BindingResult result, HttpSession session,
             @RequestParam("g-recaptcha-response") String captcha, RedirectAttributes redirectAttributes,
             Model model) {
         if (result.hasErrors()) {
-
-            String signupError = null;
-            if (!signupService.isUsernameAvailable(user.getUsername())) {
-                signupError = "The username already exists.";
-                model.addAttribute("signupError", signupError);
-            }
-
-            // if (!signupService.isEmailAvailable(user.getEmail())) {
-            // signupError = "The email adress already exists.";
-            // model.addAttribute("signupError", signupError);
-            // }
-
-            if (validator.isValidCaptcha(captcha)) {
-                if (signupError == null) {
-                    String code = signupService.createMember(user);
-                    model.addAttribute("signupEmail", true);
-                    return "redirect:/signup-success?code=" + code;
-                }
-            } else {
-                model.addAttribute("errorCaptcha", "Please validate reCaptcha");
-            }
             // To keep the input field after error
             redirectAttributes.addFlashAttribute("lastUser", user);
             return "signup";
+        }
+
+        String signupError = null;
+        if (!signupService.isUsernameAvailable(user.getUsername())) {
+            signupError = "The username already exists.";
+            model.addAttribute("signupError", signupError);
+        }
+
+        // if (!signupService.isEmailAvailable(user.getEmail())) {
+        //     signupError = "The email adress already exists.";
+        //     model.addAttribute("signupError", signupError);
+        // }
+
+        if (validator.isValidCaptcha(captcha)) {
+            if (signupError == null) {
+                String token = signupService.createMember(user);
+                session.setAttribute("token", token);
+                return "redirect:/signup-success";
+            }
+        } else {
+            model.addAttribute("errorCaptcha", "Please validate reCaptcha");
         }
 
         return "signup";

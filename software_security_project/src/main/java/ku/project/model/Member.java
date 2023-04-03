@@ -2,14 +2,14 @@ package ku.project.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -21,12 +21,13 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @Entity
+@Table(name = "member")
 public class Member {
 
    @Id
    @GeneratedValue(generator = "UUID")
    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-   @Column(name = "id", updatable = false, nullable = false)
+   @Column(name = "member_id", updatable = false, nullable = false)
    @Type(type = "org.hibernate.type.UUIDCharType")
    private UUID id;
 
@@ -40,8 +41,8 @@ public class Member {
 
    private boolean enabled;
 
-   @OneToOne(cascade = CascadeType.ALL)
-   @JoinColumn(name = "id_token")
+   @OneToOne(mappedBy = "member", cascade = CascadeType.ALL,
+   fetch = FetchType.LAZY, optional = false)
    Token token;
 
    private boolean accountNonLocked;

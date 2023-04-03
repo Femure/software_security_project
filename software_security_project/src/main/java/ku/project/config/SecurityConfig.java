@@ -40,7 +40,7 @@ public class SecurityConfig {
                 http
                                 .authorizeRequests()
                                 .antMatchers("/home", "/signup", "/verify", "/login", "/policy*",
-                                                "/resendValidationEmail*", "/signup-success", "/forgot-password",
+                                                "/resendTokenEmail*", "/signup-success", "/forgot-password",
                                                 "/reset-password", "/css/**", "/js/**")
                                 .permitAll()
                                 // .antMatchers("/restaurant", "/restaurant/**", "/review", "/review/**")
