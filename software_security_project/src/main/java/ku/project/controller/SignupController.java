@@ -49,10 +49,10 @@ public class SignupController {
             model.addAttribute("signupError", signupError);
         }
 
-        // if (!signupService.isEmailAvailable(user.getEmail())) {
-        //     signupError = "The email adress already exists.";
-        //     model.addAttribute("signupError", signupError);
-        // }
+        if (!signupService.isEmailAvailable(user.getEmail())) {
+            signupError = "The email adress already exists.";
+            model.addAttribute("signupError", signupError);
+        }
 
         if (validator.isValidCaptcha(captcha)) {
             if (signupError == null) {
