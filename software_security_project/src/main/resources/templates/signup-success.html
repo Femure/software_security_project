@@ -6,6 +6,7 @@
     <title>Signup success</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
 </head>
+
 <body>
 
     <div th:insert="fragments/header :: header"></div>
@@ -15,13 +16,18 @@
         <p>Please check your email to verify your account. If you don't receive the validation email
             verify your spam, otherwise click on the link below to receive another validation email.
         </p>
-        <div id="emailResent-msg" th:if="${emailResent}" class="alert alert-success">
-            <span th:text="${emailResent}"></span>
+        <div th:if="${emailSentNumberExceeded}">
+            <span id="emailSentNumberExceeded-msg" th:text="${emailSentNumberExceeded}" class="alert alert-danger"></span>
         </div>
-        <div id="emailResentCooldown-msg" th:if="${cooldownResendEmail}" class="alert alert-warning">
-            <span th:text="${cooldownResendEmail}"></span>
+        <div th:unless="${emailSentNumberExceeded}">
+            <div id="emailResent-msg" th:if="${emailResent}" class="alert alert-success">
+                <span th:text="${emailResent}"></span>
+            </div>
+            <div id="emailResentCooldown-msg" th:if="${cooldownResendEmail}" class="alert alert-warning">
+                <span th:text="${cooldownResendEmail}"></span>
+            </div>
+            <a th:href="@{/resendTokenEmail}">Resend a validation email</a>
         </div>
-        <a th:href="@{/resendTokenEmail}">Resend a validation email</a>
     </div>
 </body>
 

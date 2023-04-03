@@ -32,9 +32,11 @@ public class TokenService {
 
     Logger logger = LoggerFactory.getLogger(TokenService.class);
 
-    private static final long COOLDOWN_RESEND_TIME_DURATION =  2 * 60 * 1000; // 2min
+    private static final long COOLDOWN_RESEND_TIME_DURATION = 2 * 60 * 1000; // 2min
 
     private static final long EXPIRATION_TIME_DURATION = 5 * 60 * 1000; // 5 min
+
+    public static final int MAX_SENT_EMAIL = 3;
 
     public Member setTokenEmailAttributes(Member member, int choice) {
         String randomCode = RandomString.make(64);
@@ -48,6 +50,7 @@ public class TokenService {
         long currentTime = System.currentTimeMillis();
         token.setExpirationTime(currentTime + EXPIRATION_TIME_DURATION);
         token.setEmailResentCooldown(new Date());
+        member.setEmailSentNumber(member.getEmailSentNumber() + 1);
         token.setMember(member);
         member.setToken(token);
         if (choice == 0) {
@@ -63,15 +66,21 @@ public class TokenService {
         Member member = repository.findByTokenVerificationCode(token);
         if (member != null) {
             Token memberToken = member.getToken();
-            long resendCoolDownTimeInMillis = memberToken.getEmailResentCooldown().getTime();
-            long currentTimeInMillis = System.currentTimeMillis();
-            if (resendCoolDownTimeInMillis + COOLDOWN_RESEND_TIME_DURATION < currentTimeInMillis) {
-                logger.info("Resend email for user : " + member.getUsername() + " at " + Instant.now());
-                memberToken.setVerificationCode(null);
-                memberToken.setMember(null);
-                member = this.setTokenEmailAttributes(member, choice);
-                return member.getToken().getVerificationCode();
+            if (member.getEmailSentNumber() < MAX_SENT_EMAIL) {
+                long resendCoolDownTimeInMillis = memberToken.getEmailResentCooldown().getTime();
+                long currentTimeInMillis = System.currentTimeMillis();
+                if (resendCoolDownTimeInMillis + COOLDOWN_RESEND_TIME_DURATION < currentTimeInMillis) {
+                    logger.info("Resend email for user : " + member.getUsername() + " at " + Instant.now());
+                    memberToken.setVerificationCode(null);
+                    memberToken.setMember(null);
+                    member = this.setTokenEmailAttributes(member, choice);
+                    return member.getToken().getVerificationCode();
+                }
             }
+            else{
+                return "emailSentNumberExceeded";
+            }
+
         }
         return token;
     }
@@ -111,6 +120,7 @@ public class TokenService {
             Token memberToken = member.getToken();
             long expirationTime = memberToken.getExpirationTime();
             long currentTime = System.currentTimeMillis();
+            member.setEmailSentNumber(0);
             // if the message has been validated before 5min
             if (expirationTime > currentTime) {
                 logger.info("Success verify user : " + member.getUsername() + " at " + Instant.now());
@@ -118,8 +128,8 @@ public class TokenService {
                     logger.info("Successful registration");
                     member.setEnabled(true);
                     memberToken.setVerificationCode(null);
+                    memberToken.setMember(null);
                     member.setToken(memberToken);
-                    memberToken.setMember(member);
                     repository.save(member);
                     return 1;
                 } else {

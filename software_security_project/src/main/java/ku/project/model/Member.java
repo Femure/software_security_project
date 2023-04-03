@@ -44,6 +44,8 @@ public class Member {
    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL,
    fetch = FetchType.LAZY, optional = false)
    Token token;
+   
+   private int emailSentNumber;
 
    private boolean accountNonLocked;
    private int failedAttempt;
