@@ -21,25 +21,6 @@ public class CommentController {
    @Autowired
    private CommentService commentService;
 
-   @GetMapping("/{restaurantId}")
-   public String getcommentPage(@PathVariable UUID restaurantId, 
-                               Model model) {
-
-       model.addAttribute("restaurant", 
-                   restaurantService.getRestaurantById(restaurantId));
-       model.addAttribute("comments", 
-                   commentService.getRestaurantComments(restaurantId));
-
-       return "comment";
-   }
-
-   @GetMapping("/add/{restaurantId}")
-   public String getcommentForm(@PathVariable UUID restaurantId, 
-                               Model model) {
-       model.addAttribute("restaurantId", restaurantId);
-       return "comment-add";
-   }
-
    @PostMapping("/add")
    public String createcomment(@ModelAttribute CommentRequest comment,
                               Model model, Principal principal) {

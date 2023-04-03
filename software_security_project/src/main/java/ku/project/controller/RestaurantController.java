@@ -1,7 +1,11 @@
 package ku.project.controller;
 
 import ku.project.dto.RestaurantRequest;
+import ku.project.dto.RestaurantResponse;
+import ku.project.service.CommentService;
 import ku.project.service.RestaurantService;
+
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -18,9 +22,15 @@ public class RestaurantController {
     @Autowired
     private RestaurantService restaurantService;
 
+    @Autowired
+    private CommentService commentService;
+
     @GetMapping("/restaurant")
     public String getRestaurantPage(Model model) {
-        model.addAttribute("restaurants", restaurantService.getRestaurants());
+        List<RestaurantResponse> listRestaurant = restaurantService.getRestaurants();
+        model.addAttribute("restaurants", listRestaurant);
+        listRestaurant.forEach(restaurant -> model.addAttribute("comments",
+                commentService.getRestaurantComments(restaurant.getId())));
         return "restaurant"; // return restaurant.html
     }
 
