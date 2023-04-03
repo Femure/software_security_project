@@ -102,6 +102,7 @@ public class TokenService {
                 member.setPassword(hashedPassword);
                 Token passwordResetToken = member.getToken();
                 passwordResetToken.setVerificationCode(null);
+                member.setEmailSentNumber(0);
                 member.setToken(passwordResetToken);
                 passwordResetToken.setMember(member);
                 repository.save(member);
