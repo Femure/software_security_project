@@ -13,16 +13,16 @@
     <div th:insert="fragments/header :: header"></div>
 
     <div class="container mt-5 h-100">
-        <h1 class="display-6">Add Review</h1>
+        <h1 class="display-6">Add comment</h1>
 
-        <form th:action="@{/review/add}" method="POST">
+        <form th:action="@{/comment/add}" method="POST">
 
             <input type="hidden" name="restaurantId" th:value="${restaurantId}" id="restaurantId">
             <div class="mb-3">
-                <label for="reviewTextInput" class="form-label">Review</label>
-                <input id="reviewTextInput" type="text" class="form-control" name="reviewText">
+                <label for="commentTextInput" class="form-label">Comments</label>
+                <input id="commentTextInput" type="text" class="form-control" name="commentText">
             </div>
-            <button type="submit" class="btn btn-primary">Add Review</button>
+            <button type="submit" class="btn btn-primary">Add comment</button>
         </form>
     </div>
 </body>

@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class ReviewRequest {
+public class CommentRequest {
 
    private UUID restaurantId;
 
@@ -13,5 +13,5 @@ public class ReviewRequest {
    private String username;
 
    @NotBlank
-   private String reviewText;
+   private String commentText;
 }

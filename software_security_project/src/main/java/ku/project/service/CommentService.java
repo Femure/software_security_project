@@ -1,7 +1,7 @@
 package ku.project.service;
 
-import ku.project.dto.ReviewRequest;
-import ku.project.dto.ReviewResponse;
+import ku.project.dto.CommentRequest;
+import ku.project.dto.CommentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class ReviewService {
+public class CommentService {
 
    @Autowired
    private RestTemplate restTemplate;
@@ -20,25 +20,25 @@ public class ReviewService {
    @Autowired
    private JwtAccessTokenService tokenService;
 
-   public ReviewRequest createReview(ReviewRequest review) {
+   public CommentRequest createComment(CommentRequest comment) {
 
        String token = tokenService.requestAccessToken();
 
        HttpHeaders headers = new HttpHeaders();
        headers.add("authorization", "Bearer " + token);
        headers.add("Content-Type", MediaType.APPLICATION_JSON.toString());
-       HttpEntity<ReviewRequest> entity = new HttpEntity<>(review,headers);
+       HttpEntity<CommentRequest> entity = new HttpEntity<>(comment,headers);
 
-       String url = "http://localhost:8091/api/review";
+       String url = "http://localhost:8091/api/comment";
 
-       ResponseEntity<ReviewRequest> response =
+       ResponseEntity<CommentRequest> response =
                restTemplate.exchange(url, HttpMethod.POST,
-                       entity, ReviewRequest.class);
+                       entity, CommentRequest.class);
 
        return response.getBody();
    }
 
-   public List<ReviewResponse> getRestaurantReview(UUID restaurantId) {
+   public List<CommentResponse> getRestaurantComments(UUID restaurantId) {
 
        String token = tokenService.requestAccessToken();
 
@@ -46,14 +46,14 @@ public class ReviewService {
        headers.add("authorization", "Bearer " + token);
        HttpEntity<String> entity = new HttpEntity<>(headers);
 
-       String url = "http://localhost:8091/api/review/" + restaurantId;
+       String url = "http://localhost:8091/api/comment/" + restaurantId;
 
-       ResponseEntity<ReviewResponse[]> response =
+       ResponseEntity<CommentResponse[]> response =
                restTemplate.exchange(url, HttpMethod.GET,
-                       entity, ReviewResponse[].class);
+                       entity, CommentResponse[].class);
 
-       ReviewResponse[] reviews = response.getBody();
-       return Arrays.asList(reviews);
+       CommentResponse[] comments = response.getBody();
+       return Arrays.asList(comments);
    }
    
 }

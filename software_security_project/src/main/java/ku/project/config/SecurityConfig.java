@@ -25,9 +25,6 @@ public class SecurityConfig {
         @Autowired
         private ApplicationContext context;
 
-        // @Autowired
-        // private CustomAuthenticationDetailsSource customAuthenticationDetailsSource;
-
         @Autowired
         private CustomLoginFailureHandler loginFailureHandler;
 
@@ -55,7 +52,6 @@ public class SecurityConfig {
                                 .loginPage("/login")
                                 .failureHandler(loginFailureHandler)
                                 .successHandler(loginSuccessHandler)
-                                // .authenticationDetailsSource(customAuthenticationDetailsSource)
                                 .permitAll()
 
                                 .and()
@@ -102,13 +98,6 @@ public class SecurityConfig {
 
                 return http.build();
         }
-
-        // @Bean
-        // public DaoAuthenticationProvider authenticationProvider(@Autowired
-        // UserDetailsService userDetailsService,
-        // @Autowired PasswordEncoder passwordEncoder) {
-        // return new CustomAuthenticationProvider(userDetailsService, passwordEncoder);
-        // }
 
         @Bean
         public PasswordEncoder encoder() {

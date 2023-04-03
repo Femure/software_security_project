@@ -4,8 +4,8 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class ReviewRequest {
+public class CommentRequest {
    private UUID restaurantId;
    private String username;
-   private String reviewText;
+   private String commentText;
 }

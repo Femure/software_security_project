@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Data
 @Entity
-public class Review {
+public class Comment {
 
    @Id
    @GeneratedValue
@@ -18,7 +18,7 @@ public class Review {
 
    private UUID restaurantId;
    private String username;
-   private String reviewText;
+   private String commentText;
    private Instant createdAt;
 }
 

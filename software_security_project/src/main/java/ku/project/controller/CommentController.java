@@ -1,8 +1,8 @@
 package ku.project.controller;
 
-import ku.project.dto.ReviewRequest;
+import ku.project.dto.CommentRequest;
 import ku.project.service.RestaurantService;
-import ku.project.service.ReviewService;
+import ku.project.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,41 +12,41 @@ import java.security.Principal;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/review")
-public class ReviewController {
+@RequestMapping("/comment")
+public class CommentController {
 
    @Autowired
    private RestaurantService restaurantService;
 
    @Autowired
-   private ReviewService reviewService;
+   private CommentService commentService;
 
    @GetMapping("/{restaurantId}")
-   public String getReviewPage(@PathVariable UUID restaurantId, 
+   public String getcommentPage(@PathVariable UUID restaurantId, 
                                Model model) {
 
        model.addAttribute("restaurant", 
                    restaurantService.getRestaurantById(restaurantId));
-       model.addAttribute("reviews", 
-                   reviewService.getRestaurantReview(restaurantId));
+       model.addAttribute("comments", 
+                   commentService.getRestaurantComments(restaurantId));
 
-       return "review";
+       return "comment";
    }
 
    @GetMapping("/add/{restaurantId}")
-   public String getReviewForm(@PathVariable UUID restaurantId, 
+   public String getcommentForm(@PathVariable UUID restaurantId, 
                                Model model) {
        model.addAttribute("restaurantId", restaurantId);
-       return "review-add";
+       return "comment-add";
    }
 
    @PostMapping("/add")
-   public String createReview(@ModelAttribute ReviewRequest review,
+   public String createcomment(@ModelAttribute CommentRequest comment,
                               Model model, Principal principal) {
        String username = principal.getName();
-       review.setUsername(username);
-       reviewService.createReview(review);
-       return "redirect:/review/" + review.getRestaurantId();
+       comment.setUsername(username);
+       commentService.createComment(comment);
+       return "redirect:/comment/" + comment.getRestaurantId();
    }
 
 }

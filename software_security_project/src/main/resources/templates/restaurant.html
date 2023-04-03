@@ -28,7 +28,7 @@
                     <td th:text="${restaurant.address}"></td>
                     <td th:text="${restaurant.rating}"></td>
                     <td style="text-align: center">
-                        <a class="btn btn-primary" th:href="@{/review/{id}(id=${restaurant.id})}">Review</a>
+                        <a class="btn btn-primary" th:href="@{/comment/{id}(id=${restaurant.id})}">Comment</a>
                     </td>
                 </tr>
             </tbody>

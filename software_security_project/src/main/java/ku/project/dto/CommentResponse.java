@@ -1,11 +1,11 @@
-package ku.review.dto;
+package ku.project.dto;
 
 import lombok.Data;
 import java.time.Instant;
 
 @Data
-public class ReviewResponse {
+public class CommentResponse {
    private String username;
-   private String reviewText;
+   private String commentText;
    private Instant createdAt;
 }
