@@ -7,6 +7,7 @@ import ku.project.service.RestaurantService;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ku.project.dto.CommentRequest;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +35,9 @@ public class RestaurantController {
 
     @GetMapping("/restaurant")
     public String getRestaurantPage(Model model) {
+        if (!model.containsAttribute("restaurantRequest")) {
+            model.addAttribute("restaurantRequest", new RestaurantRequest());
+        }
         List<RestaurantResponse> listRestaurant = restaurantService.getRestaurants();
         model.addAttribute("restaurants", listRestaurant);
         listRestaurant.forEach(
@@ -40,17 +45,14 @@ public class RestaurantController {
         return "restaurant";
     }
 
-    @GetMapping("/restaurant/add")
-    public String getAddPage(RestaurantRequest restaurantRequest) {
-        return "restaurant-add";
-    }
-
     @PostMapping("/restaurant/add")
     public String addRestaurant(@Valid RestaurantRequest restaurant,
-            BindingResult result,
-            Model model) {
-        if (result.hasErrors())
-            return "restaurant-add";
+            BindingResult result, RedirectAttributes attr, HttpSession session) {
+        if (result.hasErrors()) {
+            attr.addFlashAttribute("org.springframework.validation.BindingResult.restaurantRequest", result);
+            attr.addFlashAttribute("restaurantRequest", restaurant);
+            return "redirect:/restaurant";
+        }
 
         restaurantService.create(restaurant);
         return "redirect:/restaurant";
