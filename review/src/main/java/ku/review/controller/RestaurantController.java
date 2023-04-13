@@ -30,13 +30,13 @@ public class RestaurantController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody RestaurantRequest restaurant,
+    public ResponseEntity<Object> create(@Valid @RequestBody RestaurantRequest restaurant,
             BindingResult result) {
 
         if (result.hasErrors())
-            return new ResponseEntity<String>("Invalid request format", HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<Object>("Invalid request format", HttpStatus.UNPROCESSABLE_ENTITY);
 
         service.create(restaurant);
-        return new ResponseEntity<RestaurantRequest>(restaurant, HttpStatus.OK);
+        return new ResponseEntity<Object>(restaurant, HttpStatus.OK);
     }
 }

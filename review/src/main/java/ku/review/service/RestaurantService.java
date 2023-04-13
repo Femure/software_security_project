@@ -24,9 +24,12 @@ public class RestaurantService {
     private ModelMapper modelMapper;
 
     public RestaurantResponse getRestaurantById(UUID restaurantId) {
-        Restaurant restaurant = repository.findById(restaurantId).get();
-        return modelMapper.map(restaurant, RestaurantResponse.class);
-    } 
+        if (restaurantId != null) {
+            Restaurant restaurant = repository.findById(restaurantId).get();
+            return modelMapper.map(restaurant, RestaurantResponse.class);
+        }
+        return modelMapper.map(null, RestaurantResponse.class);
+    }
 
     // ----> we are mapping DAO → DTO
     public List<RestaurantResponse> getRestaurants() {

@@ -13,48 +13,55 @@
     <div class="container pt-5 h-100">
         <h1 class="display-6">Restaurants</h1>
 
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>Rating</th>
-                    <th> </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="restaurant : ${restaurants}">
-                    <td th:text="${restaurant.name}"></td>
-                    <td th:text="${restaurant.address}"></td>
-                    <td th:text="${restaurant.rating}"></td>
-                </tr>
-            </tbody>
-        </table>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Comment</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="comment : ${comments}">
-                    <td th:text="${comment.username}"></td>
-                    <td th:text="${comment.commentText}"></td>
-                    <td th:text="${comment.createdAt}"></td>
-                </tr>
-            </tbody>
-        </table>
-        <h1 class="display-6">Add comment</h1>
-
-        <form th:action="@{/comment/add}" method="POST">
-            <div>
-                <label for="commentTextInput" class="form-label">Comments</label>
-                <input id="commentTextInput" type="text" class="form-control" name="commentText">
+        <div class="d-flex justify-content-between">
+            <h4>Name</h4>
+            <h4>Address</h4>
+            <h4>Rating</h4>
+        </div>
+        <div class="card shadow-lg bg-white" th:each="restaurant : ${restaurants}">
+            <div class="card-header">
+                <div class="d-flex justify-content-between">
+                    <p class="m-0" th:text="${restaurant.name}"></p>
+                    <p class="m-0" th:text="${restaurant.address}"></p>
+                    <p class="m-0" th:text="${restaurant.rating}"></p>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">Add comment</button>
-        </form>
+            <div class="card-body">
+                <div class="card shadow-lg bg-white" th:each="comment : ${restaurant.comments}">
+                    <div class="card-header">
+
+                        <!-- <div class="d-flex mr-3">
+                        <a href=""><img class="img-fluid rounded-circle"
+                                src="http://www.themashabrand.com/templates/bootsnipp/post/assets/img/users/4.jpg"
+                                alt="User"></a>
+                    </div> -->
+                        <div class="d-flex justify-content-between">
+                            <p class="m-0" th:text="${comment.username}"></p>
+                            <!-- <small><span><i class="icon ion-md-pin"></i> Nairobi, Kenya</span></small> -->
+                            <small><span><i class="icon ion-md-time" th:text="${comment.createdAt}"></i></span></small>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span th:text="${comment.commentText}"></span>
+                    </div>
+
+                    <!-- <span class="comment-avatar float-left">
+                    <a href=""><img class="rounded-circle"
+                            src="http://www.themashabrand.com/templates/bootsnipp/post/assets/img/users/6.jpg"
+                            alt="..."></a>
+                </span> -->
+                </div>
+                <div class="cardbox-comments">
+                    <form th:action="@{/comment/add/{id}(id=${restaurant.id})}" method="POST">
+                        <div>
+                            <input id="commentTextInput" type="text" class="form-control" name="commentText"
+                                placeholder="Write a comment" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" required>Add comment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 

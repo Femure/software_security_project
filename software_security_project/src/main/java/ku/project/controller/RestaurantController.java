@@ -16,6 +16,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import ku.project.dto.CommentRequest;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.UUID;
+
 @Controller
 public class RestaurantController {
 
@@ -29,14 +35,14 @@ public class RestaurantController {
     public String getRestaurantPage(Model model) {
         List<RestaurantResponse> listRestaurant = restaurantService.getRestaurants();
         model.addAttribute("restaurants", listRestaurant);
-        listRestaurant.forEach(restaurant -> model.addAttribute("comments",
-                commentService.getRestaurantComments(restaurant.getId())));
-        return "restaurant"; // return restaurant.html
+        listRestaurant.forEach(
+                restaurant -> restaurant.setComments(commentService.getRestaurantComments(restaurant.getId())));
+        return "restaurant";
     }
 
     @GetMapping("/restaurant/add")
     public String getAddPage(RestaurantRequest restaurantRequest) {
-        return "restaurant-add"; // return restaurant-add.html
+        return "restaurant-add";
     }
 
     @PostMapping("/restaurant/add")
@@ -47,6 +53,16 @@ public class RestaurantController {
             return "restaurant-add";
 
         restaurantService.create(restaurant);
+        return "redirect:/restaurant";
+    }
+
+    @PostMapping("/comment/add/{restaurantId}")
+    public String createcomment(@PathVariable UUID restaurantId, @ModelAttribute CommentRequest comment,
+            Principal principal, Model model) {
+        String username = principal.getName();
+        comment.setUsername(username);
+        comment.setRestaurantId(restaurantId);
+        commentService.createComment(comment);
         return "redirect:/restaurant";
     }
 

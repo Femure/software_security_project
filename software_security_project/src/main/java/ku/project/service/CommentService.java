@@ -27,7 +27,7 @@ public class CommentService {
        HttpHeaders headers = new HttpHeaders();
        headers.add("authorization", "Bearer " + token);
        headers.add("Content-Type", MediaType.APPLICATION_JSON.toString());
-       HttpEntity<CommentRequest> entity = new HttpEntity<>(comment,headers);
+       HttpEntity<CommentRequest> entity = new HttpEntity<CommentRequest>(comment,headers);
 
        String url = "http://localhost:8091/api/comment";
 
