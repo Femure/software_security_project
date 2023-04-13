@@ -19,7 +19,7 @@ public class CommentController {
     @Autowired
     private CommentService service;
 
-    @GetMapping("/{id}")
+    @GetMapping("add/{id}")
     public List<CommentResponse> getAllCommentsForRestaurant(@PathVariable UUID id) {
         return service.getAllCommentsForRestaurant(id);
     }
@@ -31,7 +31,13 @@ public class CommentController {
         if (result.hasErrors())
             return new ResponseEntity<Object>("Invalid request format", HttpStatus.UNPROCESSABLE_ENTITY);
 
-        service.addReview(comment);
+        service.addComment(comment);
         return new ResponseEntity<Object>(comment, HttpStatus.OK);
+    }
+
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        service.deleteComment(id);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }

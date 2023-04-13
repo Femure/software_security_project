@@ -60,6 +60,7 @@
             </div>
             <div class="card-body">
                 <div class="card shadow-lg bg-white" th:each="comment : ${restaurant.comments}">
+                    <!-- Comment informations -->
                     <div class="card-header">
 
                         <!-- <div class="d-flex mr-3">
@@ -69,13 +70,19 @@
                     </div> -->
                         <div class="d-flex justify-content-between">
                             <p class="m-0" th:text="${comment.username}"></p>
-                            <!-- <small><span><i class="icon ion-md-pin"></i> Nairobi, Kenya</span></small> -->
                             <small><span><i class="icon ion-md-time" th:text="${comment.createdAt}"></i></span></small>
                         </div>
                     </div>
-                    <div class="card-body">
+                    <!-- Comment message -->
+                    <div class="card-body d-flex justify-content-between">
                         <span th:text="${comment.commentText}"></span>
+                        <div th:if="${comment.username} == ${#authentication.name}">
+                            <form th:action="@{/comment/delete/{id}(id=${comment.id})}" method="POST">
+                                <button class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
                     </div>
+                    <!-- Delete button -->
 
                     <!-- <span class="comment-avatar float-left">
                     <a href=""><img class="rounded-circle"
@@ -89,7 +96,7 @@
                             <input id="commentTextInput" type="text" class="form-control" name="commentText"
                                 placeholder="Write a comment" required>
                         </div>
-                        <button type="submit" class="btn btn-primary" required>Add comment</button>
+                        <button class="btn btn-primary" required>Add comment</button>
                     </form>
                 </div>
             </div>

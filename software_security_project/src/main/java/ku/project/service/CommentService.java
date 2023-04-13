@@ -14,46 +14,57 @@ import java.util.UUID;
 @Service
 public class CommentService {
 
-   @Autowired
-   private RestTemplate restTemplate;
+    @Autowired
+    private RestTemplate restTemplate;
 
-   @Autowired
-   private JwtAccessTokenService tokenService;
+    @Autowired
+    private JwtAccessTokenService tokenService;
 
-   public CommentRequest createComment(CommentRequest comment) {
+    public List<CommentResponse> getRestaurantComments(UUID restaurantId) {
 
-       String token = tokenService.requestAccessToken();
+        String token = tokenService.requestAccessToken();
 
-       HttpHeaders headers = new HttpHeaders();
-       headers.add("authorization", "Bearer " + token);
-       headers.add("Content-Type", MediaType.APPLICATION_JSON.toString());
-       HttpEntity<CommentRequest> entity = new HttpEntity<CommentRequest>(comment,headers);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("authorization", "Bearer " + token);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
 
-       String url = "http://localhost:8091/api/comment";
+        String url = "http://localhost:8091/api/comment/add/" + restaurantId;
 
-       ResponseEntity<CommentRequest> response =
-               restTemplate.exchange(url, HttpMethod.POST,
-                       entity, CommentRequest.class);
+        ResponseEntity<CommentResponse[]> response = restTemplate.exchange(url, HttpMethod.GET,
+                entity, CommentResponse[].class);
 
-       return response.getBody();
-   }
+        CommentResponse[] comments = response.getBody();
+        return Arrays.asList(comments);
+    }
 
-   public List<CommentResponse> getRestaurantComments(UUID restaurantId) {
+    public CommentRequest createComment(CommentRequest comment) {
 
-       String token = tokenService.requestAccessToken();
+        String token = tokenService.requestAccessToken();
 
-       HttpHeaders headers = new HttpHeaders();
-       headers.add("authorization", "Bearer " + token);
-       HttpEntity<String> entity = new HttpEntity<>(headers);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("authorization", "Bearer " + token);
+        headers.add("Content-Type", MediaType.APPLICATION_JSON.toString());
+        HttpEntity<CommentRequest> entity = new HttpEntity<CommentRequest>(comment, headers);
 
-       String url = "http://localhost:8091/api/comment/" + restaurantId;
+        String url = "http://localhost:8091/api/comment";
 
-       ResponseEntity<CommentResponse[]> response =
-               restTemplate.exchange(url, HttpMethod.GET,
-                       entity, CommentResponse[].class);
+        ResponseEntity<CommentRequest> response = restTemplate.exchange(url, HttpMethod.POST,
+                entity, CommentRequest.class);
 
-       CommentResponse[] comments = response.getBody();
-       return Arrays.asList(comments);
-   }
-   
+        return response.getBody();
+    }
+
+    public void deleteComment(UUID commentId) {
+
+        String token = tokenService.requestAccessToken();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("authorization", "Bearer " + token);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        String url = "http://localhost:8091/api/comment/delete/" + commentId;
+
+        restTemplate.exchange(url, HttpMethod.DELETE,
+                entity, Void.class);
+    }
 }

@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ku.project.dto.CommentRequest;
+import ku.project.dto.CommentResponse;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -41,7 +43,10 @@ public class RestaurantController {
         List<RestaurantResponse> listRestaurant = restaurantService.getRestaurants();
         model.addAttribute("restaurants", listRestaurant);
         listRestaurant.forEach(
-                restaurant -> restaurant.setComments(commentService.getRestaurantComments(restaurant.getId())));
+                restaurant -> {
+                    List<CommentResponse> listComments = commentService.getRestaurantComments(restaurant.getId());
+                    restaurant.setComments(listComments);
+                });
         return "restaurant";
     }
 
@@ -59,12 +64,18 @@ public class RestaurantController {
     }
 
     @PostMapping("/comment/add/{restaurantId}")
-    public String createcomment(@PathVariable UUID restaurantId, @ModelAttribute CommentRequest comment,
+    public String createComment(@PathVariable UUID restaurantId, @ModelAttribute CommentRequest comment,
             Principal principal, Model model) {
         String username = principal.getName();
         comment.setUsername(username);
         comment.setRestaurantId(restaurantId);
         commentService.createComment(comment);
+        return "redirect:/restaurant";
+    }
+
+    @PostMapping("/comment/delete/{commentId}")
+    public String deleteComment(@PathVariable UUID commentId) {
+        commentService.deleteComment(commentId);
         return "redirect:/restaurant";
     }
 

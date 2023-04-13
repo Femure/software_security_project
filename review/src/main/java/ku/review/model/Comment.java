@@ -27,6 +27,7 @@ public class Comment {
         @Column(name = "id", updatable = false, nullable = false)
         @JdbcTypeCode(java.sql.Types.NVARCHAR)
         private UUID id;
+        private Instant createdAt;
 
         @Column(columnDefinition = "VARBINARY(256)")
         @ColumnTransformer(read = "cast(AES_DECRYPT(username, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")
@@ -35,7 +36,6 @@ public class Comment {
         @Column(columnDefinition = "VARBINARY(256)")
         @ColumnTransformer(read = "cast(AES_DECRYPT(comment_text, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")
         private String commentText;
-        private Instant createdAt;
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "restaurant_id")

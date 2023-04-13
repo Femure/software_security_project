@@ -37,7 +37,7 @@ public class CommentService {
         return dtos;
     }
 
-    public void addReview(CommentRequest commentRequest) {
+    public void addComment(CommentRequest commentRequest) {
         Restaurant restaurant = restaurantRepository.getReferenceById(commentRequest.getRestaurantId());
         if (restaurant != null) {
             Comment comment = modelMapper.map(commentRequest, Comment.class);
@@ -45,6 +45,10 @@ public class CommentService {
             comment.setRestaurant(restaurant);
             commentRepository.save(comment);
         }
+    }
 
+    public void deleteComment(UUID commentId){
+        commentRepository.deleteById(commentId);
+        System.out.println("Delete successful");
     }
 }
