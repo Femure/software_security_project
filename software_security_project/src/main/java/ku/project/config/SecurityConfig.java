@@ -38,7 +38,7 @@ public class SecurityConfig {
                                 .authorizeRequests()
                                 .antMatchers("/home", "/signup", "/verify", "/login", "/policy*",
                                                 "/resendTokenEmail*", "/signup-success", "/forgot-password",
-                                                "/reset-password", "/css/**", "/js/**")
+                                                "/reset-password", "/css/**", "/js/**", "/fontawesome/**")
                                 .permitAll()
                                 // .antMatchers("/restaurant", "/restaurant/**", "/review", "/review/**")
                                 // .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
@@ -85,7 +85,7 @@ public class SecurityConfig {
                                 .cacheControl()
                                 .and()
                                 .contentSecurityPolicy(
-                                                "default-src 'none'; frame-src https://www.google.com/; script-src 'self'; script-src-elem https://www.google.com/recaptcha/api.js https://www.gstatic.com/recaptcha/releases/ http://localhost:8090/js/bootstrap.min.js; connect-src 'self'; img-src 'self'; style-src 'self'; frame-ancestors 'self'; form-action 'self';");
+                                                "default-src 'none'; frame-src https://www.google.com/; script-src 'self'; script-src-elem https://www.google.com/recaptcha/api.js https://www.gstatic.com/recaptcha/releases/ http://localhost:8090/js/bootstrap.min.js; connect-src 'self'; img-src 'self'; style-src 'self'; frame-ancestors 'self'; form-action 'self'; font-src http://localhost:8090/fontawesome/webfonts/");
 
                 ClientRegistrationRepository repository = context.getBean(ClientRegistrationRepository.class);
 

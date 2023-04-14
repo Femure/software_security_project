@@ -4,104 +4,122 @@
 <head>
     <meta charset="UTF-8">
     <title>Restaurant</title>
+    <link rel="icon" th:href="@{/fontawesome/svgs/solid/list-alt.svg}">
     <link th:rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/fontawesome/css/all.css}">
     <script th:src="@{/js/bootstrap.min.js}"></script>
 </head>
 
 <body>
     <div th:insert="fragments/header :: header"></div>
 
-    <!-- Add a post -->
-    <div class="container pt-5 h-100 w-50">
-        <h1 class="display-6">Add Restaurant</h1>
-        <div class="card shadow-lg bg-white">
-            <div class="card-body">
-                <form th:action="@{/restaurant/add}" th:object="${restaurantRequest}" method="POST">
-                    <div class="mb-3">
-                        <label for="nameInput" class="form-label">Name</label>
-                        <input class="form-control" id="nameInput" th:field="*{name}" type="text">
-                        <div class="alert alert-warning" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="addressInput" class="form-label">Address</label>
-                        <input class="form-control" id="addressInput" th:field="*{address}" type="text">
-                        <div class="alert alert-warning" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">
+
+    <div class="container p-3 pt-5 h-100 mb-6">
+        <!-- Add a post -->
+        <div class="container h-100 w-50">
+            <h1 class="display-6">Add Restaurant</h1>
+            <div class="card shadow-lg bg-white">
+                <div class="card-body">
+                    <form th:action="@{/restaurant/add}" th:object="${restaurantRequest}" method="POST">
+                        <div class="mb-3">
+                            <label for="nameInput" class="form-label">Name</label>
+                            <input class="form-control" id="nameInput" th:field="*{name}" type="text">
+                            <div class="alert alert-warning" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                            </div>
                         </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="ratingInput" class="form-label">Rating</label>
-                        <input class="form-control-range" type="range" id="ratingInput" th:field="*{rating}" min="0"
-                            max="5">
-                        <div class="alert alert-warning" th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}">
+                        <div class="mb-3">
+                            <label for="addressInput" class="form-label">Address</label>
+                            <input class="form-control" id="addressInput" th:field="*{address}" type="text">
+                            <div class="alert alert-warning" th:if="${#fields.hasErrors('address')}"
+                                th:errors="*{address}">
+                            </div>
                         </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Add restaurant</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- See the posts -->
-    <div class="container pt-5 h-100 w-75">
-        <h1 class="display-6">Restaurants</h1>
-
-        <div class="d-flex justify-content-between">
-            <h4>Name</h4>
-            <h4>Address</h4>
-            <h4>Rating</h4>
-        </div>
-        <div class="card shadow-lg bg-white mb-5" th:each="restaurant : ${restaurants}">
-            <div class="card-header">
-                <div class="d-flex justify-content-between">
-                    <p class="m-0" th:text="${restaurant.name}"></p>
-                    <p class="m-0" th:text="${restaurant.address}"></p>
-                    <p class="m-0" th:text="${restaurant.rating}"></p>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="card shadow-lg bg-white" th:each="comment : ${restaurant.comments}">
-                    <!-- Comment informations -->
-                    <div class="card-header">
-
-                        <!-- <div class="d-flex mr-3">
-                        <a href=""><img class="img-fluid rounded-circle"
-                                src="http://www.themashabrand.com/templates/bootsnipp/post/assets/img/users/4.jpg"
-                                alt="User"></a>
-                    </div> -->
                         <div class="d-flex justify-content-between">
-                            <p class="m-0" th:text="${comment.username}"></p>
-                            <small><span><i class="icon ion-md-time" th:text="${comment.createdAt}"></i></span></small>
+                            <div class="mb-3">
+                                <label for="ratingInput" class="form-label">Rating</label>
+                                <div class="d-flex justify-content-between w-25">
+                                    <p>0</p><input class="form-range ms-2 me-2" type="range" id="ratingInput"
+                                        th:field="*{rating}" min="0" max="5">
+                                    <p>5</p>
+                                    <div class="alert alert-warning" th:if="${#fields.hasErrors('rating')}"
+                                        th:errors="*{rating}">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary h-100 align-self-end"><i
+                                    class='fas fa-pen'></i></button>
                         </div>
-                    </div>
-                    <!-- Comment message -->
-                    <div class="card-body d-flex justify-content-between">
-                        <span th:text="${comment.commentText}"></span>
-                        <div th:if="${comment.username} == ${#authentication.name}">
-                            <form th:action="@{/comment/delete/{id}(id=${comment.id})}" method="POST">
-                                <button class="btn btn-danger">Delete</button>
-                            </form>
-                        </div>
-                    </div>
-                    <!-- Delete button -->
-
-                    <!-- <span class="comment-avatar float-left">
-                    <a href=""><img class="rounded-circle"
-                            src="http://www.themashabrand.com/templates/bootsnipp/post/assets/img/users/6.jpg"
-                            alt="..."></a>
-                </span> -->
-                </div>
-                <div class="cardbox-comments">
-                    <form th:action="@{/comment/add/{id}(id=${restaurant.id})}" method="POST">
-                        <div>
-                            <input id="commentTextInput" type="text" class="form-control" name="commentText"
-                                placeholder="Write a comment" required>
-                        </div>
-                        <button class="btn btn-primary" required>Add comment</button>
                     </form>
                 </div>
             </div>
         </div>
+
+        <!-- See the posts -->
+        <div class="container pt-5 h-100 w-75">
+            <h1 class="display-6">Restaurants</h1>
+
+            <div class="d-flex justify-content-between">
+                <h4>Name</h4>
+                <h4>Address</h4>
+                <h4>Rating</h4>
+            </div>
+            <div class="card shadow-lg bg-white mb-5" th:each="restaurant : ${restaurants}">
+                <div class="card-header fw-bold">
+                    <div class="d-flex justify-content-between">
+                        <p class="m-0" th:text="${restaurant.name}"></p>
+                        <p class="m-0" th:text="${restaurant.address}"></p>
+                        <p class="m-0" th:text="${restaurant.rating}"></p>
+                    </div>
+                </div>
+                <div class="">
+                    <div class="border" th:each="comment : ${restaurant.comments}">
+                        <!-- Comment informations -->
+                        <div class="card-header">
+
+                            <!-- <div class="d-flex mr-3">
+                        <a href=""><img class="img-fluid rounded-circle"
+                                src="http://www.themashabrand.com/templates/bootsnipp/post/assets/img/users/4.jpg"
+                                alt="User"></a>
+                    </div> -->
+                            <div class="d-flex justify-content-between">
+                                <p class="m-0" th:text="${comment.username}"></p>
+                                <small><span><i class="icon ion-md-time"
+                                            th:text="${comment.createdAt}"></i></span></small>
+                            </div>
+                        </div>
+
+                        <div class="card-body d-flex justify-content-between">
+                            <!-- Comment message -->
+                            <span class="p-2" th:text="${comment.commentText}"></span>
+
+                            <!-- Delete button -->
+                            <div th:if="${comment.username} == ${#authentication.name}">
+                                <form th:action="@{/comment/delete/{id}(id=${comment.id})}" method="POST">
+                                    <button class="btn btn-danger"><i class='fas fa-trash-alt'></i></button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- <span class="comment-avatar float-left">
+                    <a href=""><img class="rounded-circle"
+                            src="http://www.themashabrand.com/templates/bootsnipp/post/assets/img/users/6.jpg"
+                            alt="..."></a>
+                </span> -->
+                    </div>
+                    <div class="cardbox-comments mt-2 mb-2">
+                        <form th:action="@{/comment/add/{id}(id=${restaurant.id})}" method="POST">
+                            <div class="d-flex justify-content-center">
+                                <input id="commentTextInput" type="text" class="form-control w-75" name="commentText"
+                                    placeholder="Write a comment" required>
+                                <button class="btn btn-primary"><i class='far fa-paper-plane'></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    <div th:insert="fragments/footer :: footer"></div>
 </body>
 
 </html>

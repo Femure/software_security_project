@@ -5,15 +5,17 @@
     <meta charset="UTF-8">
     <title>Home</title>
     <link th:rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="icon" th:href="@{/fontawesome/svgs/solid/list-alt.svg}">
     <script th:src="@{/js/bootstrap.min.js}"></script>
 </head>
 
 <body>
     <div th:insert="fragments/header :: header"></div>
 
-    <div class="container pt-5 h-100">
+    <div class="container p-3 pt-5 h-100 mb-7">
         <h1 class="display-6" th:text="${greeting}"></h1>
     </div>
+    <div th:insert="fragments/footer :: footer"></div>
 </body>
 
 </html>
