@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>ku</groupId>
-	<artifactId>project</artifactId>
+	<artifactId> chirpchat</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>project</name>
-	<description>Software security project</description>
+	<name>chirpchat</name>
+	<description>Software security project chirpchat</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
