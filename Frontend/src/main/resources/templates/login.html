@@ -13,7 +13,7 @@
     <div th:insert="fragments/header :: header"></div>
 
     <div class="container w-50 p-3 pt-5 h-100 mb-6">
-        <h1 class="display-5">Login to Kin Kao</h1>
+        <h1 class="display-5">Login to Chirpchat</h1>
 
         <form th:action="@{/login}" method="POST">
             <div id="error-msg" th:if="${param.error}" class="alert alert-danger">

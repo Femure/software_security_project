@@ -7,7 +7,7 @@ import java.util.UUID;
 @Data
 public class CommentRequest {
 
-   private UUID restaurantId;
+   private UUID postId;
 
    @NotBlank
    private String username;

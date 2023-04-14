@@ -38,7 +38,7 @@ public class Comment {
         private String commentText;
 
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "restaurant_id")
+        @JoinColumn(name = "post_id")
         @ToString.Exclude
-        private Restaurant restaurant;
+        private Post post;
 }

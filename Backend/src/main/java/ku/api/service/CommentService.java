@@ -1,11 +1,11 @@
 package ku.api.service;
 
 import ku.api.repository.CommentRepository;
-import ku.api.repository.RestaurantRepository;
+import ku.api.repository.PostRepository;
 import ku.api.dto.CommentRequest;
 import ku.api.dto.CommentResponse;
 import ku.api.model.Comment;
-import ku.api.model.Restaurant;
+import ku.api.model.Post;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +22,13 @@ public class CommentService {
     private CommentRepository commentRepository;
 
     @Autowired
-    private RestaurantRepository restaurantRepository;
+    private PostRepository postRepository;
 
     @Autowired
     private ModelMapper modelMapper;
 
-    public List<CommentResponse> getAllCommentsForRestaurant(UUID restaurantId) {
-        List<Comment> comments = commentRepository.findByRestaurantId(restaurantId);
+    public List<CommentResponse> getAllCommentsForPost(UUID postId) {
+        List<Comment> comments = commentRepository.findByPostId(postId);
         List<CommentResponse> dtos = comments
                 .stream()
                 .map(comment -> modelMapper.map(comment, CommentResponse.class))
@@ -37,10 +37,10 @@ public class CommentService {
     }
 
     public void addComment(CommentRequest commentRequest) {
-        Restaurant restaurant = restaurantRepository.getReferenceById(commentRequest.getRestaurantId());
+        Post post = postRepository.getReferenceById(commentRequest.getPostId());
         Comment comment = modelMapper.map(commentRequest, Comment.class);
         comment.setCreatedAt(Instant.now());
-        comment.setRestaurant(restaurant);
+        comment.setPost(post);
         commentRepository.save(comment);
     }
 

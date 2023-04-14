@@ -1,12 +1,12 @@
-package ku.api.dto;
+package ku.chirpchat.dto;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
-public class RestaurantRequest {
+public class PostRequest {
 
    @NotBlank(message = "Name is required")
    private String name;

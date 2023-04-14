@@ -16,12 +16,12 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @Entity
-public class Restaurant {
+public class Post {
 
         @Id
         @GeneratedValue(generator = "UUID")
         @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-        @Column(name = "restaurant_id", updatable = false, nullable = false)
+        @Column(name = "post_id", updatable = false, nullable = false)
         @JdbcTypeCode(java.sql.Types.NVARCHAR)
         private UUID id;
 
@@ -38,7 +38,7 @@ public class Restaurant {
         private int rating;
         private Instant createdAt;
 
-        @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+        @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
         @ToString.Exclude
         private List<Comment> comments;
 }

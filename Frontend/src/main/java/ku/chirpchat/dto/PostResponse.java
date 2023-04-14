@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-public class RestaurantResponse {
+public class PostResponse {
    private UUID id;
    private String name;
    private String address;

@@ -21,7 +21,7 @@ public class CommentService {
     @Autowired
     private JwtAccessTokenService tokenService;
 
-    public List<CommentResponse> getRestaurantComments(UUID restaurantId) {
+    public List<CommentResponse> getPostComments(UUID postId) {
 
         String token = tokenService.requestAccessToken();
 
@@ -29,7 +29,7 @@ public class CommentService {
         headers.add("authorization", "Bearer " + token);
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        String url = "http://localhost:8091/api/comment/add/" + restaurantId;
+        String url = "http://localhost:8091/api/comment/add/" + postId;
 
         ResponseEntity<CommentResponse[]> response = restTemplate.exchange(url, HttpMethod.GET,
                 entity, CommentResponse[].class);

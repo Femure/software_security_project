@@ -41,10 +41,6 @@ public class SecurityConfig {
                                                 "/resendTokenEmail*", "/signup-success", "/forgot-password",
                                                 "/reset-password", "/css/**", "/js/**", "/fontawesome/**")
                                 .permitAll()
-                                // .antMatchers("/restaurant", "/restaurant/**", "/review", "/review/**")
-                                // .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-                                // .antMatchers("/restaurant/add")
-                                // .access("hasRole('ROLE_ADMIN')")
 
                                 .anyRequest().authenticated()
 
@@ -57,7 +53,7 @@ public class SecurityConfig {
 
                                 .and()
                                 .oauth2Login()
-                                .defaultSuccessUrl("/restaurant", true)
+                                .defaultSuccessUrl("/thread", true)
 
                                 .and()
                                 .logout()

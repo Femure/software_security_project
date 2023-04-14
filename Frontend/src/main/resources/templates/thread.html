@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Restaurant</title>
+    <title>Thread</title>
     <link rel="icon" th:href="@{/fontawesome/svgs/solid/list-alt.svg}">
     <link th:rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" type="text/css" media="all" th:href="@{/fontawesome/css/all.css}">
@@ -17,10 +17,10 @@
     <div class="container p-3 pt-5 h-100 mb-6">
         <!-- Add a post -->
         <div class="container h-100 w-50">
-            <h1 class="display-6">Add Restaurant</h1>
+            <h1 class="display-6">Add Post</h1>
             <div class="card shadow-lg bg-white">
                 <div class="card-body">
-                    <form th:action="@{/restaurant/add}" th:object="${restaurantRequest}" method="POST">
+                    <form th:action="@{/post/add}" th:object="${postRequest}" method="POST">
                         <div class="mb-3">
                             <label for="nameInput" class="form-label">Name</label>
                             <input class="form-control" id="nameInput" th:field="*{name}" type="text">
@@ -56,23 +56,23 @@
 
         <!-- See the posts -->
         <div class="container pt-5 h-100 w-75">
-            <h1 class="display-6">Restaurants</h1>
+            <h1 class="display-6">Thread</h1>
 
             <div class="d-flex justify-content-between">
                 <h4>Name</h4>
                 <h4>Address</h4>
                 <h4>Rating</h4>
             </div>
-            <div class="card shadow-lg bg-white mb-5" th:each="restaurant : ${restaurants}">
+            <div class="card shadow-lg bg-white mb-5" th:each="post : ${posts}">
                 <div class="card-header fw-bold">
                     <div class="d-flex justify-content-between">
-                        <p class="m-0" th:text="${restaurant.name}"></p>
-                        <p class="m-0" th:text="${restaurant.address}"></p>
-                        <p class="m-0" th:text="${restaurant.rating}"></p>
+                        <p class="m-0" th:text="${post.name}"></p>
+                        <p class="m-0" th:text="${post.address}"></p>
+                        <p class="m-0" th:text="${post.rating}"></p>
                     </div>
                 </div>
                 <div class="">
-                    <div class="border" th:each="comment : ${restaurant.comments}">
+                    <div class="border" th:each="comment : ${post.comments}">
                         <!-- Comment informations -->
                         <div class="card-header">
 
@@ -107,7 +107,7 @@
                 </span> -->
                     </div>
                     <div class="cardbox-comments mt-2 mb-2">
-                        <form th:action="@{/comment/add/{id}(id=${restaurant.id})}" method="POST">
+                        <form th:action="@{/comment/add/{id}(id=${post.id})}" method="POST">
                             <div class="d-flex justify-content-center">
                                 <input id="commentTextInput" type="text" class="form-control w-75" name="commentText"
                                     placeholder="Write a comment" required>

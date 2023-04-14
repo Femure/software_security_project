@@ -1,4 +1,4 @@
-package ku.review.config;
+package ku.api.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,10 +26,14 @@ public class SecurityConfig {
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                 http
                                 .authorizeHttpRequests()
-                                .requestMatchers(HttpMethod.GET, "/api/review", "/api/restaurant")
-                                .hasAuthority("SCOPE_read:reviews")
-                                .requestMatchers(HttpMethod.POST, "/api/review", "/api/restaurant")
-                                .hasAuthority("SCOPE_create:reviews")
+                                .requestMatchers(HttpMethod.GET, "/api/post")
+                                .hasAuthority("SCOPE_read:posts")
+                                .requestMatchers(HttpMethod.GET, "/api/comment")
+                                .hasAuthority("SCOPE_read:comments")
+                                .requestMatchers(HttpMethod.POST, "/api/post")
+                                .hasAuthority("SCOPE_create:posts")
+                                .requestMatchers(HttpMethod.POST, "/api/comment")
+                                .hasAuthority("SCOPE_create:comments")
                                 .anyRequest()
                                 .authenticated()
                                 

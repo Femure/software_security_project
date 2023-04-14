@@ -5,14 +5,14 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import ku.chirpchat.dto.RestaurantRequest;
-import ku.chirpchat.dto.RestaurantResponse;
+import ku.chirpchat.dto.PostRequest;
+import ku.chirpchat.dto.PostResponse;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class RestaurantService {
+public class PostService {
 
     @Autowired
     private RestTemplate restTemplate;
@@ -20,24 +20,24 @@ public class RestaurantService {
     @Autowired
     private JwtAccessTokenService tokenService;
 
-    public RestaurantRequest create(RestaurantRequest restaurant) {
+    public PostRequest create(PostRequest post) {
 
         String token = tokenService.requestAccessToken();
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("authorization", "Bearer " + token);
         headers.add("Content-Type", MediaType.APPLICATION_JSON.toString());
-        HttpEntity<RestaurantRequest> entity = new HttpEntity<>(restaurant, headers);
+        HttpEntity<PostRequest> entity = new HttpEntity<>(post, headers);
 
-        String url = "http://localhost:8091/api/restaurant";
+        String url = "http://localhost:8091/api/post";
 
-        ResponseEntity<RestaurantRequest> response = restTemplate.exchange(url, HttpMethod.POST,
-                entity, RestaurantRequest.class);
+        ResponseEntity<PostRequest> response = restTemplate.exchange(url, HttpMethod.POST,
+                entity, PostRequest.class);
 
         return response.getBody();
     }
 
-    public List<RestaurantResponse> getRestaurants() {
+    public List<PostResponse> getPosts() {
 
         String token = tokenService.requestAccessToken();
 
@@ -45,12 +45,12 @@ public class RestaurantService {
         headers.add("authorization", "Bearer " + token);
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        String url = "http://localhost:8091/api/restaurant";
+        String url = "http://localhost:8091/api/post";
 
-        ResponseEntity<RestaurantResponse[]> response = restTemplate.exchange(url, HttpMethod.GET,
-                entity, RestaurantResponse[].class);
+        ResponseEntity<PostResponse[]> response = restTemplate.exchange(url, HttpMethod.GET,
+                entity, PostResponse[].class);
 
-        RestaurantResponse[] restaurants = response.getBody();
-        return Arrays.asList(restaurants);
+        PostResponse[] posts = response.getBody();
+        return Arrays.asList(posts);
     }
 }

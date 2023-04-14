@@ -20,8 +20,8 @@ public class CommentController {
     private CommentService service;
 
     @GetMapping("add/{id}")
-    public List<CommentResponse> getAllCommentsForRestaurant(@PathVariable UUID id) {
-        return service.getAllCommentsForRestaurant(id);
+    public List<CommentResponse> getAllCommentsForPost(@PathVariable UUID id) {
+        return service.getAllCommentsForPost(id);
     }
 
     @PostMapping

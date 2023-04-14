@@ -53,7 +53,7 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
         if (authentication.isAuthenticated()) {
             logger.warn("Successfully login for user " + username + "  at " + Instant.now());
-            super.setDefaultTargetUrl("/restaurant");
+            super.setDefaultTargetUrl("/thread");
         }
 
         super.onAuthenticationSuccess(request, response, authentication);
