@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/restaurant")
@@ -24,19 +23,14 @@ public class RestaurantController {
         return service.getRestaurants();
     }
 
-    @GetMapping("/{id}")
-    public RestaurantResponse getRestaurantById(@PathVariable UUID id) {
-        return service.getRestaurantById(id);
-    }
-
     @PostMapping
     public ResponseEntity<Object> create(@Valid @RequestBody RestaurantRequest restaurant,
             BindingResult result) {
 
         if (result.hasErrors())
-            return new ResponseEntity<Object>("Invalid request format", HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>("Invalid request format", HttpStatus.UNPROCESSABLE_ENTITY);
 
         service.create(restaurant);
-        return new ResponseEntity<Object>(restaurant, HttpStatus.OK);
+        return new ResponseEntity<>(restaurant, HttpStatus.OK);
     }
 }

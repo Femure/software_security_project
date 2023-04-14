@@ -29,15 +29,15 @@ public class CommentController {
             BindingResult result) {
 
         if (result.hasErrors())
-            return new ResponseEntity<Object>("Invalid request format", HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>("Invalid request format", HttpStatus.UNPROCESSABLE_ENTITY);
 
         service.addComment(comment);
-        return new ResponseEntity<Object>(comment, HttpStatus.OK);
+        return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 
     @DeleteMapping("delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.deleteComment(id);
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -10,14 +10,15 @@ import java.util.List;
 import me.legrange.haveibeenpwned.HaveIBeenPwndApi;
 import me.legrange.haveibeenpwned.HaveIBeenPwndException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class PasswordConstraintValidator implements ConstraintValidator<ValidPassword, String> {
 
-    @Override
-    public void initialize(ValidPassword constraintAnnotation) {
-    }
+    Logger logger = LoggerFactory.getLogger(PasswordConstraintValidator.class);
 
     @Override
-    public boolean isValid(String password, ConstraintValidatorContext context){
+    public boolean isValid(String password, ConstraintValidatorContext context) {
 
         PasswordValidator validator = new PasswordValidator(Arrays.asList(
                 new LengthRule(12, 128),
@@ -42,7 +43,7 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
                 inDataBreach = "Your password appeared in password data breach. Try to change it";
             }
         } catch (HaveIBeenPwndException e) {
-            e.printStackTrace();
+            logger.error("context", e);
         }
 
         if (result.isValid() && !pwned) {

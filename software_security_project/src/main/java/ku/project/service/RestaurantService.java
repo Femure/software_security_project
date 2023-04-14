@@ -53,18 +53,4 @@ public class RestaurantService {
         RestaurantResponse[] restaurants = response.getBody();
         return Arrays.asList(restaurants);
     }
-
-    public RestaurantResponse getRestaurantById(UUID restaurantId) {
-        String token = tokenService.requestAccessToken();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("authorization", "Bearer " + token);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        String url = "http://localhost:8091/api/restaurant/" + restaurantId;
-        ResponseEntity<RestaurantResponse> response = restTemplate.exchange(url, HttpMethod.GET,
-                entity, RestaurantResponse.class);
-
-        return response.getBody();
-    }
 }

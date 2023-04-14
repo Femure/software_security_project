@@ -19,7 +19,7 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
    @Modifying
    @Query("DELETE FROM Member as m WHERE m.enabled = FALSE")
    void deleteAllUnvalidatedUser();
-   // SELECT * FROM member as m inner join  token as t ON m.id_token = t.id_verification_token WHERE t.verification_code = null OR t.expiration_time < 1680449947610;
+   
    @Query("SELECT m FROM Member as m WHERE m.token.verificationCode = null OR m.token.expirationTime < ?1")
    List<Member> findAllExpiredToken(long currentTimeInMillis);
 }

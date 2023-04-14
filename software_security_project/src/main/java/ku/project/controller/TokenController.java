@@ -71,8 +71,7 @@ public class TokenController {
             model.addAttribute("error", "Please authentificate you by passing by reset password link sent to you.");
         } else {
             int resp = tokenService.resetPassword(user.getPassword(), token);
-            if (resp == 0) {
-            } else if (resp == 1) {
+            if (resp == 1) {
                 model.addAttribute("error", "Select a password different from the previous!");
             } else {
                 session.removeAttribute("token");

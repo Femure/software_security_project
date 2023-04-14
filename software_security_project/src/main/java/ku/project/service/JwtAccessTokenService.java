@@ -50,10 +50,12 @@ public class JwtAccessTokenService {
         ResponseEntity<JwtResponse> response = restTemplate.exchange(issuer + "oauth/token",
                 HttpMethod.POST,
                 entity, JwtResponse.class);
-
         JwtResponse jwtResponse = response.getBody();
-        token = jwtResponse.getAccessToken();
+        if (jwtResponse != null) {
+            token = jwtResponse.getAccessToken();
+            return token;
+        }
 
-        return token;
+        return null;
     }
 }

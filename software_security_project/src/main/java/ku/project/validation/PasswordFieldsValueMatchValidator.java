@@ -11,6 +11,7 @@ public class PasswordFieldsValueMatchValidator implements ConstraintValidator<Pa
     private String fieldMatch;
     private String message;
 
+    @Override
     public void initialize(PasswordValueMatch constraintAnnotation) {
         this.field = constraintAnnotation.field();
         this.fieldMatch = constraintAnnotation.fieldMatch();

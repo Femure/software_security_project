@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class RestaurantService {
@@ -23,14 +21,6 @@ public class RestaurantService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public RestaurantResponse getRestaurantById(UUID restaurantId) {
-        if (restaurantId != null) {
-            Restaurant restaurant = repository.findById(restaurantId).get();
-            return modelMapper.map(restaurant, RestaurantResponse.class);
-        }
-        return modelMapper.map(null, RestaurantResponse.class);
-    }
-
     // ----> we are mapping DAO → DTO
     public List<RestaurantResponse> getRestaurants() {
         List<Restaurant> restaurants = repository.findAll();
@@ -39,7 +29,7 @@ public class RestaurantService {
                 .stream()
                 .map(restaurant -> modelMapper.map(restaurant,
                         RestaurantResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         return dtos;
     }
