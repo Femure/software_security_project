@@ -3,55 +3,6 @@
 
 This is the stand-alone website realized for the software security project implemented in java throughout Spring Boot framework.
 
-
-## Build and Deploy the Project
-
-Clone the project
-
-```bash
-  git clone https://github.com/Femure/software_security_project
-```
-
-Go to the project directory
-
-```bash
-  cd software_security_project
-```
-
-### Deployment without IDE
-
-Install Apache Maven  :
-https://maven.apache.org/download.cgi
-
-Installation step : https://maven.apache.org/install.html
-
-Once Apache Maven successfully installed, build the project  
-
-
-```bash
-  mvn verify
-```
-
-Start the server
-
-```bash
-  mvn spring-boot:run
-```
-
-### Deployment with IDE
-
-You can also use any other IDE you prefer such as Visual Studio Code, IntelliJ...
-
-External ressource for deployement with VSCode :
-- https://code.visualstudio.com/docs/java/java-spring-boot
-
-For example with VSCode it's is to lauch the app thanks to Sping Boot Dashboard you can run  **Frontend** and **Backend** at the same time, as shown below : 
-
-![](https://github.com/Femure/software_security_project/blob/rename-repo/lauchSpringBootVSCode.gif)
-
-Once deployed, you can access the app at :
-
-http://localhost:8090
 ## Set up MySQL
 By default, the project is configured to use the MySQL database, so  you need to create the db as shown below:
 
@@ -64,4 +15,64 @@ Create the container
 ```
 
 > :warning: Important you need to run the MySQL database before starting the application, otherwise the application couldn't lauch it correctly.
+
+## Build and Deploy the Project
+
+Clone the project
+
+```bash
+  git clone https://github.com/Femure/software_security_project
+```
+
+### Deployment without IDE
+
+Install Apache Maven  :
+https://maven.apache.org/download.cgi
+
+Installation step : https://maven.apache.org/install.html
+
+Once Apache Maven successfully installed. 
+
+You need to create two terminals to run the **Frontend** and the **Backend** at the same time.
+
+For the **Frontend** 
+
+```bash
+  cd software_security_project/Frontend
+```
+
+Build the Frontend
+
+```bash
+  mvn verify
+```
+Start the Frontend app
+
+```bash
+  mvn spring-boot:run
+```
+
+For the **Backend**
+
+```bash
+  cd software_security_project/Backend
+  mvn verify
+  mvn spring-boot:run
+```
+
+### Deployment with IDE
+
+You can also use any other IDE you prefer such as Visual Studio Code, IntelliJ...
+
+External ressource for deployement with VSCode :
+- https://code.visualstudio.com/docs/java/java-spring-boot
+
+For example with VSCode, it is very easy to lauch the app. Thanks to Spring Boot Dashboard, you can run the **Frontend** and the **Backend** at the same time, as shown below : 
+
+![](https://github.com/Femure/software_security_project/blob/rename-repo/lauchSpringBootVSCode.gif)
+
+Once deployed, you can access the app at :
+
+http://localhost:8090
+
 
