@@ -30,7 +30,7 @@ public class EmailService {
                 + "Please click the link below to verify your registration:<br>"
                 + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
                 + "Thank you,<br>"
-                + "Kin Kao Compagny";
+                + "Chirpchat Compagny";
 
         content = content.replace("[[username]]", member.getUsername());
         String verifyURL = siteURL + "/verify?code=" + member.getToken().getVerificationCode();
@@ -47,7 +47,7 @@ public class EmailService {
                 + "Please click on the link below to complete the password reset process :<br>"
                 + "<h3><a href=\"[[URL]]\" target=\"_self\">RESET PASSWORDS</a></h3>"
                 + "Thank you,<br>"
-                + "Kin Kao Compagny";
+                + "Chirpchat Compagny";
 
         content = content.replace("[[username]]", member.getUsername());
         String resetPasswordURL = siteURL + "/verify?code=" + member.getToken().getVerificationCode();
@@ -66,7 +66,7 @@ public class EmailService {
                 + "<ul><li> We advise you to log in to your account by going to our site, after the 15 minutes delay."
                 + "Once logged in, go to your account, then to your settings and change your password.<br> </li></ul>"
                 + "Thank you,<br>"
-                + "Kin Kao Compagny";
+                + "Chirpchat Compagny";
 
         content = content.replace("[[username]]", member.getUsername());
         sendEmail(member.getEmail(), subject, content);
@@ -75,8 +75,8 @@ public class EmailService {
 
     private void sendEmail(String email, String subject, String content) {
         String toAddress = email;
-        String fromAddress = "maxime.f@ku.th";
-        String senderName = "Kin Kao Compagny";
+        String fromAddress = "chirpchatcompany@gmail.com";
+        String senderName = "Chirpchat Compagny";
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
