@@ -40,8 +40,6 @@ public class Token {
     @ColumnTransformer(read = "cast(AES_DECRYPT(email_resent_cooldown, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")
     private Date emailResentCooldown;
 
-    @Column(columnDefinition = "VARBINARY(256)")
-    @ColumnTransformer(read = "cast(AES_DECRYPT(expiration_time, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")
     private long expirationTime;
 
     @OneToOne

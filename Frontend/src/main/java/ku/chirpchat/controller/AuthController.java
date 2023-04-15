@@ -44,7 +44,7 @@ public class AuthController {
 
             model.addAttribute("loginError", loginError);
         }
-        return "login";
+        return "login/login";
     }
 
     @GetMapping("/logout")
@@ -58,6 +58,6 @@ public class AuthController {
         }
         // You can redirect wherever you want, but generally it's a good
         // practice to show the login screen again.
-        return "redirect:/login?logout";
+        return "redirect:login/login?logout";
     }
 }

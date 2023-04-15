@@ -30,7 +30,7 @@ public class SignupController {
         if (!model.containsAttribute("lastUser")) {
             model.addAttribute("lastUser", new SignupDto());
         }
-        return "signup"; // return signup.html
+        return "signup/signup"; 
     }
 
     @PostMapping("/signup")
@@ -40,7 +40,7 @@ public class SignupController {
         if (result.hasErrors()) {
             // To keep the input field after error
             redirectAttributes.addFlashAttribute("lastUser", user);
-            return "signup";
+            return "signup/signup";
         }
 
         String signupError = null;
@@ -58,13 +58,13 @@ public class SignupController {
             if (signupError == null) {
                 String token = signupService.createMember(user);
                 session.setAttribute("token", token);
-                return "redirect:/signup-success";
+                return "redirect:signup/signup-success";
             }
         } else {
             model.addAttribute("errorCaptcha", "Please validate reCaptcha");
         }
 
-        return "signup";
+        return "signup/signup";
 
     }
 

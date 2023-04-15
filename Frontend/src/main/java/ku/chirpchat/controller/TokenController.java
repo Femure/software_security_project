@@ -39,7 +39,7 @@ public class TokenController {
                 }
             }
         }
-        return "forgot-password";
+        return "login/forgot-password";
     }
 
     @PostMapping("/forgot-password")
@@ -53,19 +53,19 @@ public class TokenController {
         } else {
             model.addAttribute("error", "This email address does not exist!");
         }
-        return "forgot-password";
+        return "login/forgot-password";
     }
 
     @GetMapping("/reset-password")
     public String viewResetPassword(SignupDto user) {
-        return "reset-password";
+        return "settings/reset-password";
     }
 
     @PostMapping("/reset-password")
     public String resetPassword(@Valid SignupDto user, BindingResult result,
             HttpSession session, Model model) {
         if (result.hasFieldErrors("password") || result.hasFieldErrors("confirmPassword")) {
-            return "reset-password";
+            return "settings/reset-password";
         }
         String token = (String) session.getAttribute("token");
         if (token == null) {
@@ -80,7 +80,7 @@ public class TokenController {
                         "Your password has been successfully changed. Go to login page to connect you.");
             }
         }
-        return "reset-password";
+        return "settings/reset-password";
     }
 
     @GetMapping("/signup-success")
@@ -95,7 +95,7 @@ public class TokenController {
                 model.addAttribute("emailResent", "Validation email resent");
             }
         }
-        return "signup-success";
+        return "signup/signup-success";
     }
 
     @GetMapping("/resendTokenEmail")
@@ -129,18 +129,18 @@ public class TokenController {
         session.removeAttribute("token");
         session.removeAttribute("valid");
         if (result == 0) {
-            return "verify-fail";
+            return "verify/verify-fail";
         } else if (result == 1) {
-            return "verify-success";
+            return "verify/verify-success";
         } else {
             session.setAttribute("token", code);
-            return "redirect:/reset-password";
+            return "redirect:settings/reset-password";
         }
     }
 
     @GetMapping("/verify-success")
     public String verifySuccess() {
-        return "verify-success";
+        return "verify/verify-success";
     }
 
 }

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import ku.chirpchat.repository.MemberRepository;
 import ku.chirpchat.repository.TokenRepository;
 
 import org.slf4j.Logger;
@@ -21,18 +20,9 @@ public class CleanDatabaseService {
     Logger logger = LoggerFactory.getLogger(CleanDatabaseService.class);
 
     @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
     private TokenRepository tokenRepository;
 
     @Scheduled(cron = "@hourly") // fixedDelay = 1000
-    public void removeUnvalidatedUser() {
-        logger.info("Remove all unvalidated user at " + Instant.now());
-        memberRepository.deleteAllUnvalidatedUser();
-    }
-
-    @Scheduled(cron = "@hourly") 
     public void removeExpiredToken() {
         long currentTimeInMillis = System.currentTimeMillis();
         tokenRepository.deleteAllExpiredToken(currentTimeInMillis);
