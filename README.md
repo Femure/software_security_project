@@ -14,7 +14,7 @@ Create the container
   docker run --name=mysql_chirpchat -e MYSQL_ROOT_PASSWORD=abc123 -e MYSQL_DATABASE=chirpchat -p 3307:3306 -d mysql
 ```
 
-> :warning: Important you need to run the MySQL database before starting the application, otherwise the application couldn't lauch it correctly.
+> :warning: Important : You need to run the MySQL database before starting the application, otherwise the application couldn't lauch it correctly.
 
 ## Build and Deploy the Project
 
@@ -33,7 +33,7 @@ Installation step : https://maven.apache.org/install.html
 
 Once Apache Maven successfully installed. 
 
-You need to create two terminals to run the **Frontend** and the **Backend** at the same time.
+> :warning: Important : You need to create two terminals to run the ![Frontend](https://github.com/Femure/software_security_project/tree/master/Backend) and the ![Backend](https://github.com/Femure/software_security_project/tree/master/Backend) at the same time.
 
 For the **Frontend** 
 
@@ -44,7 +44,7 @@ For the **Frontend**
 Build the Frontend
 
 ```bash
-  mvn verify
+  mvn clean verify
 ```
 Start the Frontend app
 
@@ -56,8 +56,7 @@ For the **Backend**
 
 ```bash
   cd software_security_project/Backend
-  mvn verify
-  mvn spring-boot:run
+  mvn clean verify spring-boot:run
 ```
 
 ### Deployment with IDE
@@ -77,9 +76,9 @@ http://localhost:8090
 
 ## Email SMTP service
 
-> :warning: If you have an antivirus on your computer, it is possible that when you want to use the application, the email service does not work because it is blocked by your antivirus. So, you will need to allow SMTP protocole for outbound traffic. It can be also blocked by the configuration of your network like for example by your proxy. 
+> :warning: Important : If you have an antivirus on your computer, it is possible that when you want to use the application, the email service does not work because it is blocked by your antivirus. So, you will need to allow SMTP protocole for outbound traffic. It can be also blocked by the configuration of your network like for example by your proxy. 
 
-For example if you have Avast Antivirus, you can disabled scan outbound emails by doing this : Open **Avast Antivirus** > **Settings** > **Protection** > **Core Shields** > Scroll down and click on **Mail Shield** > Deselect :white_square_button: **Scan outbound emails(SMTP)**.
+For example, if you have Avast Antivirus, you can disabled scan outbound emails by doing this : Open **Avast Antivirus** > **Settings** > **Protection** > **Core Shields** > Scroll down and click on **Mail Shield** > Deselect :white_square_button: **Scan outbound emails(SMTP)**.
 
 ![](https://github.com/Femure/software_security_project/blob/rename-repo/README_illustration/disabledScanSMTPAntivirus.PNG)
 
