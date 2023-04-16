@@ -1,4 +1,4 @@
-package ku.review;
+package ku.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
