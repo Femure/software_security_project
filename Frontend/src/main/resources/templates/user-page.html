@@ -72,9 +72,12 @@
                             <span class="p-2" th:text="${comment.commentText}"></span>
 
                             <!-- Delete button -->
-                            <form th:action="@{/comment/delete/{id}(id=${comment.id})}" method="POST">
-                                <button class="btn btn-danger"><i class='fas fa-trash-alt'></i></button>
-                            </form>
+                            <div
+                                th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')') || comment.username == #authentication.name}">
+                                <form th:action="@{/comment/delete/{id}(id=${comment.id})}" method="POST">
+                                    <button class="btn btn-danger"><i class='fas fa-trash-alt'></i></button>
+                                </form>
+                            </div>
                         </div>
 
                         <!-- <span class="comment-avatar float-left">
@@ -90,7 +93,8 @@
                                 placeholder="Write a comment" required>
                             <button class="btn btn-primary"><i class='far fa-paper-plane'></i></button>
                         </form>
-                        <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+                        <div
+                            th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')') || post.username == #authentication.name}">
                             <form th:action="@{/post/delete/{id}(id=${post.id})}" method="POST" class="p-2">
                                 <button class="btn btn-danger align-self-end"><i class='fas fa-trash-alt'></i></button>
                             </form>

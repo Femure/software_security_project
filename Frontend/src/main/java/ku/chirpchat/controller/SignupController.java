@@ -58,7 +58,7 @@ public class SignupController {
             if (signupError == null) {
                 String token = signupService.createMember(user);
                 session.setAttribute("token", token);
-                return "redirect:signup/signup-success";
+                return "redirect:/signup-success";
             }
         } else {
             model.addAttribute("errorCaptcha", "Please validate reCaptcha");

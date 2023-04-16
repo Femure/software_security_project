@@ -51,13 +51,13 @@ public class ThreadController {
 
     @PostMapping("/post/add")
     public String addPost(@Valid PostRequest post,
-            BindingResult result, RedirectAttributes attr, HttpSession session) {
+            BindingResult result, Principal principal, RedirectAttributes attr, HttpSession session) {
         if (result.hasErrors()) {
             attr.addFlashAttribute("org.springframework.validation.BindingResult.postRequest", result);
             attr.addFlashAttribute("postRequest", post);
             return "redirect:/thread";
         }
-
+        post.setUsername(principal.getName());
         postService.create(post);
         return "redirect:/thread";
     }

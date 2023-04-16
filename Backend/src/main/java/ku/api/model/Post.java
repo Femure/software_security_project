@@ -26,6 +26,10 @@ public class Post {
         private UUID id;
 
         @Column(columnDefinition = "VARBINARY(256)")
+        @ColumnTransformer(read = "cast(AES_DECRYPT(username, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")
+        private String username;
+
+        @Column(columnDefinition = "VARBINARY(256)")
         @ColumnTransformer(read = "cast(AES_DECRYPT(name, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")
         private String name;
 

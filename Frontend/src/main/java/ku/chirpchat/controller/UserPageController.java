@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import kotlin.collections.builders.ListBuilder;
 import ku.chirpchat.dto.CommentResponse;
 import ku.chirpchat.dto.PostResponse;
 import ku.chirpchat.dto.SignupDto;
@@ -32,13 +34,28 @@ public class UserPageController {
         String username = principal.getName();
         SignupDto member = memberService.getMemberUsername(username);
         model.addAttribute("member", member);
+
+        List<PostResponse> listPostUser = new ListBuilder<>();
         List<PostResponse> listPost = postService.getPosts();
         listPost.forEach(
                 post -> {
+                    // all posts created by the user
                     List<CommentResponse> listComments = commentService.getPostComments(post.getId());
+                    if (post.getUsername().matches(username)) {
+                        listPostUser.add(post);
+                    }
+                    // all posts where the user commented
+                    else {
+                        listComments.forEach(
+                                comment -> {
+                                    if (comment.getUsername().matches(username)) {
+                                        listPostUser.add(post);
+                                    }
+                                });
+                    }
                     post.setComments(listComments);
                 });
-        model.addAttribute("posts", listPost);
+        model.addAttribute("posts", listPostUser);
 
         return "user-page";
     }

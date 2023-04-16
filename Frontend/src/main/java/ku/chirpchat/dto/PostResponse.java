@@ -8,6 +8,7 @@ import java.util.UUID;
 @Data
 public class PostResponse {
    private UUID id;
+   private String username;
    private String name;
    private String address;
    private int rating;

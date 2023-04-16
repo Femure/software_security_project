@@ -8,6 +8,8 @@ import javax.validation.constraints.NotNull;
 @Data
 public class PostRequest {
 
+   private String username;
+
    @NotBlank(message = "Name is required")
    private String name;
 

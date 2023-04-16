@@ -95,7 +95,7 @@ public class TokenService {
 
     public int resetPassword(String password, String tokenOrUsername, int choice) {
         Member member = null;
-        System.out.println("TOU="+tokenOrUsername+"Choice="+choice);
+        System.out.println("TOU=" + tokenOrUsername + "Choice=" + choice);
         // Reset password by forgot password
         if (choice == 0) {
             member = repository.findByTokenVerificationCode(tokenOrUsername);
@@ -104,17 +104,19 @@ public class TokenService {
         else {
             member = repository.findByUsername(tokenOrUsername);
         }
-        System.out.println("Member="+member);
+        System.out.println("Member=" + member);
 
         if (member != null) {
             if (!passwordEncoder.matches(password, member.getPassword())) {
                 String hashedPassword = passwordEncoder.encode(password);
                 member.setPassword(hashedPassword);
                 Token passwordResetToken = member.getToken();
-                passwordResetToken.setVerificationCode(null);
-                member.setEmailSentNumber(0);
-                member.setToken(passwordResetToken);
-                passwordResetToken.setMember(member);
+                if (passwordResetToken != null) {
+                    passwordResetToken.setVerificationCode(null);
+                    member.setEmailSentNumber(0);
+                    member.setToken(passwordResetToken);
+                    passwordResetToken.setMember(null);
+                }
                 repository.save(member);
                 logger.info("Success reset password user : " + member.getUsername() + " at " + Instant.now());
                 return 1;

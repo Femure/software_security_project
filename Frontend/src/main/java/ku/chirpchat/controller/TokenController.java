@@ -2,7 +2,6 @@ package ku.chirpchat.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -74,13 +73,22 @@ public class TokenController {
         if (token == null && principal == null) {
             model.addAttribute("error", "Please authentificate you by passing by reset password link sent to you.");
         } else {
-            int resp = tokenService.resetPassword(user.getPassword(),
-                    (principal != null) ? principal.getName() : token, (principal != null) ? 1 : 0);
-            if (resp == 1) {
-                session.removeAttribute("token");
-                model.addAttribute("valid",
-                        "Your password has been successfully changed. Go to login page to connect you.");
+            int resp = 0;
+            if (principal != null) {
+                resp = tokenService.resetPassword(user.getPassword(), principal.getName(), 1);
+                if (resp == 1) {
+                    model.addAttribute("valid",
+                            "Your password has been successfully changed !");
+                }
             } else {
+                resp = tokenService.resetPassword(user.getPassword(), token, 0);
+                if (resp == 1) {
+                    session.removeAttribute("token");
+                    model.addAttribute("valid",
+                            "Your password has been successfully changed. Go to login page to connect you.");
+                }
+            }
+            if (resp == 0) {
                 model.addAttribute("error", "Select a password different from the previous!");
             }
         }
@@ -138,7 +146,7 @@ public class TokenController {
             return "verify/verify-success";
         } else {
             session.setAttribute("token", code);
-            return "redirect:settings/reset-password";
+            return "redirect:/reset-password";
         }
     }
 
