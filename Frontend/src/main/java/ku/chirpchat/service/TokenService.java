@@ -34,7 +34,7 @@ public class TokenService {
 
     private static final long COOLDOWN_RESEND_TIME_DURATION = 2 * 60 * 1000; // 2min
 
-    private static final long EXPIRATION_TIME_DURATION = 5 * 60 * 1000; // 5 min
+    private static final long EXPIRATION_TIME_DURATION = 10 * 60 * 1000; // 10 min
 
     public static final int MAX_SENT_EMAIL = 3;
 

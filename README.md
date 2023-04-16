@@ -69,7 +69,7 @@ External ressource for deployement with VSCode :
 
 For example with VSCode, it is very easy to lauch the app. Thanks to Spring Boot Dashboard, you can run the **Frontend** and the **Backend** at the same time, as shown below : 
 
-![](https://github.com/Femure/software_security_project/blob/rename-repo/lauchSpringBootVSCode.gif)
+![](https://github.com/Femure/software_security_project/blob/rename-repo/README_illustration/lauchSpringBootVSCode.gif)
 
 Once deployed, you can access the app at :
 
@@ -81,6 +81,6 @@ http://localhost:8090
 
 For example if you have Avast Antivirus, you can disabled scan outbound emails by doing this : Open **Avast Antivirus** > **Settings** > **Protection** > **Core Shields** > Scroll down and click on **Mail Shield** > Deselect :white_square_button: **Scan outbound emails(SMTP)**.
 
-![](https://github.com/Femure/software_security_project/blob/rename-repo/disabledScanSMTPAntivirus.PNG)
+![](https://github.com/Femure/software_security_project/blob/rename-repo/README_illustration/disabledScanSMTPAntivirus.PNG)
 
 
