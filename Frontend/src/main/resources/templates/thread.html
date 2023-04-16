@@ -106,14 +106,19 @@
                             alt="..."></a>
                 </span> -->
                     </div>
-                    <div class="cardbox-comments mt-2 mb-2">
-                        <form th:action="@{/comment/add/{id}(id=${post.id})}" method="POST">
-                            <div class="d-flex justify-content-center">
-                                <input id="commentTextInput" type="text" class="form-control w-75" name="commentText"
-                                    placeholder="Write a comment" required>
-                                <button class="btn btn-primary"><i class='far fa-paper-plane'></i></button>
-                            </div>
+                    <div class="cardbox-comments mt-2 mb-2 d-flex">
+                        <form th:action="@{/comment/add/{id}(id=${post.id})}" method="POST"
+                            class="col-11 d-flex flex-row justify-content-center p-2">
+                            <input id="commentTextInput" type="text" class="form-control w-75" name="commentText"
+                                placeholder="Write a comment" required>
+                            <button class="btn btn-primary"><i class='far fa-paper-plane'></i></button>
                         </form>
+                        <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+                            <form th:action="@{/post/delete/{id}(id=${post.id})}" method="POST"
+                                class="p-2">
+                                <button class="btn btn-danger align-self-end"><i class='fas fa-trash-alt'></i></button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PostService {
@@ -40,6 +41,10 @@ public class PostService {
                 Post.class);
         post.setCreatedAt(Instant.now());
         repository.save(post);
+    }
+
+    public void deletePost(UUID postId) {
+        repository.deleteById(postId);
     }
 
 }

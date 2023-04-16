@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/post")
@@ -32,5 +33,11 @@ public class PostController {
 
         service.create(post);
         return new ResponseEntity<>(post, HttpStatus.OK);
+    }
+
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        service.deletePost(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

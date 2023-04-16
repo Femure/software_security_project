@@ -10,6 +10,7 @@ import ku.chirpchat.dto.PostResponse;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PostService {
@@ -19,6 +20,23 @@ public class PostService {
 
     @Autowired
     private JwtAccessTokenService tokenService;
+
+    public List<PostResponse> getPosts() {
+
+        String token = tokenService.requestAccessToken();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("authorization", "Bearer " + token);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        String url = "http://localhost:8091/api/post";
+
+        ResponseEntity<PostResponse[]> response = restTemplate.exchange(url, HttpMethod.GET,
+                entity, PostResponse[].class);
+
+        PostResponse[] posts = response.getBody();
+        return Arrays.asList(posts);
+    }
 
     public PostRequest create(PostRequest post) {
 
@@ -37,7 +55,7 @@ public class PostService {
         return response.getBody();
     }
 
-    public List<PostResponse> getPosts() {
+    public void deletePost(UUID postId) {
 
         String token = tokenService.requestAccessToken();
 
@@ -45,12 +63,9 @@ public class PostService {
         headers.add("authorization", "Bearer " + token);
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        String url = "http://localhost:8091/api/post";
+        String url = "http://localhost:8091/api/post/delete/" + postId;
 
-        ResponseEntity<PostResponse[]> response = restTemplate.exchange(url, HttpMethod.GET,
-                entity, PostResponse[].class);
-
-        PostResponse[] posts = response.getBody();
-        return Arrays.asList(posts);
+        restTemplate.exchange(url, HttpMethod.DELETE,
+                entity, Void.class);
     }
 }

@@ -62,6 +62,12 @@ public class ThreadController {
         return "redirect:/thread";
     }
 
+    @PostMapping("/post/delete/{postId}")
+    public String deletePost(@PathVariable UUID postId) {
+        postService.deletePost(postId);
+        return "redirect:/thread";
+    }
+
     @PostMapping("/comment/add/{postId}")
     public String createComment(@PathVariable UUID postId, @ModelAttribute CommentRequest comment,
             Principal principal, Model model) {
