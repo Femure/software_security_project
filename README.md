@@ -75,4 +75,12 @@ Once deployed, you can access the app at :
 
 http://localhost:8090
 
+## Email SMTP service
+
+> :warning: If you have an antivirus on your computer, it is possible that when you want to use the application, the email service does not work because it is blocked by your antivirus. So, you will need to allow SMTP protocole for outbound traffic. It can be also blocked by the configuration of your network like for example by your proxy. 
+
+For example if you have Avast Antivirus, you can disabled scan outbound emails by doing this : Open **Avast Antivirus** > **Settings** > **Protection** > **Core Shields** > Scroll down and click on **Mail Shield** > Deselect :white_square_button: **Scan outbound emails(SMTP)**.
+
+![](https://github.com/Femure/software_security_project/blob/rename-repo/disabledScanSMTPAntivirus.PNG)
+
 
