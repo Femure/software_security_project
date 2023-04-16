@@ -2,6 +2,7 @@ package ku.chirpchat.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import javax.servlet.http.HttpSession;
+
+import java.security.Principal;
 
 @Controller
 public class TokenController {
@@ -63,21 +66,22 @@ public class TokenController {
 
     @PostMapping("/reset-password")
     public String resetPassword(@Valid SignupDto user, BindingResult result,
-            HttpSession session, Model model) {
+            HttpSession session, Principal principal, Model model) {
         if (result.hasFieldErrors("password") || result.hasFieldErrors("confirmPassword")) {
             return "settings/reset-password";
         }
         String token = (String) session.getAttribute("token");
-        if (token == null) {
+        if (token == null && principal == null) {
             model.addAttribute("error", "Please authentificate you by passing by reset password link sent to you.");
         } else {
-            int resp = tokenService.resetPassword(user.getPassword(), token);
+            int resp = tokenService.resetPassword(user.getPassword(),
+                    (principal != null) ? principal.getName() : token, (principal != null) ? 1 : 0);
             if (resp == 1) {
-                model.addAttribute("error", "Select a password different from the previous!");
-            } else {
                 session.removeAttribute("token");
                 model.addAttribute("valid",
                         "Your password has been successfully changed. Go to login page to connect you.");
+            } else {
+                model.addAttribute("error", "Select a password different from the previous!");
             }
         }
         return "settings/reset-password";

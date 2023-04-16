@@ -33,7 +33,7 @@
             <div sec:authorize="isAuthenticated()">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Hello, <b><span sec:authentication="name">Username</span></b></a>
+                        <a class="nav-link" th:href="@{/user-page}">Hello, <b><span sec:authentication="name">Username</span></b></a>
                     </li>
                     <li class="nav-item">
                         <a class="btn btn-primary" th:href="@{/logout}">Logout</a>

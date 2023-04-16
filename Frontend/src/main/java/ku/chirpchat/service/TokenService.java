@@ -76,8 +76,7 @@ public class TokenService {
                     member = this.setTokenEmailAttributes(member, choice);
                     return member.getToken().getVerificationCode();
                 }
-            }
-            else{
+            } else {
                 return "emailSentNumberExceeded";
             }
 
@@ -94,8 +93,19 @@ public class TokenService {
         return null;
     }
 
-    public int resetPassword(String password, String token) {
-        Member member = repository.findByTokenVerificationCode(token);
+    public int resetPassword(String password, String tokenOrUsername, int choice) {
+        Member member = null;
+        System.out.println("TOU="+tokenOrUsername+"Choice="+choice);
+        // Reset password by forgot password
+        if (choice == 0) {
+            member = repository.findByTokenVerificationCode(tokenOrUsername);
+        }
+        // Reset password change password from user page
+        else {
+            member = repository.findByUsername(tokenOrUsername);
+        }
+        System.out.println("Member="+member);
+
         if (member != null) {
             if (!passwordEncoder.matches(password, member.getPassword())) {
                 String hashedPassword = passwordEncoder.encode(password);
@@ -107,9 +117,8 @@ public class TokenService {
                 passwordResetToken.setMember(member);
                 repository.save(member);
                 logger.info("Success reset password user : " + member.getUsername() + " at " + Instant.now());
-                return 2;
+                return 1;
             }
-            return 1;
         }
         return 0;
     }
