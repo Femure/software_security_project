@@ -4,20 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import ku.chirpchat.dto.SignupDto;
 import ku.chirpchat.service.TokenService;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
 import javax.servlet.http.HttpSession;
-
-import java.security.Principal;
 
 @Controller
 public class TokenController {
@@ -56,43 +50,6 @@ public class TokenController {
             model.addAttribute("error", "This email address does not exist!");
         }
         return "login/forgot-password";
-    }
-
-    @GetMapping("/reset-password")
-    public String viewResetPassword(SignupDto user) {
-        return "settings/reset-password";
-    }
-
-    @PostMapping("/reset-password")
-    public String resetPassword(@Valid SignupDto user, BindingResult result,
-            HttpSession session, Principal principal, Model model) {
-        if (result.hasFieldErrors("password") || result.hasFieldErrors("confirmPassword")) {
-            return "settings/reset-password";
-        }
-        String token = (String) session.getAttribute("token");
-        if (token == null && principal == null) {
-            model.addAttribute("error", "Please authentificate you by passing by reset password link sent to you.");
-        } else {
-            int resp = 0;
-            if (principal != null) {
-                resp = tokenService.resetPassword(user.getPassword(), principal.getName(), 1);
-                if (resp == 1) {
-                    model.addAttribute("valid",
-                            "Your password has been successfully changed !");
-                }
-            } else {
-                resp = tokenService.resetPassword(user.getPassword(), token, 0);
-                if (resp == 1) {
-                    session.removeAttribute("token");
-                    model.addAttribute("valid",
-                            "Your password has been successfully changed. Go to login page to connect you.");
-                }
-            }
-            if (resp == 0) {
-                model.addAttribute("error", "Select a password different from the previous!");
-            }
-        }
-        return "settings/reset-password";
     }
 
     @GetMapping("/signup-success")

@@ -30,16 +30,9 @@ public class Post {
         private String username;
 
         @Column(columnDefinition = "VARBINARY(256)")
-        @ColumnTransformer(read = "cast(AES_DECRYPT(name, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")
-        private String name;
+        @ColumnTransformer(read = "cast(AES_DECRYPT(post_text, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")
+        private String postText;
 
-        @Column(columnDefinition = "VARBINARY(256)")
-        @ColumnTransformer(read = "cast(AES_DECRYPT(address, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")
-        private String address;
-
-        @Column(columnDefinition = "VARBINARY(256)")
-        @ColumnTransformer(read = "cast(AES_DECRYPT(rating, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")
-        private int rating;
         private Instant createdAt;
 
         @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

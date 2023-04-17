@@ -1,6 +1,7 @@
 package ku.api.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.Length;
 import lombok.Data;
 import java.util.UUID;
 
@@ -13,5 +14,6 @@ public class CommentRequest {
    private String username;
 
    @NotBlank
+   @Length(max = 300, message = "Length superior to 300 caracters !")
    private String commentText;
 }

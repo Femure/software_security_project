@@ -1,22 +1,16 @@
 package ku.api.dto;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.Length;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Data
 public class PostRequest {
 
    private String username;
 
-   @NotBlank(message = "Name is required")
-   private String name;
 
-   @NotBlank(message = "Address is required")
-   private String address;
-
-   @NotNull(message = "Rate is required")
-   @Range(min = 0, max = 5, message = "Rate must be between 0 and 5")
-   private Integer rating;
+   @NotBlank(message = "Can't be blank")
+   @Length(max = 250, message = "Lenght superior to 250 caracters")
+   private String postText;
 }

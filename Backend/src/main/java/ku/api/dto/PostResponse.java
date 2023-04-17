@@ -2,6 +2,7 @@ package ku.api.dto;
 
 import lombok.Data;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,8 +10,7 @@ import java.util.UUID;
 public class PostResponse {
    private UUID id;
    private String username;
-   private String name;
-   private String address;
-   private int rating;
+   private String postText;
+   private Instant createdAt;
    private List<CommentResponse> comments;
 }

@@ -2,7 +2,6 @@ package ku.chirpchat.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +38,9 @@ public class ThreadController {
         if (!model.containsAttribute("postRequest")) {
             model.addAttribute("postRequest", new PostRequest());
         }
+        if (!model.containsAttribute("commentRequest")) {
+            model.addAttribute("commentRequest", new CommentRequest());
+        }
         List<PostResponse> listPost = postService.getPosts();
         model.addAttribute("posts", listPost);
         listPost.forEach(
@@ -51,7 +53,7 @@ public class ThreadController {
 
     @PostMapping("/post/add")
     public String addPost(@Valid PostRequest post,
-            BindingResult result, Principal principal, RedirectAttributes attr, HttpSession session) {
+            BindingResult result, Principal principal, RedirectAttributes attr) {
         if (result.hasErrors()) {
             attr.addFlashAttribute("org.springframework.validation.BindingResult.postRequest", result);
             attr.addFlashAttribute("postRequest", post);
@@ -69,8 +71,13 @@ public class ThreadController {
     }
 
     @PostMapping("/comment/add/{postId}")
-    public String createComment(@PathVariable UUID postId, @ModelAttribute CommentRequest comment,
-            Principal principal, Model model) {
+    public String createComment(@Valid CommentRequest comment,
+            BindingResult result, @PathVariable UUID postId, Principal principal,RedirectAttributes attr) {
+        if (result.hasErrors()) {
+            attr.addFlashAttribute("org.springframework.validation.BindingResult.postRequest", result);
+            attr.addFlashAttribute("commentRequest", comment);
+            return "redirect:/thread";
+        }
         String username = principal.getName();
         comment.setUsername(username);
         comment.setPostId(postId);

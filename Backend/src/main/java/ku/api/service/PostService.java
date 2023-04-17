@@ -7,6 +7,7 @@ import ku.api.model.Post;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -24,7 +25,7 @@ public class PostService {
 
     // ----> we are mapping DAO → DTO
     public List<PostResponse> getPosts() {
-        List<Post> posts = repository.findAll();
+        List<Post> posts = repository.findAll(Sort.by("createdAt").descending());
 
         List<PostResponse> dtos = posts
                 .stream()

@@ -2396,6 +2396,30 @@ progress {
     color: var(--bs-secondary-color)
 }
 
+.form-postText {
+    padding: .375rem .75rem;
+    height:150px;
+    width:100%;
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    border-radius: .375rem;
+    font-size: 1rem;
+    font-weight: 400;
+    resize: none;
+}
+
+.form-commentText {
+    padding: .375rem .75rem;
+    width:100%;
+    height: 7rem;
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    border-radius: .375rem;
+    font-size: 1rem;
+    font-weight: 400;
+    overflow: auto;
+    word-break: break-word;
+    resize: none;
+}
+
 .form-control {
     display: block;
     width: 100%;
@@ -8452,6 +8476,11 @@ fieldset:disabled .btn {
 .border-dark {
     --bs-border-opacity: 1;
     border-color: rgba(var(--bs-dark-rgb), var(--bs-border-opacity)) !important
+}
+
+.border-card {
+    --bs-border-opacity: 1;
+    border-color: var(--bs-card-border-color) !important
 }
 
 .border-white {

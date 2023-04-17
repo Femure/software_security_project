@@ -12,8 +12,7 @@
 
 <body>
     <div th:insert="fragments/header :: header"></div>
-
-    <h1 class="display-6">See your activities</h1>
+    <!-- User profile -->
     <div class="container p-3 pt-5 h-100 mb-6">
         <div class="container w-75">
             <h1 class="display-6">Your profile</h1>
@@ -36,69 +35,82 @@
                         <p class="ms-3" th:text="${member.email}"></p>
                     </div>
                     <div class="mb-3">
-                        <a th:href="@{/reset-password}">Change your password</a>
+                        <a class="btn btn-primary stretched-link" th:href="@{/reset-password}">Change your password</a>
+                    </div>
+                    <div class="d-flex justify-content-end" sec:authorize="hasRole('ROLE_USER')">
+                        <a class="btn btn-danger stretched-link" th:href="@{/delete-account}">Delete your
+                            account</a>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- See the posts -->
+        <!-- See the posts -->
+        <div class="container pt-5 h-100 w-75">
+            <h1 class="display-6">Thread</h1>
+
+            <div class="d-flex justify-content-between">
+                <h4>Username</h4>
+                <h4>Posted at</h4>
+            </div>
             <div class="card shadow-lg bg-white mb-5" th:each="post : ${posts}">
-                <div class="card-header fw-bold">
+                <div class="card-header fw-bold bg-body-secondary">
                     <div class="d-flex justify-content-between">
-                        <p class="m-0" th:text="${post.name}"></p>
-                        <p class="m-0" th:text="${post.address}"></p>
-                        <p class="m-0" th:text="${post.rating}"></p>
+                        <p class="m-0" th:text="${post.username}"></p>
+                        <p class="m-0" th:text="${post.createdAt}"></p>
                     </div>
                 </div>
-                <div class="">
-                    <div class="border" th:each="comment : ${post.comments}">
-                        <!-- Comment informations -->
-                        <div class="card-header">
 
-                            <!-- <div class="d-flex mr-3">
-                        <a href=""><img class="img-fluid rounded-circle"
-                                src="http://www.themashabrand.com/templates/bootsnipp/post/assets/img/users/4.jpg"
-                                alt="User"></a>
-                    </div> -->
-                            <div class="d-flex justify-content-between">
+                <div class="card-body border-bottom border-card">
+                    <p class="m-0" th:text="${post.postText}"></p>
+                </div>
+
+                <div class="card-body p-0 bg-light">
+                    <h4 class="text-center bg-light p-2 border-bottom">Comments</h4>
+                    <div th:each="comment : ${post.comments}">
+                        <!-- Comment informations -->
+                        <div class="p-2 border-bottom">
+                            <div class="d-flex justify-content-between fw-bold">
                                 <p class="m-0" th:text="${comment.username}"></p>
                                 <small><span><i class="icon ion-md-time"
                                             th:text="${comment.createdAt}"></i></span></small>
                             </div>
-                        </div>
 
-                        <div class="card-body d-flex justify-content-between">
-                            <!-- Comment message -->
-                            <span class="p-2" th:text="${comment.commentText}"></span>
+                            <div class="d-flex justify-content-between">
+                                <!-- Comment message -->
+                                <span class="pt-2" th:text="${comment.commentText}"></span>
 
-                            <!-- Delete button -->
-                            <div
-                                th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')') || comment.username == #authentication.name}">
-                                <form th:action="@{/comment/delete/{id}(id=${comment.id})}" method="POST">
-                                    <button class="btn btn-danger"><i class='fas fa-trash-alt'></i></button>
-                                </form>
+                                <!-- Delete comment button -->
+                                <div
+                                    th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')') || comment.username == #authentication.name}">
+                                    <form th:action="@{/comment/delete/{id}(id=${comment.id})}" method="POST"
+                                        class="mb-2">
+                                        <button class="btn btn-danger"><i class='fas fa-trash-alt'></i></button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-
-                        <!-- <span class="comment-avatar float-left">
-                    <a href=""><img class="rounded-circle"
-                            src="http://www.themashabrand.com/templates/bootsnipp/post/assets/img/users/6.jpg"
-                            alt="..."></a>
-                </span> -->
                     </div>
-                    <div class="cardbox-comments mt-2 mb-2 d-flex">
+                    <!-- Add comment -->
+                    <div class="cardbox-comments">
                         <form th:action="@{/comment/add/{id}(id=${post.id})}" method="POST"
-                            class="col-11 d-flex flex-row justify-content-center p-2">
-                            <input id="commentTextInput" type="text" class="form-control w-75" name="commentText"
-                                placeholder="Write a comment" required>
+                            th:object="${commentRequest}" class="d-flex flex-row justify-content-center p-2">
+                            <textarea id="commentText" th:field="*{commentText}" class="form-commentText"
+                                maxlength="300" placeholder="Write a comment"></textarea>
+                            <div class="alert alert-warning" th:if="${#fields.hasErrors('commentText')}"
+                                th:errors="*{commentText}">
+                            </div>
                             <button class="btn btn-primary"><i class='far fa-paper-plane'></i></button>
                         </form>
-                        <div
-                            th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')') || post.username == #authentication.name}">
-                            <form th:action="@{/post/delete/{id}(id=${post.id})}" method="POST" class="p-2">
-                                <button class="btn btn-danger align-self-end"><i class='fas fa-trash-alt'></i></button>
-                            </form>
-                        </div>
+                    </div>
+                </div>
+                <!-- Delete post button -->
+                <div class="card-footer p-2 bg-body-secondary">
+                    <div class="d-flex align-self-end justify-content-end"
+                        th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')') || post.username == #authentication.name}">
+                        <form th:action="@{/post/delete/{id}(id=${post.id})}" method="POST">
+                            <button class="btn btn-danger"><i class='fas fa-trash-alt'></i></button>
+                        </form>
                     </div>
                 </div>
             </div>

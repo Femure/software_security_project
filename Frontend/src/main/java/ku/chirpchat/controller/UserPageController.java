@@ -6,16 +6,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import kotlin.collections.builders.ListBuilder;
+import ku.chirpchat.dto.CommentRequest;
 import ku.chirpchat.dto.CommentResponse;
 import ku.chirpchat.dto.PostResponse;
 import ku.chirpchat.dto.SignupDto;
 import ku.chirpchat.service.CommentService;
 import ku.chirpchat.service.PostService;
-import ku.chirpchat.service.AuthService;
+import ku.chirpchat.service.MemberService;
+import ku.chirpchat.service.TokenService;
+
+import org.springframework.validation.BindingResult;
+
+import javax.validation.Valid;
 
 import java.security.Principal;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
 public class UserPageController {
@@ -27,13 +37,20 @@ public class UserPageController {
     private CommentService commentService;
 
     @Autowired
-    private AuthService memberService;
+    private MemberService memberService;
+
+    @Autowired
+    private TokenService tokenService;
 
     @GetMapping("/user-page")
     public String getPostPage(Principal principal, Model model) {
         String username = principal.getName();
         SignupDto member = memberService.getMemberUsername(username);
         model.addAttribute("member", member);
+
+        if (!model.containsAttribute("commentRequest")) {
+            model.addAttribute("commentRequest", new CommentRequest());
+        }
 
         List<PostResponse> listPostUser = new ListBuilder<>();
         List<PostResponse> listPost = postService.getPosts();
@@ -59,4 +76,58 @@ public class UserPageController {
 
         return "user-page";
     }
+
+    @GetMapping("/reset-password")
+    public String viewResetPassword(SignupDto user) {
+        return "settings/reset-password";
+    }
+
+    @PostMapping("/reset-password")
+    public String resetPassword(@Valid SignupDto user, BindingResult result,
+            HttpSession session, Principal principal, Model model) {
+        if (result.hasFieldErrors("password") || result.hasFieldErrors("confirmPassword")) {
+            return "settings/reset-password";
+        }
+        String token = (String) session.getAttribute("token");
+        if (token == null && principal == null) {
+            model.addAttribute("error", "Please authentificate you by passing by reset password link sent to you.");
+        } else {
+            int resp = 0;
+            if (principal != null) {
+                resp = memberService.resetPassword(user.getPassword(), principal.getName());
+                if (resp == 1) {
+                    model.addAttribute("valid",
+                            "Your password has been successfully changed !");
+                }
+            } else {
+                resp = tokenService.resetPassword(user.getPassword(), token);
+                if (resp == 1) {
+                    session.removeAttribute("token");
+                    model.addAttribute("valid",
+                            "Your password has been successfully changed. Go to login page to connect you.");
+                }
+            }
+            if (resp == 0) {
+                model.addAttribute("error", "Select a password different from the previous!");
+            }
+        }
+        return "settings/reset-password";
+    }
+
+    @GetMapping("/delete-account")
+    public String viewDeleteAccount(SignupDto user) {
+        return "settings/delete-account";
+    }
+
+    @PostMapping("/delete-account")
+    public String resetPassword(@RequestParam("password") String password, Principal principal, Model model) {
+        int resp = memberService.deleteAccount(password, principal.getName());
+        if (resp == 1) {
+            return "redirect:/logout";
+        } else {
+            model.addAttribute("error", "Invalid password !");
+        }
+        return "settings/delete-account";
+    }
+
 }

@@ -8,13 +8,14 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Controller
 public class AuthController {
-
 
     @GetMapping("/login")
     public String loginView(HttpServletRequest request, Model model) {
@@ -50,14 +51,18 @@ public class AuthController {
     @GetMapping("/logout")
     public String logout(HttpServletRequest request,
             HttpServletResponse response,
-            Authentication auth) {
-
+            Authentication auth, RedirectAttributes attr) {
+        String referer = request.getHeader("Referer");
         if (auth != null) {
             new SecurityContextLogoutHandler()
                     .logout(request, response, auth);
         }
+        if (referer.contains("delete-account")) {
+            attr.addFlashAttribute("deleteSuccess", true);
+            return "redirect:/login";
+        }
         // You can redirect wherever you want, but generally it's a good
         // practice to show the login screen again.
-        return "redirect:login/login?logout";
+        return "redirect:/login?logout";
     }
 }

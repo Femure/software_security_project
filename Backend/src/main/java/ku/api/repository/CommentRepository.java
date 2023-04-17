@@ -9,6 +9,6 @@ import java.util.UUID;
 
 public interface CommentRepository extends JpaRepository<Comment, UUID> {
    
-   @Query("SELECT c FROM Comment as c WHERE c.post.id = ?1")
+   @Query("SELECT c FROM Comment as c WHERE c.post.id = ?1 ORDER BY c.createdAt ASC")
    List<Comment> findByPostId(UUID postId);
 }

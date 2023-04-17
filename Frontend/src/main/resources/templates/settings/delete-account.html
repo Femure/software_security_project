@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/bootstrap.min.css}">
+    <link rel="icon" th:href="@{/fontawesome/svgs/solid/list-alt.svg}">
+    <title>Delete account</title>
+</head>
+
+<body>
+    <div th:insert="fragments/header :: header"></div>
+    <div class="container w-50 p-3 pt-5 h-100">
+        <h1 class="display-5">Delete your account</h1>
+            <div id="error-msg" th:if="${error}" class="alert alert-danger">
+                <div th:text="${error}"></div>
+            </div>
+            <h6 class="alert alert-danger">Please, enter your password to confirm that you really want to permanently delete your account</h6>
+            <form action="#" th:action="@{/delete-account}" method="POST">
+                <div class="mb-3">
+                    <label for="inputPassword">Password</label>
+                    <input id="inputPassword" type="password" name="password" class="form-control">
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button id="submit-button" type="submit" class="btn btn-danger">Confirm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
