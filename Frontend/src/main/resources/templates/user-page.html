@@ -47,7 +47,7 @@
 
         <!-- See the posts -->
         <div class="container pt-5 h-100 w-75">
-            <h1 class="display-6">Thread</h1>
+            <h1 class="display-6">Your activities</h1>
 
             <div class="d-flex justify-content-between">
                 <h4>Username</h4>
@@ -57,7 +57,7 @@
                 <div class="card-header fw-bold bg-body-secondary">
                     <div class="d-flex justify-content-between">
                         <p class="m-0" th:text="${post.username}"></p>
-                        <p class="m-0" th:text="${post.createdAt}"></p>
+                        <p class="m-0" th:text="${#dates.format(post.createdAt, 'dd-MM-yyyy HH:mm')}"></p>
                     </div>
                 </div>
 
@@ -73,7 +73,7 @@
                             <div class="d-flex justify-content-between fw-bold">
                                 <p class="m-0" th:text="${comment.username}"></p>
                                 <small><span><i class="icon ion-md-time"
-                                            th:text="${comment.createdAt}"></i></span></small>
+                                            th:text="${#dates.format(comment.createdAt, 'dd-MM-yyyy HH:mm')}"></i></span></small>
                             </div>
 
                             <div class="d-flex justify-content-between">

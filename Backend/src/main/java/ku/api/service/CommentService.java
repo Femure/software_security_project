@@ -11,7 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,7 +39,7 @@ public class CommentService {
     public void addComment(CommentRequest commentRequest) {
         Post post = postRepository.getReferenceById(commentRequest.getPostId());
         Comment comment = modelMapper.map(commentRequest, Comment.class);
-        comment.setCreatedAt(Instant.now());
+        comment.setCreatedAt(new Date());
         comment.setPost(post);
         commentRepository.save(comment);
     }

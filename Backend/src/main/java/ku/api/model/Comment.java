@@ -10,12 +10,13 @@ import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.ToString;
 
-import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
 
 import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @Entity
@@ -27,7 +28,9 @@ public class Comment {
         @Column(name = "id", updatable = false, nullable = false)
         @JdbcTypeCode(java.sql.Types.NVARCHAR)
         private UUID id;
-        private Instant createdAt;
+
+        @DateTimeFormat(pattern="dd-MM-yyyy HH:mm:ss")
+        private Date createdAt;
 
         @Column(columnDefinition = "VARBINARY(256)")
         @ColumnTransformer(read = "cast(AES_DECRYPT(username, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")

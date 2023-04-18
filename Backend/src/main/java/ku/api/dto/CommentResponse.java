@@ -1,13 +1,13 @@
 package ku.api.dto;
 
 import lombok.Data;
-import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
 
 @Data
 public class CommentResponse {
    private UUID id;
+   private Date createdAt;
    private String username;
    private String commentText;
-   private Instant createdAt;
 }

@@ -2,15 +2,15 @@ package ku.api.dto;
 
 import lombok.Data;
 
-import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 @Data
 public class PostResponse {
    private UUID id;
+   private Date createdAt;
    private String username;
    private String postText;
-   private Instant createdAt;
    private List<CommentResponse> comments;
 }

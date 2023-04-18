@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,7 +40,7 @@ public class PostService {
     public void create(PostRequest postDto) {
         Post post = modelMapper.map(postDto,
                 Post.class);
-        post.setCreatedAt(Instant.now());
+        post.setCreatedAt(new Date());
         repository.save(post);
     }
 
