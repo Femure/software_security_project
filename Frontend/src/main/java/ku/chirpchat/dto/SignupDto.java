@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 import ku.chirpchat.validation.PasswordValueMatch;
 import ku.chirpchat.validation.ValidPassword;
 
+import java.time.Instant;
 import java.util.Date;
 
 @PasswordValueMatch.List({
@@ -18,6 +19,8 @@ import java.util.Date;
 
 @Data
 public class SignupDto {
+
+        private Instant createdAt;
 
         @NotBlank(message = "First name is required")
         @Size(max = 100)
