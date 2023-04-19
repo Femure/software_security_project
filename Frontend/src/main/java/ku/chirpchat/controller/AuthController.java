@@ -30,7 +30,7 @@ public class AuthController {
                         loginError = "Invalid username or password";
                         break;
                     case "Locked":
-                        loginError = "Your account has been locked due to 3 failed attempts. It will be unlocked after 24 hours.";
+                        loginError = "Your account has been locked due to 3 failed attempts. It will be unlocked after 15 min.";
                         break;
                     case "Disabled":
                         loginError = "The account is not verify. Please check your email to validate your account";

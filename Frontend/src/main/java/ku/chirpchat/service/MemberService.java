@@ -1,6 +1,5 @@
 package ku.chirpchat.service;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,24 +39,21 @@ public class MemberService {
         }
         return user;
     }
-    
+
     public int resetPassword(String password, String username) {
         // Reset password change password from user page
         Member member = repository.findByUsername(username);
-        if (member != null) {
-            if (!passwordEncoder.matches(password, member.getPassword())) {
-                String hashedPassword = passwordEncoder.encode(password);
-                member.setPassword(hashedPassword);
-                repository.save(member);
-                logger.info("Success reset password user : " + member.getUsername() + " at " + Instant.now());
-                return 1;
-            }
+        if (member != null && !passwordEncoder.matches(password, member.getPassword())) {
+            String hashedPassword = passwordEncoder.encode(password);
+            member.setPassword(hashedPassword);
+            repository.save(member);
+            logger.info("Success reset password user : " + member.getUsername() + " at " + Instant.now());
+            return 1;
         }
         return 0;
     }
 
-    
-    public int deleteAccount(String password, String username){
+    public int deleteAccount(String password, String username) {
         Member member = repository.findByUsername(username);
         if (member != null) {
             if (passwordEncoder.matches(password, member.getPassword())) {

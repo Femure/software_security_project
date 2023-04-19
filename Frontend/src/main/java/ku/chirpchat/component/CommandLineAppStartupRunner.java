@@ -20,7 +20,7 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
     @Autowired
     MemberRepository memberRepository;
 
-    @Value("${password.admin}")
+    @Value("${admin.password}")
     private String adminPassword;
 
     @Override

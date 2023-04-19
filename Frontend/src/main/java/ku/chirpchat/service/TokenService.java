@@ -96,19 +96,17 @@ public class TokenService {
     public int resetPassword(String password, String token) {
         // Reset password by forgot password
         Member member = repository.findByTokenVerificationCode(token);
-        if (member != null) {
-            if (!passwordEncoder.matches(password, member.getPassword())) {
-                String hashedPassword = passwordEncoder.encode(password);
-                member.setPassword(hashedPassword);
-                Token passwordResetToken = member.getToken();
-                passwordResetToken.setVerificationCode(null);
-                member.setEmailSentNumber(0);
-                member.setToken(passwordResetToken);
-                passwordResetToken.setMember(null);
-                repository.save(member);
-                logger.info("Success reset password user : " + member.getUsername() + " at " + Instant.now());
-                return 1;
-            }
+        if (member != null && !passwordEncoder.matches(password, member.getPassword())) {
+            String hashedPassword = passwordEncoder.encode(password);
+            member.setPassword(hashedPassword);
+            Token passwordResetToken = member.getToken();
+            passwordResetToken.setVerificationCode(null);
+            member.setEmailSentNumber(0);
+            member.setToken(passwordResetToken);
+            passwordResetToken.setMember(null);
+            repository.save(member);
+            logger.info("Success reset password user : " + member.getUsername() + " at " + Instant.now());
+            return 1;
         }
         return 0;
     }

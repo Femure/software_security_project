@@ -40,11 +40,10 @@
                         <p class="ms-3" th:text="${member.email}"></p>
                     </div>
                     <div class="mb-3">
-                        <a class="btn btn-primary stretched-link" th:href="@{/reset-password}">Change your password</a>
+                        <a class="btn btn-primary" th:href="@{/reset-password}">Change your password</a>
                     </div>
                     <div class="d-flex justify-content-end" sec:authorize="hasRole('ROLE_USER')">
-                        <a class="btn btn-danger stretched-link" th:href="@{/delete-account}">Delete your
-                            account</a>
+                        <a class="btn btn-danger" th:href="@{/delete-account}">Delete your account</a>
                     </div>
                 </div>
                 <!-- User login by Oauth -->
