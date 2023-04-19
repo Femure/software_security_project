@@ -74,9 +74,7 @@ public class UserServicesConfiguration {
            } catch (OAuth2AuthenticationException exception) {
                throw exception;
            }
-
            return user;
        }
    }
 }
-

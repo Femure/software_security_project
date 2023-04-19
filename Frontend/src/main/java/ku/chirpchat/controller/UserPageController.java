@@ -3,11 +3,13 @@ package ku.chirpchat.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import kotlin.collections.builders.ListBuilder;
 import ku.chirpchat.dto.CommentRequest;
@@ -47,6 +49,11 @@ public class UserPageController {
         String username = principal.getName();
         SignupDto member = memberService.getMemberUsername(username);
         model.addAttribute("member", member);
+        if (principal.toString().contains("google")) {
+            model.addAttribute("googleUser", true);
+        } else {
+            model.addAttribute("googleUser", false);
+        }
 
         if (!model.containsAttribute("commentRequest")) {
             model.addAttribute("commentRequest", new CommentRequest());
@@ -78,20 +85,25 @@ public class UserPageController {
     }
 
     @GetMapping("/reset-password")
-    public String viewResetPassword(SignupDto user) {
-        return "settings/reset-password";
+    public String viewResetPassword(Principal principal, SignupDto user, HttpSession session) {
+        String token = (String) session.getAttribute("token");
+        if (token == null && !memberService.isMemberRegistered(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        } else{
+            return "settings/reset-password";
+        }  
     }
 
     @PostMapping("/reset-password")
     public String resetPassword(@Valid SignupDto user, BindingResult result,
             HttpSession session, Principal principal, Model model) {
-        if (result.hasFieldErrors("password") || result.hasFieldErrors("confirmPassword")) {
-            return "settings/reset-password";
-        }
         String token = (String) session.getAttribute("token");
-        if (token == null && principal == null) {
-            model.addAttribute("error", "Please authentificate you by passing by reset password link sent to you.");
-        } else {
+        if (token == null && !memberService.isMemberRegistered(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }  else {
+            if (result.hasFieldErrors("password") || result.hasFieldErrors("confirmPassword")) {
+                return "settings/reset-password";
+            }
             int resp = 0;
             if (principal != null) {
                 resp = memberService.resetPassword(user.getPassword(), principal.getName());
@@ -110,24 +122,33 @@ public class UserPageController {
             if (resp == 0) {
                 model.addAttribute("error", "Select a password different from the previous!");
             }
+            return "settings/reset-password";
         }
-        return "settings/reset-password";
     }
 
     @GetMapping("/delete-account")
-    public String viewDeleteAccount(SignupDto user) {
-        return "settings/delete-account";
+    public String viewDeleteAccount(Principal principal, SignupDto user) {
+        if (!memberService.isMemberRegistered(principal.getName()) || principal.getName().contains("admin")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        else{
+             return "settings/delete-account";
+        }
     }
 
     @PostMapping("/delete-account")
     public String resetPassword(@RequestParam("password") String password, Principal principal, Model model) {
-        int resp = memberService.deleteAccount(password, principal.getName());
-        if (resp == 1) {
-            return "redirect:/logout";
+        if (!memberService.isMemberRegistered(principal.getName()) || principal.getName().contains("admin")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         } else {
-            model.addAttribute("error", "Invalid password !");
+            int resp = memberService.deleteAccount(password, principal.getName());
+            if (resp == 1) {
+                return "redirect:/logout";
+            } else {
+                model.addAttribute("error", "Invalid password !");
+            }
+            return "settings/delete-account";
         }
-        return "settings/delete-account";
     }
 
 }

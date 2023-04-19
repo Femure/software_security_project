@@ -74,7 +74,7 @@ public class ThreadController {
     public String createComment(@Valid CommentRequest comment,
             BindingResult result, @PathVariable UUID postId, Principal principal,RedirectAttributes attr) {
         if (result.hasErrors()) {
-            attr.addFlashAttribute("org.springframework.validation.BindingResult.postRequest", result);
+            attr.addFlashAttribute("org.springframework.validation.BindingResult.commentRequest", result);
             attr.addFlashAttribute("commentRequest", comment);
             return "redirect:/thread";
         }

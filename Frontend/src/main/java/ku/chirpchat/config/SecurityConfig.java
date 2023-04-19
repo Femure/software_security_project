@@ -22,7 +22,7 @@ public class SecurityConfig {
 
         @Autowired
         private OidcUserService oidcUserService;
-
+     
         @Autowired
         private ApplicationContext context;
 

@@ -28,6 +28,10 @@ public class MemberService {
 
     Logger logger = LoggerFactory.getLogger(MemberService.class);
 
+    public boolean isMemberRegistered(String username) {
+        return repository.findByUsername(username) != null;
+    }
+
     public SignupDto getMemberUsername(String username) {
         Member member = repository.findByUsername(username);
         SignupDto user = null;

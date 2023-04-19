@@ -13,7 +13,7 @@ public class CommentRequest {
    @NotBlank
    private String username;
 
-   @NotBlank
+   @NotBlank(message = "Can't be blank")
    @Length(max = 300, message = "Length superior to 300 caracters !")
    private String commentText;
 }
