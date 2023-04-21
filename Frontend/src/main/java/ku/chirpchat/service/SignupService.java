@@ -64,11 +64,13 @@ public class SignupService {
         return newMember.getToken().getVerificationCode();
     }
 
-    public void createConsent(ConsentDto consentDto, String username){
+    public void createConsent(ConsentDto consentDto, String username) {
         Consent consent = modelMapper.map(consentDto, Consent.class);
         Member member = this.getMember(username);
-        consent.setMember(member);
-        consentRepository.save(consent);
-        System.out.println("Save");
+        if (member != null) {
+            consent.setMember(member);
+            consentRepository.save(consent);
+            logger.info(username + " has complete the consent form at " + Instant.now());
+        }
     }
 }

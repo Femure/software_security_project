@@ -93,6 +93,7 @@ public class SignupController {
             session.removeAttribute("username");
             session.setAttribute("token", (String) session.getAttribute("tmpToken"));
             session.removeAttribute("tmpToken");
+            session.removeAttribute("message");
             return "redirect:/signup-success";
         }
 

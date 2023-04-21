@@ -13,21 +13,27 @@
     <div th:insert="fragments/header :: header"></div>
 
     <div class="container text-center pt-5 h-100">
-        <h3>One last step before successfully complete your account!</h3>
-        <p>Please check your email to verify your account. If you don't receive the validation email
-            verify your spam, otherwise click on the link below to receive another validation email.
-        </p>
-        <div th:if="${emailSentNumberExceeded}">
-            <span id="emailSentNumberExceeded-msg" th:text="${emailSentNumberExceeded}" class="alert alert-danger"></span>
+        <div class="mt-4" th:if="${accountNotfound}">
+            <span id="accountNotfound-msg" th:text="${accountNotfound}" class="alert alert-danger"></span>
         </div>
-        <div th:unless="${emailSentNumberExceeded}">
-            <div id="emailResent-msg" th:if="${emailResent}" class="alert alert-success">
-                <span th:text="${emailResent}"></span>
+        <div th:unless="${accountNotfound}">
+            <h3>One last step before successfully complete your account!</h3>
+            <p>Please check your email to verify your account. If you don't receive the validation email
+                verify your spam, otherwise click on the link below to receive another validation email.
+            </p>
+            <div th:if="${emailSentNumberExceeded}">
+                <span id="emailSentNumberExceeded-msg" th:text="${emailSentNumberExceeded}"
+                    class="alert alert-danger"></span>
             </div>
-            <div id="emailResentCooldown-msg" th:if="${cooldownResendEmail}" class="alert alert-warning">
-                <span th:text="${cooldownResendEmail}"></span>
+            <div th:unless="${emailSentNumberExceeded}">
+                <div id="emailResent-msg" th:if="${emailResent}" class="alert alert-success">
+                    <span th:text="${emailResent}"></span>
+                </div>
+                <div id="emailResentCooldown-msg" th:if="${cooldownResendEmail}" class="alert alert-warning">
+                    <span th:text="${cooldownResendEmail}"></span>
+                </div>
+                <a th:href="@{/resendTokenEmail}">Resend a validation email</a>
             </div>
-            <a th:href="@{/resendTokenEmail}">Resend a validation email</a>
         </div>
     </div>
 </body>

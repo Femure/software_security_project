@@ -55,17 +55,26 @@ public class TokenController {
     }
 
     @GetMapping("/signup-success")
-    public String signupSuccessPage(HttpSession session, Model model) {
+    public String signupSuccessPage(HttpServletRequest request, HttpSession session, Model model) {
         String token = (String) session.getAttribute("token");
         if (token == null) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         } else {
+            String referer = request.getHeader("Referer");
+            if(referer.matches("content-form")){
+                model.addAttribute("cooldownResendEmail", null);
+                model.addAttribute("emailSentNumberExceeded", null);
+                model.addAttribute("accountNotfound", null);
+                model.addAttribute("emailResent", null);
+            }
             String message = (String) session.getAttribute("message");
             if (message != null) {
                 if (message.matches("emailCooldown")) {
                     model.addAttribute("cooldownResendEmail", "Wait 2 minutes before resend another email.");
                 } else if (message.matches("emailSentNumberExceeded")) {
                     model.addAttribute("emailSentNumberExceeded", "The number of email sent has been exceeded!");
+                } else if (message.matches("accountNotfound")) {
+                    model.addAttribute("accountNotfound", "Your account can't be found ! It's likely been deleted because your registration time expired. Please, sign up again.");
                 } else {
                     model.addAttribute("emailResent", "Validation email resent");
                 }
@@ -92,6 +101,8 @@ public class TokenController {
                 session.setAttribute("message", "emailCooldown");
             } else if (newToken.matches("emailSentNumberExceeded")) {
                 session.setAttribute("message", "emailSentNumberExceeded");
+            } else if (newToken.matches("accountNotfound")) {
+                session.setAttribute("message", "accountNotfound");
             } else {
                 session.setAttribute("token", newToken);
                 session.setAttribute("message", "emailSent");

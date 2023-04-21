@@ -76,12 +76,14 @@ public class TokenService {
                     member = this.setTokenEmailAttributes(member, choice);
                     return member.getToken().getVerificationCode();
                 }
+                else{
+                    return token;
+                }
             } else {
                 return "emailSentNumberExceeded";
             }
-
         }
-        return token;
+        return "accountNotfound";
     }
 
     public String forgotPassword(String email) {

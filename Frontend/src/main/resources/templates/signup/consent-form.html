@@ -28,15 +28,15 @@
                 <div class="ms-3 form-group">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" th:field="*{consentName}" id="ratioAgreeName"
-                            value="true" required>
-                        <label class="form-check-label">
+                            value="true" checked="">
+                        <label class="form-check-label active">
                             I agree
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" th:field="*{consentName}" id="ratioDisagreeName"
-                            value="false">
-                        <label class="form-check-label">
+                            value="false" required>
+                        <label class="form-check-label" >
                             I do not agree
                         </label>
                     </div>
