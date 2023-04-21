@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/bootstrap.min.css}">
+    <link rel="icon" th:href="@{/fontawesome/svgs/solid/list-alt.svg}">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <title>Consent form</title>
+</head>
+
+<body>
+    <div th:insert="fragments/header :: header"></div>
+    <div class="container w-50 p-3 pt-5 h-100">
+        <h1 class="display-5">Consent form</h1>
+        <p class="fw-semibold text-justify">We would like to take this opportunity to collect your personal data
+            including your demographic
+            and posts. In this regard, please select the items which you agreed upon. Please take note that we do not
+            sell, share to third parties, or in anyone your personal information without your consent.
+        </p>
+        <form th:action="@{/consent-form}" th:object="${consentDto}" method="POST">
+
+            <!-- Consent name -->
+            <div class="mb-3">
+                <p class="m-0">By agreeing to this form, I consent on this project to use my name for
+                    display :
+                </p>
+                <div class="ms-3 form-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{consentName}" id="ratioAgreeName"
+                            value="true" required>
+                        <label class="form-check-label">
+                            I agree
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{consentName}" id="ratioDisagreeName"
+                            value="false">
+                        <label class="form-check-label">
+                            I do not agree
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Consent intellectual property -->
+            <div class="mb-3">
+                <p class="m-0">By agreeing to this form, I consent that media posted on this project are intellectual
+                    property rights belonging to this project :
+                </p>
+                <div class="ms-3 form-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{consentIP}" id="ratioAgreeIP"
+                            value="true" required>
+                        <label class="form-check-label">
+                            I agree
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{consentIP}" id="ratioDisagreeIP"
+                            value="false">
+                        <label class="form-check-label">
+                            I do not agree
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Consent advertising -->
+            <div class="mb-3">
+                <p class="m-0">By agreeing to this form, I consent that this project can use media for distribution in
+                    social media advertising and marketing :
+                </p>
+                <div class="ms-3 form-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{consentAd}" id="ratioAgreeAd"
+                            value="true" required>
+                        <label class="form-check-label">
+                            I agree
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{consentAd}" id="ratioDisagreeAd"
+                            value="false">
+                        <label class="form-check-label">
+                            I do not agree
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Consent news -->
+            <div class="mb-3">
+                <p class="m-0">By agreeing to this form, I consent that this project will provide news and updates
+                    related to this project :
+                </p>
+                <div class="ms-3 form-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{consentNews}" id="ratioAgreeNews"
+                            value="true" required>
+                        <label class="form-check-label">
+                            I agree
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{consentNews}" id="ratioDisagreeNews"
+                            value="false">
+                        <label class="form-check-label">
+                            I do not agree
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Consent surveys -->
+            <div class="mb-3">
+                <p class="m-0">By agreeing to this form, I consent that this project can provide me surveys or research
+                    with our project groups :
+                </p>
+                <div class="ms-3 form-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{consentSurveys}" id="ratioAgreeSurveys"
+                            value="true" required>
+                        <label class="form-check-label">
+                            I agree
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{consentSurveys}"
+                            id="ratioDisagreeSurveys" value="false">
+                        <label class="form-check-label">
+                            I do not agree
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Consent analysis -->
+            <div class="mb-3">
+                <p class="m-0">By agreeing to this form, I consent for this project to use my user profile, my given
+                    personal data, and content in my posts for data analyzing and distribution of targeted
+                    advertisements :
+                </p>
+                <div class="ms-3 form-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{consentAnalysis}" id="ratioAgreeAnalysis"
+                            value="true" required>
+                        <label class="form-check-label">
+                            I agree
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{consentAnalysis}" id="ratioDisagreeAnalysis"
+                            value="false">
+                        <label class="form-check-label">
+                            I do not agree
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <button id="submit-button" type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    <div th:insert="fragments/footer :: footer"></div>
+</body>
+
+</html>

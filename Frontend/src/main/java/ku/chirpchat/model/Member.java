@@ -66,6 +66,10 @@ public class Member {
         @ToString.Exclude
         Token token;
 
+        @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
+        @ToString.Exclude
+        Consent consent;
+
         @Column(columnDefinition = "VARBINARY(256)")
         @ColumnTransformer(read = "cast(AES_DECRYPT(email_sent_number, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")
         private int emailSentNumber;

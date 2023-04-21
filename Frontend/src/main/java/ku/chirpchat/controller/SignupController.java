@@ -1,6 +1,7 @@
 package ku.chirpchat.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -8,7 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.server.ResponseStatusException;
 
+import ku.chirpchat.dto.ConsentDto;
 import ku.chirpchat.dto.SignupDto;
 import ku.chirpchat.service.SignupService;
 import ku.chirpchat.validation.CaptchaValidator;
@@ -26,11 +29,11 @@ public class SignupController {
     private CaptchaValidator validator;
 
     @GetMapping("/signup")
-    public String getSignupPage(SignupDto user, Model model) {
+    public String viewSignupPage(SignupDto user, Model model) {
         if (!model.containsAttribute("lastUser")) {
             model.addAttribute("lastUser", new SignupDto());
         }
-        return "signup/signup"; 
+        return "signup/signup";
     }
 
     @PostMapping("/signup")
@@ -57,14 +60,41 @@ public class SignupController {
         if (validator.isValidCaptcha(captcha)) {
             if (signupError == null) {
                 String token = signupService.createMember(user);
-                session.setAttribute("token", token);
-                return "redirect:/signup-success";
+                session.setAttribute("tmpToken", token);
+                session.setAttribute("username", user.getUsername());
+                return "redirect:/consent-form";
             }
         } else {
             model.addAttribute("errorCaptcha", "Please validate reCaptcha");
         }
 
         return "signup/signup";
+
+    }
+
+    @GetMapping("/consent-form")
+    public String viewConsenFormPage(ConsentDto consent, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }else{
+            return "signup/consent-form";
+        }
+        
+    }
+
+    @PostMapping("/consent-form")
+    public String consenForm(ConsentDto consent, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        } else {
+            signupService.createConsent(consent, username);
+            session.removeAttribute("username");
+            session.setAttribute("token", (String) session.getAttribute("tmpToken"));
+            session.removeAttribute("tmpToken");
+            return "redirect:/signup-success";
+        }
 
     }
 

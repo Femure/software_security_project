@@ -87,7 +87,7 @@ public class UserPageController {
     @GetMapping("/reset-password")
     public String viewResetPassword(Principal principal, SignupDto user, HttpSession session) {
         String token = (String) session.getAttribute("token");
-        if (token == null && !memberService.isMemberRegistered(principal.getName())) {
+        if (token == null && (principal == null || !memberService.isMemberRegistered(principal.getName()))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         } else{
             return "settings/reset-password";
@@ -98,9 +98,9 @@ public class UserPageController {
     public String resetPassword(@Valid SignupDto user, BindingResult result,
             HttpSession session, Principal principal, Model model) {
         String token = (String) session.getAttribute("token");
-        if (token == null && !memberService.isMemberRegistered(principal.getName())) {
+        if (token == null && (principal == null || !memberService.isMemberRegistered(principal.getName()))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }  else {
+        } else {
             if (result.hasFieldErrors("password") || result.hasFieldErrors("confirmPassword")) {
                 return "settings/reset-password";
             }
@@ -130,9 +130,8 @@ public class UserPageController {
     public String viewDeleteAccount(Principal principal, SignupDto user) {
         if (!memberService.isMemberRegistered(principal.getName()) || principal.getName().contains("admin")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
-        else{
-             return "settings/delete-account";
+        } else {
+            return "settings/delete-account";
         }
     }
 

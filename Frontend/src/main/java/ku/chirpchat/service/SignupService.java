@@ -7,8 +7,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import ku.chirpchat.dto.SignupDto;
+import ku.chirpchat.dto.ConsentDto;
+import ku.chirpchat.model.Consent;
 import ku.chirpchat.model.Member;
 import ku.chirpchat.repository.MemberRepository;
+import ku.chirpchat.repository.ConsentRepository;
 
 import java.time.Instant;
 import org.slf4j.Logger;
@@ -18,7 +21,10 @@ import org.slf4j.LoggerFactory;
 public class SignupService {
 
     @Autowired
-    private MemberRepository repository;
+    private MemberRepository memberRepository;
+
+    @Autowired
+    private ConsentRepository consentRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -32,15 +38,15 @@ public class SignupService {
     Logger logger = LoggerFactory.getLogger(SignupService.class);
 
     public boolean isUsernameAvailable(String username) {
-        return repository.findByUsername(username) == null;
+        return memberRepository.findByUsername(username) == null;
     }
 
     public boolean isEmailAvailable(String email) {
-        return repository.findByEmail(email) == null;
+        return memberRepository.findByEmail(email) == null;
     }
 
     public Member getMember(String username) {
-        return repository.findByUsername(username);
+        return memberRepository.findByUsername(username);
     }
 
     public String createMember(SignupDto user) {
@@ -58,4 +64,11 @@ public class SignupService {
         return newMember.getToken().getVerificationCode();
     }
 
+    public void createConsent(ConsentDto consentDto, String username){
+        Consent consent = modelMapper.map(consentDto, Consent.class);
+        Member member = this.getMember(username);
+        consent.setMember(member);
+        consentRepository.save(consent);
+        System.out.println("Save");
+    }
 }
