@@ -37,7 +37,6 @@ public class CustomLoginFailureHandler extends SimpleUrlAuthenticationFailureHan
 
         SignupDto user = authService.getMemberUsername(request.getParameter("username"));
         String username = request.getParameter("username");
-        System.out.println("Bug");
         exception = new BadCredentialsException("BadCredentials");
         if (user != null) {
             if (!user.isAccountLocked()) {

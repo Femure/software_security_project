@@ -35,7 +35,6 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         String username = authentication.getName();
         SignupDto user = authService.getMemberUsername(username);
         if (user.isAccountLocked()) {
-            System.out.println("Error");
             authentication.setAuthenticated(false);
             logger.warn("Fail login attempt for user " + username + "  at " + Instant.now() + ". Reason : Locked");
             throw new LockedException("Locked");

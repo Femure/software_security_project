@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 import ku.chirpchat.validation.PasswordValueMatch;
 import ku.chirpchat.validation.ValidPassword;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 @PasswordValueMatch.List({
@@ -17,7 +18,7 @@ import java.time.Instant;
 })
 
 @Data
-public class SignupDto {
+public class SignupDto implements Serializable {
 
         private Instant createdAt;
 

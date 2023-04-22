@@ -28,10 +28,10 @@
                 <div id="emailResent-msg" th:if="${emailResent}" class="alert alert-success">
                     <div th:text="${emailResent}"></div>
                 </div>
-                <div id="emailSentNumberExceeded-msg" th:if="${emailSentNumberExceeded}" class="alert alert-danger">
-                    <div th:text="${emailSentNumberExceeded}"></div>
+                <div id="emailResentCooldown-msg" th:if="${cooldownResendEmail}" class="alert alert-warning">
+                    <div th:text="${cooldownResendEmail}"></div>
                 </div>
-                <a th:href="@{/resendTokenEmail}">Resend a validation email</a>
+                <a class="btn btn-primary mt-2" th:href="@{/resendTokenEmail}">Resend a validation email</a>
             </div>
         </div>
     </div>

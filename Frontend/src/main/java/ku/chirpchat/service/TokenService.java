@@ -87,6 +87,10 @@ public class TokenService {
     public String forgotPassword(String email) {
         Member member = repository.findByEmail(email);
         if (member != null && member.isEnabled()) {
+            if(member.getToken() != null){
+                member.getToken().setMember(null);
+                member.getToken().setVerificationCode(null);
+            }
             if (member.getEmailSentNumber() < MAX_SENT_EMAIL) {
                 this.setTokenEmailAttributes(member, 1);
                 return member.getToken().getVerificationCode();

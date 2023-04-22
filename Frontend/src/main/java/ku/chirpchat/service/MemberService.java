@@ -55,12 +55,10 @@ public class MemberService {
 
     public int deleteAccount(String password, String username) {
         Member member = repository.findByUsername(username);
-        if (member != null) {
-            if (passwordEncoder.matches(password, member.getPassword())) {
-                repository.delete(member);
-                logger.info("Success delete account of user : " + member.getUsername() + " at " + Instant.now());
-                return 1;
-            }
+        if (member != null && passwordEncoder.matches(password, member.getPassword())) {
+            repository.delete(member);
+            logger.info("Success delete account of user : " + member.getUsername() + " at " + Instant.now());
+            return 1;
         }
         return 0;
     }

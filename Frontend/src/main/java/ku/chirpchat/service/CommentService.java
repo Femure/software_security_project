@@ -57,11 +57,12 @@ public class CommentService {
 
         ResponseEntity<CommentRequest> response = restTemplate.exchange(url, HttpMethod.POST,
                 entity, CommentRequest.class);
-
-                logger.info("User " + response.getBody().getUsername() + " add a comment :"+ 
-                "\n message : "+ response.getBody().getCommentText() + 
-                "\n under the post : "+ response.getBody().getPostId() + 
-                "\n at " + Instant.now());
+        if (response.getStatusCode() == HttpStatus.OK) {
+            logger.info("User " + response.getBody().getUsername() + " add a comment :" +
+                    "\n message : " + response.getBody().getCommentText() +
+                    "\n under the post : " + response.getBody().getPostId() +
+                    "\n at " + Instant.now());
+        }
     }
 
     public void deleteComment(UUID commentId, String username) {
@@ -79,9 +80,9 @@ public class CommentService {
         if (response.getStatusCode() == HttpStatus.OK) {
             logger.info(
                     "User " + username + "  remove the comment :" +
-                    "\n message : "+ response.getBody().getCommentText() + 
-                    "\n under the post : "+ response.getBody().getPostId() + 
-                    "\n at " + Instant.now());
+                            "\n message : " + response.getBody().getCommentText() +
+                            "\n under the post : " + response.getBody().getPostId() +
+                            "\n at " + Instant.now());
         }
 
     }
