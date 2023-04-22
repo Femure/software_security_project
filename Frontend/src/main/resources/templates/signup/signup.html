@@ -14,7 +14,7 @@
     <div class="container w-50 p-3 pt-5 h-100">
         <h1 class="display-5">Sign Up to Chirpchat</h1>
 
-        <form action="#" th:action="@{/signup}" modelAttribute="lastUser" th:object="${signupDto}" method="POST">
+        <form action="#" th:action="@{/signup}" th:object="${signupDto}" method="POST">
 
             <div id="error-msg" th:if="${signupError}" class="alert alert-danger">
                 <span th:text="${signupError}"></span>

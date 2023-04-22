@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -37,15 +38,27 @@ public class PostService {
     }
 
     // ----> we are mapping DTO → DAO
-    public void create(PostRequest postDto) {
-        Post post = modelMapper.map(postDto,
+    public PostResponse createPost(PostRequest postRequest) {
+        Post post = modelMapper.map(postRequest,
                 Post.class);
         post.setCreatedAt(new Date());
         repository.save(post);
+
+        PostResponse postResponse = modelMapper.map(post,
+                PostResponse.class);
+        return postResponse;
     }
 
-    public void deletePost(UUID postId) {
-        repository.deleteById(postId);
+    public PostResponse deletePost(UUID postId) {
+        Optional<Post> post = repository.findById(postId);
+        if (post.isPresent()) {
+            PostResponse postResponse = modelMapper.map(post.get(), PostResponse.class);
+            repository.deleteById(postId);
+            return postResponse;
+        } else {
+            return null;
+        }
+
     }
 
 }

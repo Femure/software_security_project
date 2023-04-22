@@ -19,7 +19,7 @@ public class CommentController {
     @Autowired
     private CommentService service;
 
-    @GetMapping("add/{id}")
+    @GetMapping("{id}")
     public List<CommentResponse> getAllCommentsForPost(@PathVariable UUID id) {
         return service.getAllCommentsForPost(id);
     }
@@ -36,8 +36,13 @@ public class CommentController {
     }
 
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        service.deleteComment(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Object> delete(@PathVariable UUID id) {
+        CommentRequest comment = service.deleteComment(id);
+        if(comment == null){
+            return new ResponseEntity<>("No comment found for this id", HttpStatus.BAD_REQUEST);
+        }else{
+            return new ResponseEntity<>(comment, HttpStatus.OK);
+        }
+        
     }
 }

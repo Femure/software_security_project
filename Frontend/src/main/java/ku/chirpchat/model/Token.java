@@ -16,7 +16,7 @@ import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 @Data
@@ -38,7 +38,7 @@ public class Token {
 
     @Column(columnDefinition = "VARBINARY(256)")
     @ColumnTransformer(read = "cast(AES_DECRYPT(email_resent_cooldown, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")
-    private Date emailResentCooldown;
+    private Instant emailResentCooldown;
 
     private long expirationTime;
 

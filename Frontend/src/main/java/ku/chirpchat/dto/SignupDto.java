@@ -11,7 +11,6 @@ import ku.chirpchat.validation.PasswordValueMatch;
 import ku.chirpchat.validation.ValidPassword;
 
 import java.time.Instant;
-import java.util.Date;
 
 @PasswordValueMatch.List({
                 @PasswordValueMatch(field = "password", fieldMatch = "confirmPassword", message = "Passwords do not match!")
@@ -55,7 +54,9 @@ public class SignupDto {
 
         private boolean enabled;
 
-        private boolean accountNonLocked;
+        private int emailSentNumber;
+
+        private boolean accountLocked;
         private int failedAttempt;
-        private Date lockTime;
+        private Instant lockTime;
 }

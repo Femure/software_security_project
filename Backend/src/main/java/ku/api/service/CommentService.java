@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -44,7 +45,15 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
-    public void deleteComment(UUID commentId) {
-        commentRepository.deleteById(commentId);
+    public CommentRequest deleteComment(UUID commentId) {
+        Optional<Comment> comment = commentRepository.findById(commentId);
+        if (comment.isPresent()) {
+            CommentRequest commentRequest = modelMapper.map(comment.get(), CommentRequest.class);
+            commentRepository.deleteById(commentId);
+            return commentRequest;
+        }
+        else{
+            return null;
+        }
     }
 }

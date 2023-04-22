@@ -34,6 +34,10 @@ public class SecurityConfig {
                                 .hasAuthority("SCOPE_create:posts")
                                 .requestMatchers(HttpMethod.POST, "/api/comment")
                                 .hasAuthority("SCOPE_create:comments")
+                                .requestMatchers(HttpMethod.DELETE, "/api/post")
+                                .hasAuthority("SCOPE_delete:posts")
+                                .requestMatchers(HttpMethod.DELETE, "/api/comment")
+                                .hasAuthority("SCOPE_delete:comments")
                                 .anyRequest()
                                 .authenticated()
                                 

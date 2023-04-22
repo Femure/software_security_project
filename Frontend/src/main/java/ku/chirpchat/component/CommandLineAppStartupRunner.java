@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import ku.chirpchat.model.Member;
 import ku.chirpchat.repository.MemberRepository;
+import ku.chirpchat.repository.TokenRepository;
 
 @Component
 public class CommandLineAppStartupRunner implements CommandLineRunner {
@@ -19,6 +20,9 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @Autowired
+    TokenRepository tokenRepository;
 
     @Value("${admin.password}")
     private String adminPassword;
@@ -41,7 +45,7 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
 
             memberRepository.save(admin);
         }
-
+        tokenRepository.deleteAll();
     }
 
 }

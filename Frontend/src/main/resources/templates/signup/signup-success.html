@@ -13,24 +13,23 @@
     <div th:insert="fragments/header :: header"></div>
 
     <div class="container text-center pt-5 h-100">
-        <div class="mt-4" th:if="${accountNotfound}">
-            <span id="accountNotfound-msg" th:text="${accountNotfound}" class="alert alert-danger"></span>
+        <div id="accountNotfound-msg" th:if="${accountNotfound}" class="alert alert-danger mt-4">
+            <div th:text="${accountNotfound}"></div>
         </div>
         <div th:unless="${accountNotfound}">
             <h3>One last step before successfully complete your account!</h3>
             <p>Please check your email to verify your account. If you don't receive the validation email
                 verify your spam, otherwise click on the link below to receive another validation email.
             </p>
-            <div th:if="${emailSentNumberExceeded}">
-                <span id="emailSentNumberExceeded-msg" th:text="${emailSentNumberExceeded}"
-                    class="alert alert-danger"></span>
+            <div th:if="${emailSentNumberExceeded}" id="emailSentNumberExceeded-msg" class="alert alert-danger">
+                <div th:text="${emailSentNumberExceeded}"></div>
             </div>
             <div th:unless="${emailSentNumberExceeded}">
                 <div id="emailResent-msg" th:if="${emailResent}" class="alert alert-success">
-                    <span th:text="${emailResent}"></span>
+                    <div th:text="${emailResent}"></div>
                 </div>
-                <div id="emailResentCooldown-msg" th:if="${cooldownResendEmail}" class="alert alert-warning">
-                    <span th:text="${cooldownResendEmail}"></span>
+                <div id="emailSentNumberExceeded-msg" th:if="${emailSentNumberExceeded}" class="alert alert-danger">
+                    <div th:text="${emailSentNumberExceeded}"></div>
                 </div>
                 <a th:href="@{/resendTokenEmail}">Resend a validation email</a>
             </div>

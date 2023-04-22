@@ -7,10 +7,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ku.chirpchat.service.TokenService;
+
+import java.security.Principal;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -22,74 +23,67 @@ public class TokenController {
     private TokenService tokenService;
 
     @GetMapping("/forgot-password")
-    public String viewForgotPassword(HttpSession session, Model model) {
-        String valid = (String) session.getAttribute("valid");
-        if (valid != null) {
-            model.addAttribute("valid", true);
-            String message = (String) session.getAttribute("message");
-            if (message != null) {
-                if (message.matches("emailCooldown")) {
-                    model.addAttribute("cooldownResendEmail", "Wait 2 minutes before resend another email.");
-                } else if (message.matches("emailSentNumberExceeded")) {
-                    model.addAttribute("emailSentNumberExceeded", "The number of email sent has been exceeded!");
-                } else {
-                    model.addAttribute("emailResent", "Reset password email resent");
-                }
+    public String viewForgotPassword(HttpSession session, Principal principal,
+            RedirectAttributes attr, Model model) {
+        if (principal != null) {
+            attr.addFlashAttribute("forbidden", true);
+            return "redirect:/home";
+        } else {
+            String valid = (String) session.getAttribute("valid");
+            if (valid != null) {
+                model.addAttribute("valid", true);
             }
+            return "login/forgot-password";
         }
-        return "login/forgot-password";
+
     }
 
     @PostMapping("/forgot-password")
-    public String forgotPassword(@RequestParam("email") String email, HttpSession session, Model model) {
-        String token = tokenService.forgotPassword(email);
-        if (token != null) {
-            model.addAttribute("valid", true);
-            model.addAttribute("emailSent", "Request to reset password sent. Check your inbox for the reset link.");
-            session.setAttribute("token", token);
-            session.setAttribute("valid", "true");
+    public String forgotPassword(@RequestParam("email") String email, HttpSession session, Principal principal,
+            RedirectAttributes attr, Model model) {
+        if (principal != null) {
+            attr.addFlashAttribute("forbidden", true);
+            return "redirect:/home";
         } else {
-            model.addAttribute("error", "This email address does not exist!");
+            if (email.contains("chirpchatcompany@gmail.com")) {
+                model.addAttribute("error", "This email is restricted !");
+            } else {
+                String token = tokenService.forgotPassword(email);
+                if (token.contains("accountNotfound")) {
+                    model.addAttribute("error", "This email address does not exist !");
+                } else if (token.contains("emailSentNumberExceeded")) {
+                    model.addAttribute("emailSentNumberExceeded", "The number of email sent has been exceeded !");
+                } else {
+                    model.addAttribute("valid", true);
+                    session.setAttribute("valid", "true");
+                    model.addAttribute("emailSent",
+                            "Request to reset password sent. Check your inbox for the reset link.");
+                    session.setAttribute("token", token);
+                }
+            }
+            return "login/forgot-password";
         }
-        return "login/forgot-password";
     }
 
     @GetMapping("/signup-success")
-    public String signupSuccessPage(HttpServletRequest request, HttpSession session, Model model) {
+    public String viewSignupSuccessPage(HttpSession session, Model model, RedirectAttributes attr) {
         String token = (String) session.getAttribute("token");
         if (token == null) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            attr.addFlashAttribute("forbidden", true);
+            return "redirect:/home";
         } else {
-            String referer = request.getHeader("Referer");
-            if(referer.matches("content-form")){
-                model.addAttribute("cooldownResendEmail", null);
-                model.addAttribute("emailSentNumberExceeded", null);
-                model.addAttribute("accountNotfound", null);
-                model.addAttribute("emailResent", null);
-            }
-            String message = (String) session.getAttribute("message");
-            if (message != null) {
-                if (message.matches("emailCooldown")) {
-                    model.addAttribute("cooldownResendEmail", "Wait 2 minutes before resend another email.");
-                } else if (message.matches("emailSentNumberExceeded")) {
-                    model.addAttribute("emailSentNumberExceeded", "The number of email sent has been exceeded!");
-                } else if (message.matches("accountNotfound")) {
-                    model.addAttribute("accountNotfound", "Your account can't be found ! It's likely been deleted because your registration time expired. Please, sign up again.");
-                } else {
-                    model.addAttribute("emailResent", "Validation email resent");
-                }
-            }
             return "signup/signup-success";
         }
 
     }
 
     @GetMapping("/resendTokenEmail")
-    public String resendTokenEmail(HttpServletRequest request, HttpSession session) {
+    public String resendTokenEmail(HttpServletRequest request, HttpSession session, RedirectAttributes attr) {
         String token = (String) session.getAttribute("token");
         String referer = request.getHeader("Referer");
         if (token == null) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            attr.addFlashAttribute("forbidden", true);
+            return "redirect:/home";
         } else {
             String newToken;
             if (referer.contains("signup-success")) {
@@ -98,37 +92,44 @@ public class TokenController {
                 newToken = tokenService.resendTokenEmail(token, 1);
             }
             if (newToken.matches(token)) {
-                session.setAttribute("message", "emailCooldown");
+                attr.addFlashAttribute("cooldownResendEmail", "Wait 2 minutes before resend another email.");
             } else if (newToken.matches("emailSentNumberExceeded")) {
-                session.setAttribute("message", "emailSentNumberExceeded");
+                attr.addFlashAttribute("emailSentNumberExceeded", "The number of email sent has been exceeded!");
+                session.removeAttribute("valid");
             } else if (newToken.matches("accountNotfound")) {
-                session.setAttribute("message", "accountNotfound");
+                attr.addFlashAttribute("accountNotfound",
+                        "Your account can't be found ! It's likely been deleted because your registration time expired. Please, sign up again.");
             } else {
                 session.setAttribute("token", newToken);
-                session.setAttribute("message", "emailSent");
+                attr.addFlashAttribute("emailResent", "Validation email resent");
             }
             return "redirect:" + referer;
         }
     }
 
     @GetMapping("/verify")
-    public String verifyToken(@Param("code") String code, HttpSession session) {
-        int result = tokenService.verifyToken(code);
-        session.removeAttribute("message");
-        session.removeAttribute("token");
-        session.removeAttribute("valid");
-        if (result == 0) {
-            return "verify/verify-fail";
-        } else if (result == 1) {
-            return "verify/verify-success";
+    public String verifyToken(@Param("code") String code, HttpSession session, RedirectAttributes attr) {
+        if (code == null) {
+            attr.addFlashAttribute("forbidden", true);
+            return "redirect:/home";
         } else {
-            session.setAttribute("token", code);
-            return "redirect:/reset-password";
+            int result = tokenService.verifyToken(code);
+            session.removeAttribute("token");
+            session.removeAttribute("valid");
+            if (result == 0) {
+                return "verify/verify-fail";
+            } else if (result == 1) {
+                return "verify/verify-success";
+            } else {
+                session.setAttribute("token", code);
+                return "redirect:/reset-password";
+            }
         }
+
     }
 
     @GetMapping("/verify-success")
-    public String verifySuccess() {
+    public String viewVerifySuccess() {
         return "verify/verify-success";
     }
 

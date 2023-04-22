@@ -16,7 +16,6 @@ import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import java.util.Date;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -33,6 +32,8 @@ public class Member {
         @Type(type = "org.hibernate.type.UUIDCharType")
         private UUID id;
 
+        @Column(columnDefinition = "VARBINARY(256)")
+        @ColumnTransformer(read = "cast(AES_DECRYPT(created_at, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")
         private Instant createdAt;
 
         @Column(columnDefinition = "VARBINARY(256)")
@@ -73,10 +74,10 @@ public class Member {
         @Column(columnDefinition = "VARBINARY(256)")
         @ColumnTransformer(read = "cast(AES_DECRYPT(email_sent_number, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")
         private int emailSentNumber;
-
+        
         @Column(columnDefinition = "VARBINARY(256)")
-        @ColumnTransformer(read = "cast(AES_DECRYPT(account_non_locked, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")
-        private boolean accountNonLocked;
+        @ColumnTransformer(read = "cast(AES_DECRYPT(account_locked, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")
+        private boolean accountLocked;
 
         @Column(columnDefinition = "VARBINARY(256)")
         @ColumnTransformer(read = "cast(AES_DECRYPT(failed_attempt, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")
@@ -84,5 +85,5 @@ public class Member {
 
         @Column(columnDefinition = "VARBINARY(256)")
         @ColumnTransformer(read = "cast(AES_DECRYPT(lock_time, UNHEX('F3229A0B371ED2D9441B830D21A390C3')) as char(255))", write = "AES_ENCRYPT(?, UNHEX('F3229A0B371ED2D9441B830D21A390C3'))")
-        private Date lockTime;
+        private Instant lockTime;
 }

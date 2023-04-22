@@ -34,7 +34,8 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
         String username = authentication.getName();
         SignupDto user = authService.getMemberUsername(username);
-        if (user.isAccountNonLocked()) {
+        if (user.isAccountLocked()) {
+            System.out.println("Error");
             authentication.setAuthenticated(false);
             logger.warn("Fail login attempt for user " + username + "  at " + Instant.now() + ". Reason : Locked");
             throw new LockedException("Locked");
@@ -46,6 +47,9 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
             } else {
                 if (user.getFailedAttempt() > 0) {
                     authService.resetFailedAttempts(username);
+                }
+                if(user.getEmailSentNumber() > 0){
+                    authService.resetEmailSentNumber(username);
                 }
             }
 

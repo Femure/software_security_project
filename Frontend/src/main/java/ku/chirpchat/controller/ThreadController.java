@@ -34,7 +34,7 @@ public class ThreadController {
     private CommentService commentService;
 
     @GetMapping("/thread")
-    public String getPostPage(Model model) {
+    public String viewThreadPage(Model model) {
         if (!model.containsAttribute("postRequest")) {
             model.addAttribute("postRequest", new PostRequest());
         }
@@ -52,7 +52,7 @@ public class ThreadController {
     }
 
     @PostMapping("/post/add")
-    public String addPost(@Valid PostRequest post,
+    public String createPost(@Valid PostRequest post,
             BindingResult result, Principal principal, RedirectAttributes attr) {
         if (result.hasErrors()) {
             attr.addFlashAttribute("org.springframework.validation.BindingResult.postRequest", result);
@@ -60,13 +60,13 @@ public class ThreadController {
             return "redirect:/thread";
         }
         post.setUsername(principal.getName());
-        postService.create(post);
+        postService.createPost(post);
         return "redirect:/thread";
     }
 
     @PostMapping("/post/delete/{postId}")
-    public String deletePost(@PathVariable UUID postId) {
-        postService.deletePost(postId);
+    public String deletePost(@PathVariable UUID postId,  Principal principal) {
+        postService.deletePost(postId,principal.getName());
         return "redirect:/thread";
     }
 
@@ -86,8 +86,8 @@ public class ThreadController {
     }
 
     @PostMapping("/comment/delete/{commentId}")
-    public String deleteComment(@PathVariable UUID commentId) {
-        commentService.deleteComment(commentId);
+    public String deleteComment(@PathVariable UUID commentId, Principal principal) {
+        commentService.deleteComment(commentId,principal.getName());
         return "redirect:/thread";
     }
 

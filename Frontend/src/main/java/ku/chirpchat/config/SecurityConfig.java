@@ -22,7 +22,7 @@ public class SecurityConfig {
 
         @Autowired
         private OidcUserService oidcUserService;
-     
+
         @Autowired
         private ApplicationContext context;
 
@@ -38,11 +38,12 @@ public class SecurityConfig {
                 http
                                 .authorizeRequests()
                                 .antMatchers("/home", "/signup", "/verify", "/login", "/policy",
-                                                "/resendTokenEmail*", "/signup-success", "/consent-form", "/forgot-password",
+                                                "/resendTokenEmail*", "/signup-success", "/consent-form",
+                                                "/forgot-password",
                                                 "/reset-password", "/css/**", "/js/**", "/fontawesome/**")
                                 .permitAll()
-
-                                .anyRequest().authenticated()
+                                .anyRequest()
+                                .authenticated()
 
                                 .and()
                                 .formLogin()

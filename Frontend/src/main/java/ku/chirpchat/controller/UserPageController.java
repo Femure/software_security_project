@@ -3,13 +3,12 @@ package ku.chirpchat.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import kotlin.collections.builders.ListBuilder;
 import ku.chirpchat.dto.CommentRequest;
@@ -45,7 +44,7 @@ public class UserPageController {
     private TokenService tokenService;
 
     @GetMapping("/user-page")
-    public String getPostPage(Principal principal, Model model) {
+    public String viewUserPage(Principal principal, Model model) {
         String username = principal.getName();
         SignupDto member = memberService.getMemberUsername(username);
         model.addAttribute("member", member);
@@ -85,10 +84,11 @@ public class UserPageController {
     }
 
     @GetMapping("/reset-password")
-    public String viewResetPassword(Principal principal, SignupDto user, HttpSession session) {
+    public String viewResetPassword(SignupDto user, Principal principal, HttpSession session, RedirectAttributes attr) {
         String token = (String) session.getAttribute("token");
         if (token == null && (principal == null || !memberService.isMemberRegistered(principal.getName()))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            attr.addFlashAttribute("forbidden", true);
+            return "redirect:/home";
         } else{
             return "settings/reset-password";
         }  
@@ -96,10 +96,11 @@ public class UserPageController {
 
     @PostMapping("/reset-password")
     public String resetPassword(@Valid SignupDto user, BindingResult result,
-            HttpSession session, Principal principal, Model model) {
+            HttpSession session, Principal principal, RedirectAttributes attr, Model model) {
         String token = (String) session.getAttribute("token");
         if (token == null && (principal == null || !memberService.isMemberRegistered(principal.getName()))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            attr.addFlashAttribute("forbidden", true);
+            return "redirect:/home";
         } else {
             if (result.hasFieldErrors("password") || result.hasFieldErrors("confirmPassword")) {
                 return "settings/reset-password";
@@ -127,18 +128,20 @@ public class UserPageController {
     }
 
     @GetMapping("/delete-account")
-    public String viewDeleteAccount(Principal principal, SignupDto user) {
+    public String viewDeleteAccount(SignupDto user, Principal principal, RedirectAttributes attr) {
         if (!memberService.isMemberRegistered(principal.getName()) || principal.getName().contains("admin")) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            attr.addFlashAttribute("forbidden", true);
+            return "redirect:/home";
         } else {
             return "settings/delete-account";
         }
     }
 
     @PostMapping("/delete-account")
-    public String resetPassword(@RequestParam("password") String password, Principal principal, Model model) {
+    public String resetPassword(@RequestParam("password") String password, Principal principal,RedirectAttributes attr, Model model) {
         if (!memberService.isMemberRegistered(principal.getName()) || principal.getName().contains("admin")) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            attr.addFlashAttribute("forbidden", true);
+            return "redirect:/home";
         } else {
             int resp = memberService.deleteAccount(password, principal.getName());
             if (resp == 1) {

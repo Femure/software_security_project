@@ -11,6 +11,10 @@ import ku.chirpchat.dto.PostResponse;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.time.Instant;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class PostService {
@@ -20,6 +24,8 @@ public class PostService {
 
     @Autowired
     private JwtAccessTokenService tokenService;
+
+    Logger logger = LoggerFactory.getLogger(PostService.class);
 
     public List<PostResponse> getPosts() {
 
@@ -38,7 +44,7 @@ public class PostService {
         return Arrays.asList(posts);
     }
 
-    public PostRequest create(PostRequest post) {
+    public void createPost(PostRequest post) {
 
         String token = tokenService.requestAccessToken();
 
@@ -49,13 +55,18 @@ public class PostService {
 
         String url = "http://localhost:8091/api/post";
 
-        ResponseEntity<PostRequest> response = restTemplate.exchange(url, HttpMethod.POST,
-                entity, PostRequest.class);
+        ResponseEntity<PostResponse> response = restTemplate.exchange(url, HttpMethod.POST,
+                entity, PostResponse.class);
 
-        return response.getBody();
+        if (response.getStatusCode() == HttpStatus.OK) {
+            logger.info("User " + post.getUsername() + " add a post :"+ 
+            "\n id : "+  response.getBody().getId() +
+            "\n message : "+ post.getPostText() + 
+            "\n at " + Instant.now());
+        }
     }
 
-    public void deletePost(UUID postId) {
+    public void deletePost(UUID postId, String username) {
 
         String token = tokenService.requestAccessToken();
 
@@ -65,7 +76,14 @@ public class PostService {
 
         String url = "http://localhost:8091/api/post/delete/" + postId;
 
-        restTemplate.exchange(url, HttpMethod.DELETE,
-                entity, Void.class);
+        ResponseEntity<PostResponse> response = restTemplate.exchange(url, HttpMethod.DELETE,
+                entity, PostResponse.class);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            logger.info(
+                    "User " + username + "  remove the post :" +
+                    "\n id : "+  response.getBody().getId() +
+                    "\n message : "+ response.getBody().getPostText() + 
+                    "\n at " + Instant.now());
+        }
     }
 }

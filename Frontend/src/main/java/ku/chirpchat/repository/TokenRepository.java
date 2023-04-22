@@ -13,4 +13,8 @@ public interface TokenRepository extends JpaRepository<Token, UUID> {
    @Modifying
    @Query("DELETE FROM Token AS t WHERE t.verificationCode = null AND t.expirationTime <= ?1")
    void deleteAllExpiredToken(long currentTimeInMillis);
+
+   @Modifying
+   @Query("DELETE FROM Token AS t WHERE t.member.id = ?1")
+   void deleteByMemberId(UUID memberId);
 }

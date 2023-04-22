@@ -31,13 +31,16 @@ public class PostController {
         if (result.hasErrors())
             return new ResponseEntity<>("Invalid request format", HttpStatus.UNPROCESSABLE_ENTITY);
 
-        service.create(post);
-        return new ResponseEntity<>(post, HttpStatus.OK);
+        return new ResponseEntity<>(service.createPost(post), HttpStatus.OK);
     }
 
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        service.deletePost(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Object> delete(@PathVariable UUID id) {
+        PostResponse post  = service.deletePost(id);
+        if(post == null){
+            return new ResponseEntity<>("No post found for this id", HttpStatus.BAD_REQUEST);
+        }else{
+            return new ResponseEntity<>(post, HttpStatus.OK);
+        }
     }
 }

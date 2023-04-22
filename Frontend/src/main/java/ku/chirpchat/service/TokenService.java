@@ -2,7 +2,7 @@ package ku.chirpchat.service;
 
 import net.bytebuddy.utility.RandomString;
 
-import java.util.Date;
+import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,7 +14,6 @@ import ku.chirpchat.model.Token;
 import ku.chirpchat.model.VerificationToken;
 import ku.chirpchat.repository.MemberRepository;
 
-import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +48,7 @@ public class TokenService {
         token.setVerificationCode(randomCode);
         long currentTime = System.currentTimeMillis();
         token.setExpirationTime(currentTime + EXPIRATION_TIME_DURATION);
-        token.setEmailResentCooldown(new Date());
+        token.setEmailResentCooldown(Instant.now());
         member.setEmailSentNumber(member.getEmailSentNumber() + 1);
         token.setMember(member);
         member.setToken(token);
@@ -67,7 +66,7 @@ public class TokenService {
         if (member != null) {
             Token memberToken = member.getToken();
             if (member.getEmailSentNumber() < MAX_SENT_EMAIL) {
-                long resendCoolDownTimeInMillis = memberToken.getEmailResentCooldown().getTime();
+                long resendCoolDownTimeInMillis = memberToken.getEmailResentCooldown().toEpochMilli();
                 long currentTimeInMillis = System.currentTimeMillis();
                 if (resendCoolDownTimeInMillis + COOLDOWN_RESEND_TIME_DURATION < currentTimeInMillis) {
                     logger.info("Resend email for user : " + member.getUsername() + " at " + Instant.now());
@@ -75,8 +74,7 @@ public class TokenService {
                     memberToken.setMember(null);
                     member = this.setTokenEmailAttributes(member, choice);
                     return member.getToken().getVerificationCode();
-                }
-                else{
+                } else {
                     return token;
                 }
             } else {
@@ -89,10 +87,13 @@ public class TokenService {
     public String forgotPassword(String email) {
         Member member = repository.findByEmail(email);
         if (member != null && member.isEnabled()) {
-            this.setTokenEmailAttributes(member, 1);
-            return member.getToken().getVerificationCode();
+            if (member.getEmailSentNumber() < MAX_SENT_EMAIL) {
+                this.setTokenEmailAttributes(member, 1);
+                return member.getToken().getVerificationCode();
+            }
+            return "emailSentNumberExceeded";
         }
-        return null;
+        return "accountNotfound";
     }
 
     public int resetPassword(String password, String token) {
@@ -103,8 +104,11 @@ public class TokenService {
             member.setPassword(hashedPassword);
             Token passwordResetToken = member.getToken();
             passwordResetToken.setVerificationCode(null);
-            member.setEmailSentNumber(0);
             member.setToken(passwordResetToken);
+            member.setEmailSentNumber(0);
+            member.setAccountLocked(false);
+            member.setLockTime(null);
+            member.setFailedAttempt(0);
             passwordResetToken.setMember(null);
             repository.save(member);
             logger.info("Success reset password user : " + member.getUsername() + " at " + Instant.now());
@@ -120,12 +124,12 @@ public class TokenService {
             Token memberToken = member.getToken();
             long expirationTime = memberToken.getExpirationTime();
             long currentTime = System.currentTimeMillis();
-            member.setEmailSentNumber(0);
             // if the message has been validated before 5min
             if (expirationTime > currentTime) {
                 logger.info("Success verify user : " + member.getUsername() + " at " + Instant.now());
                 if (memberToken.getClass() == VerificationToken.class) {
                     logger.info("Successful registration");
+                    member.setEmailSentNumber(0);
                     member.setEnabled(true);
                     memberToken.setVerificationCode(null);
                     memberToken.setMember(null);
@@ -133,7 +137,6 @@ public class TokenService {
                     repository.save(member);
                     return 1;
                 } else {
-                    // resetPasswordVerification
                     logger.info("Redirect reset password");
                     return 2;
                 }

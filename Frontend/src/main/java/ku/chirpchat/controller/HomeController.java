@@ -8,18 +8,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
     @GetMapping("/home")
-    public String getHomePage(Model model) {
+    public String viewHomePage(Model model) {
         model.addAttribute("greeting", "Welcome to project Website");
         return "home"; // name of a html template: home.html
     }
 
     @GetMapping("/policy")
-    public String getPolicyPage() {
+    public String viewPolicyPage() {
         return "policy"; // name of a html template: home.html
     }
 
     @GetMapping("/")
-    public String getRootPage() {
+    public String viewRootPage() {
         return "redirect:/home";
     }
 }
