@@ -63,15 +63,16 @@ For the **Backend**
 
 You can also use any other IDE you prefer such as Visual Studio Code, IntelliJ...
 
-External ressource for deployement with VSCode :
-- https://code.visualstudio.com/docs/java/java-spring-boot
+External ressource for deployement with VSCode : https://code.visualstudio.com/docs/java/java-spring-boot
 
 For example with VSCode, it is very easy to lauch the app. Thanks to Spring Boot Dashboard, you can run the **Frontend** and the **Backend** at the same time, as shown below : 
 
 ![](https://github.com/Femure/software_security_project/blob/rename-repo/README_illustration/lauchSpringBootVSCode.gif)
 
-Once deployed, you can access the app at :
+> :warning: Important : For both deployments, you will need to have Java SE Development Kit 19. If you have a version below, please download it to avoid configuration conflicts. You can download it here : 
+https://www.oracle.com/java/technologies/javase/jdk19-archive-downloads.html
 
+Once deployed, you can access the app at :
 http://localhost:8090
 
 ## Email SMTP service
